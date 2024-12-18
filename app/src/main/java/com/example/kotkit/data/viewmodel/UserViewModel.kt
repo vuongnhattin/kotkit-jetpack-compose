@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    retrofit: Retrofit
+    private val userApiService: UserApiService
 ) : ViewModel() {
     var listUserDetails by mutableStateOf<ApiState<List<UserDetails>>>(ApiState.Loading())
         private set
@@ -25,11 +25,11 @@ class UserViewModel @Inject constructor(
 
     var filteredListUser by mutableStateOf<List<UserDetails>>(emptyList())
 
-    private val userApi = retrofit.create(UserApiService::class.java)
+//    private val userApi = retrofit.create(UserApiService::class.java)
 
     fun searchUsers(query: String) {
         fetchApi(stateSetter = { listUserDetails = it }) {
-            val response = userApi.searchUsers(query).data!!
+            val response = userApiService.searchUsers(query).data!!
 //            delay(1000)
 //            val response = UserMock.users.data ?: emptyList()
             response
@@ -45,8 +45,6 @@ class UserViewModel @Inject constructor(
 
     fun getFriendsOfUser(userId: Int) {
         fetchApi(stateSetter = { listUserDetails = it }) {
-//            val response = RetrofitInstance.userApi.searchUsers(query).data ?: emptyList()
-//            delay(1000)
             val response = UserMock.users.data ?: emptyList()
             filteredListUser = response
 

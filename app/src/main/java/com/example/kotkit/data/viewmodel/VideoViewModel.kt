@@ -15,10 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VideoViewModel @Inject constructor(
-    retrofit: Retrofit
+    private val videoApiService: VideoApiService
 ) : ViewModel() {
-    private val videoApi = retrofit.create(VideoApiService::class.java)
-
     var publicVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Loading())
         private set
 
@@ -27,7 +25,7 @@ class VideoViewModel @Inject constructor(
 
     fun getPublicVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { publicVideos = it }) {
-//            val response = videoApi.getVideosOfUser(userId, "public").data!!
+//            val response = videoApiService.getVideosOfUser(userId, "public").data!!
             val response = VideoMock.publicVideos.data ?: emptyList()
             println("video response: $response")
             response
