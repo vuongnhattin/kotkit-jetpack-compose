@@ -15,13 +15,6 @@ class AuthViewModel @Inject constructor(
     var isAuthenticated by mutableStateOf(tokenManager.isAuthenticated())
         private set
 
-    var isTokenExpired by mutableStateOf(false)
-        private set
-
-    fun expireToken() {
-        isTokenExpired = true
-    }
-
     fun getCurrentUsername(): String {
         return tokenManager.getCurrentUsername()
     }
@@ -34,6 +27,5 @@ class AuthViewModel @Inject constructor(
     fun login(token: String) {
         tokenManager.saveToken(token)
         isAuthenticated = true
-        isTokenExpired = false
     }
 }

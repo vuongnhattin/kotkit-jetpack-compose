@@ -131,10 +131,3 @@ fun MyApp(modifier: Modifier = Modifier) {
     }
 
 }
-
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun BottomNavigationPreview() {
-    MyApp()
-}

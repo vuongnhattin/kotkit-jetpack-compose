@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.viewmodel.AuthViewModel
+import com.example.kotkit.ui.screen.utils.HandleTokenExpired
 
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier) {
@@ -30,12 +31,6 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             authViewModel.logout()
         }) {
             Text("Logout")
-        }
-
-        Button(onClick = {
-            authViewModel.expireToken()
-        }) {
-            Text("Test expire token")
         }
     }
 }
