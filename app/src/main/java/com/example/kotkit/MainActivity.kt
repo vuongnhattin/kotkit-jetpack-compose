@@ -19,6 +19,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -50,6 +51,10 @@ val LocalAuthViewModel = staticCompositionLocalOf<AuthViewModel> {
     error("AuthViewModel is not provided")
 }
 
+val LocalNavController = staticCompositionLocalOf<NavController> {
+    error("NavController is not provided")
+}
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +64,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             KotkitTheme {
                 val authViewModel: AuthViewModel = hiltViewModel()
-                CompositionLocalProvider(LocalAuthViewModel provides authViewModel) {
+                CompositionLocalProvider(
+                    LocalAuthViewModel provides authViewModel,
+                ) {
                     MyApp()
                 }
             }
@@ -70,7 +77,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-
     val screensWithBottomNav = listOf("home", "chat", "notification", "profile")
 
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
@@ -78,66 +84,53 @@ fun MyApp(modifier: Modifier = Modifier) {
 
 //    val authViewModel: AuthViewModel = hiltViewModel()
     val authViewModel = LocalAuthViewModel.current
-    Scaffold(
-        bottomBar = {
-            if (currentRoute in screensWithBottomNav) {
-                BottomNavigationBar(navController)
-            }
-        }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = if (authViewModel.isAuthenticated) "home" else "login",
-//            startDestination = "login",
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            modifier = if (currentRoute in screensWithBottomNav) {
-                Modifier.padding(innerPadding)
-            } else {
-                Modifier
-            }
-        ) {
-            composable("login") { LoginScreen(navController = navController) }
-            composable("home") { HomeScreen(navController = navController) }
-            composable("chat") { ChatScreen(navController = navController) }
-            composable("notification") { NotificationScreen(navController = navController) }
-            composable("profile") { ProfileScreen(navController = navController) }
-            composable("search/{query}") { backStackEntry ->
-                val query = backStackEntry.arguments?.getString("query") ?: ""
-                SearchScreen(navController = navController, query = query)
-            }
-            composable("search-result/{query}") { backStackEntry ->
-                val query = backStackEntry.arguments?.getString("query") ?: ""
-                SearchResultScreen(navController = navController, query = query)
-            }
-            composable("user-profile/{userId}") { backStackEntry ->
-                val userId = backStackEntry.arguments?.getString("userId")?.toInt() ?: 0
-                UserProfileScreen(navController = navController, userId = userId)
-            }
-            composable("friends/{userId}") { backStackEntry ->
-                val userId = backStackEntry.arguments?.getString("userId")?.toInt() ?: 0
-                ListFriendScreen(navController = navController, userId = userId)
-            }
-        }
 
-        if (authViewModel.isTokenExpired && currentRoute != "login") {
-            AlertDialog(
-                onDismissRequest = { },
-                title = { Text("Phiên đăng nhập hết hạn") },
-                text = { Text("Phiên đăng nhập của bạn đã hết hạn, vui lòng đăng nhập lại") },
-                confirmButton = {
-                    Button(onClick = {
-                        authViewModel.logout()
-//                        navController.navigate("login") // Navigate to login page
-                    }) {
-                        Text("Đăng nhập")
-                    }
+    CompositionLocalProvider(LocalNavController provides navController) {
+        Scaffold(
+            bottomBar = {
+                if (currentRoute in screensWithBottomNav) {
+                    BottomNavigationBar()
                 }
-            )
+            }
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = if (authViewModel.isAuthenticated) "home" else "login",
+//            startDestination = "login",
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                modifier = if (currentRoute in screensWithBottomNav) {
+                    Modifier.padding(innerPadding)
+                } else {
+                    Modifier
+                }
+            ) {
+                composable("login") { LoginScreen() }
+                composable("home") { HomeScreen() }
+                composable("chat") { ChatScreen() }
+                composable("notification") { NotificationScreen() }
+                composable("profile") { ProfileScreen() }
+                composable("search/{query}") { backStackEntry ->
+                    val query = backStackEntry.arguments?.getString("query") ?: ""
+                    SearchScreen(query = query)
+                }
+                composable("search-result/{query}") { backStackEntry ->
+                    val query = backStackEntry.arguments?.getString("query") ?: ""
+                    SearchResultScreen(query = query)
+                }
+                composable("user-profile/{userId}") { backStackEntry ->
+                    val userId = backStackEntry.arguments?.getString("userId")?.toInt() ?: 0
+                    UserProfileScreen(userId = userId)
+                }
+                composable("friends/{userId}") { backStackEntry ->
+                    val userId = backStackEntry.arguments?.getString("userId")?.toInt() ?: 0
+                    ListFriendScreen(userId = userId)
+                }
+            }
         }
     }
-}
 
+}
 
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

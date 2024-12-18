@@ -1,46 +1,53 @@
 package com.example.kotkit.data.api
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.data.model.ApiResponse
 import com.example.kotkit.data.model.ApiState
 import com.google.gson.Gson
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-
-fun parseErrorResponse(exception: HttpException): ApiResponse<*>? {
-    return try {
-        val errorBody = exception.response()?.errorBody()?.string()
-
-        Gson().fromJson(errorBody, ApiResponse::class.java)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 
 fun <T> ViewModel.fetchApi(
     stateSetter: (ApiState<T>) -> Unit,
-    apiCall: suspend () -> T
+    apiCall: suspend () -> ApiResponse<T>
 ) {
     stateSetter(ApiState.Loading())
     viewModelScope.launch {
         try {
+            delay(300)
             val result = apiCall()
+            stateSetter(ApiState.Success(result.data, result.status, result.code))
 
             println("result: $result")
-
-            stateSetter(ApiState.Success(result))
         } catch (e: HttpException) {
-            val errorResponse = parseErrorResponse(e)
-            stateSetter(ApiState.Error(data = errorResponse?.data ,status = errorResponse?.status, code = errorResponse?.code))
+            // Get the api response (data, status, code)
+            val errorBody = e.response()?.errorBody()?.string()
+            // Convert to ApiResponse
+            val errorResponse = Gson().fromJson(errorBody, ApiResponse::class.java)
 
+            stateSetter(
+                ApiState.Error(
+                    data = errorResponse?.data,
+                    status = errorResponse?.status,
+                    code = errorResponse?.code
+                )
+            )
+
+            println("error: $errorResponse")
             e.printStackTrace()
         } catch (e: Exception) {
+            when (e) {
+                is SocketTimeoutException -> stateSetter(ApiState.Error(code = "TIMEOUT"))
+                is ConnectException -> stateSetter(ApiState.Error(code = "CONNECT_ERROR"))
+                else -> stateSetter(ApiState.Error(code = "UNKNOWN_ERROR"))
+            }
             e.printStackTrace()
-
-            stateSetter(ApiState.Error())
         }
     }
 }

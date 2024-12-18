@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.viewmodel.UserViewModel
@@ -38,8 +39,9 @@ import com.example.kotkit.ui.screen.utils.HandleApiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int, navController: NavController) {
+fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int) {
     val userViewModel: UserViewModel = hiltViewModel()
+    val navController = LocalNavController.current
 
     LaunchedEffect(userId) {
         userViewModel.getUserDetails(userId)
@@ -49,14 +51,14 @@ fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int, navController: 
     val userState = userViewModel.userDetails
     val friendsState = userViewModel.listUserDetails
 
-    HandleApiState(userState) { state1 ->
-        HandleApiState(friendsState, onError = {e -> println(e.data.toString())}) { state2 ->
+    HandleApiState(userState) { user ->
+        HandleApiState(friendsState) { _ ->
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
                         title = {
                             Text(
-                               state1.data?.username ?: "",
+                                user.data?.username ?: "",
                                 style = TopAppBarTitleStyle()
                             )
                         },
@@ -77,49 +79,6 @@ fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int, navController: 
             }
         }
     }
-
-//    when {
-//        userState is ApiState.Loading || friendsState is ApiState.Loading -> {
-//            // Loading state
-//        }
-//
-//        userState is ApiState.Error -> {
-//            // Error state
-//        }
-//
-//        friendsState is ApiState.Error -> {
-//            // Error state
-//        }
-//
-//        userState is ApiState.Success && friendsState is ApiState.Success -> {
-//            Scaffold(
-//                topBar = {
-//                    CenterAlignedTopAppBar(
-//                        title = {
-//                            Text(
-//                                userState.data!!.username,
-//                                style = TopAppBarTitleStyle()
-//                            )
-//                        },
-//                        navigationIcon = {
-//                            IconButton(onClick = { navController.popBackStack() }) {
-//                                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-//                            }
-//                        }
-//                    )
-//                }
-//            ) { innerPadding ->
-//                ListFriendBody(
-//                    modifier = Modifier.padding(innerPadding),
-//                    friends = userViewModel.filteredListUser,
-//                    navController = navController,
-//                    userViewModel = userViewModel
-//                )
-//            }
-//        }
-//    }
-
-
 }
 
 @Composable
@@ -166,5 +125,5 @@ fun ListFriendBody(
 @Preview
 @Composable
 private fun ListFriendPreview() {
-    ListFriendScreen(userId = 1, navController = rememberNavController())
+    ListFriendScreen(userId = 1)
 }

@@ -25,8 +25,8 @@ class VideoViewModel @Inject constructor(
 
     fun getPublicVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { publicVideos = it }) {
-//            val response = videoApiService.getVideosOfUser(userId, "public").data!!
-            val response = VideoMock.publicVideos.data ?: emptyList()
+            val response = videoApiService.getVideosOfUser(userId, "public")
+//            val response = VideoMock.publicVideos
             println("video response: $response")
             response
         }
@@ -34,7 +34,8 @@ class VideoViewModel @Inject constructor(
 
     fun getPrivateVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { privateVideos = it }) {
-            val response = VideoMock.privateVideos.data ?: emptyList()
+            val response = videoApiService.getVideosOfUser(userId, "private")
+//            val response = VideoMock.privateVideos
             response
         }
     }

@@ -9,15 +9,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.kotkit.LocalAuthViewModel
+import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.viewmodel.AuthViewModel
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun ProfileScreen(modifier: Modifier = Modifier) {
     val authViewModel = LocalAuthViewModel.current
+//    val navController = LocalNavController.current
 
     Column() {
         Text("Profile Screen")
@@ -35,4 +38,10 @@ fun ProfileScreen(modifier: Modifier = Modifier, navController: NavController) {
             Text("Test expire token")
         }
     }
+}
+
+@Preview
+@Composable
+private fun ProfileScreenPreview() {
+    ProfileScreen()
 }

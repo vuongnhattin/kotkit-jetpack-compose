@@ -23,12 +23,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.kotkit.LocalNavController
 import com.example.kotkit.ui.icon.Search
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun HomeScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val videoUri = Uri.parse("android.resource://${context.packageName}/raw/video_test")
+    val navController = LocalNavController.current
+
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -88,5 +91,5 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
+    HomeScreen()
 }

@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 
 @Composable
-fun ChatScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun ChatScreen(modifier: Modifier = Modifier) {
     Column() {
         Text("Chat Screen")
     }

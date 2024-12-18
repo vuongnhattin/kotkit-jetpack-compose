@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,16 +32,22 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.kotkit.ui.icon.Search
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kotkit.LocalAuthViewModel
+import com.example.kotkit.LocalNavController
+import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.ui.component.CustomTextField
 import com.example.kotkit.data.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier, navController: NavController, query: String = "") {
+fun SearchScreen(modifier: Modifier = Modifier, query: String = "") {
+    val navController = LocalNavController.current
+
     var text by remember {
         mutableStateOf(
             TextFieldValue(
@@ -127,5 +134,5 @@ fun SearchScreenBody(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun SearchScreenPreview() {
-    SearchScreen(navController = rememberNavController())
+    SearchScreen()
 }

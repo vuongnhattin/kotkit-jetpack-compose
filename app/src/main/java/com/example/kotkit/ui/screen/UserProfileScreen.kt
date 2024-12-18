@@ -32,6 +32,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,9 +53,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.kotkit.LocalAuthViewModel
+import com.example.kotkit.LocalNavController
+import com.example.kotkit.data.localstorage.TokenManager
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.model.Video
+import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.component.FriendshipButton
@@ -63,6 +68,7 @@ import com.example.kotkit.ui.icon.Lock
 import com.example.kotkit.ui.icon.Public
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.icon.Share
+import com.example.kotkit.ui.screen.utils.HandleApiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_android_components_ViewModelComponent
 
@@ -70,59 +76,43 @@ import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_andro
 @Composable
 fun UserProfileScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
     userId: Int,
 ) {
     val userViewModel: UserViewModel = hiltViewModel()
+    val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
         userViewModel.getUserDetails(userId)
     }
 
-    when (val state = userViewModel.userDetails) {
-        is ApiState.Loading -> {
-            // Loading state
-        }
+    val userDetailsState = userViewModel.userDetails
 
-        is ApiState.Error -> {
-            // Error state
-        }
-
-        is ApiState.Success -> {
-            // Success state
-            val userDetails = state.data!!
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = {
-                            Text(
-                                userDetails.fullName,
-                                style = TopAppBarTitleStyle()
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                navController.popBackStack()
-                            }) {
-                                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = {
-
-                            }) {
-                                Icon(Share, contentDescription = null, modifier = Modifier.size(24.dp))
-                            }
-                        }
-                    )
-                }
-            ) { innerPadding ->
-                UserProfileBody(
-                    modifier = Modifier.padding(innerPadding),
-                    userDetails = userDetails,
-                    navController = navController
+    HandleApiState(userDetailsState) { state ->
+        val userDetails = state.data!!
+        Scaffold(topBar = {
+            CenterAlignedTopAppBar(title = {
+                Text(
+                    userDetails.fullName, style = TopAppBarTitleStyle()
                 )
-            }
+            }, navigationIcon = {
+                IconButton(onClick = {
+                    navController.popBackStack()
+                }) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                }
+            }, actions = {
+                IconButton(onClick = {
+
+                }) {
+                    Icon(Share, contentDescription = null, modifier = Modifier.size(24.dp))
+                }
+            })
+        }) { innerPadding ->
+            UserProfileBody(
+                modifier = Modifier.padding(innerPadding),
+                userDetails = userDetails,
+                navController = navController
+            )
         }
     }
 
@@ -130,7 +120,9 @@ fun UserProfileScreen(
 }
 
 @Composable
-fun UserProfileBody(modifier: Modifier = Modifier, userDetails: UserDetails, navController: NavController) {
+fun UserProfileBody(
+    modifier: Modifier = Modifier, userDetails: UserDetails, navController: NavController
+) {
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -153,7 +145,9 @@ fun UserProfileBody(modifier: Modifier = Modifier, userDetails: UserDetails, nav
 }
 
 @Composable
-fun ProfileDetailsSection(modifier: Modifier = Modifier, userDetails: UserDetails, navController: NavController) {
+fun ProfileDetailsSection(
+    modifier: Modifier = Modifier, userDetails: UserDetails, navController: NavController
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -181,13 +175,9 @@ fun ProfileDetailsSection(modifier: Modifier = Modifier, userDetails: UserDetail
             )
         }
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .clickable {
-                    navController.navigate("friends/${userDetails.id}")
-                }
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable {
+            navController.navigate("friends/${userDetails.id}")
+        }) {
             Text(
                 userDetails.numberOfFriends.toString(),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold)
@@ -199,9 +189,7 @@ fun ProfileDetailsSection(modifier: Modifier = Modifier, userDetails: UserDetail
         }
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
         ) {
             FriendshipButton(friendshipStatus = userDetails.friendStatus)
             Spacer(modifier = Modifier.width(4.dp))
@@ -232,13 +220,11 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails)
     val tabs = listOf(Public, Lock)
 
     Column(modifier = modifier) {
-        TabRow(selectedTabIndex = selectedIndex,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.tabIndicatorOffset(tabPositions[selectedIndex]),
-                    color = Color.Black
-                )
-            }) {
+        TabRow(selectedTabIndex = selectedIndex, indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.tabIndicatorOffset(tabPositions[selectedIndex]), color = Color.Black
+            )
+        }) {
             tabs.forEachIndexed { index, icon ->
                 IconButton(
                     onClick = { selectedIndex = index },
@@ -265,6 +251,7 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails)
         0 -> {
             VideoThumbnails(videosState = videoViewModel.publicVideos)
         }
+
         1 -> {
             VideoThumbnails(videosState = videoViewModel.privateVideos)
         }
@@ -273,39 +260,27 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails)
 
 @Composable
 fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Video>>) {
-    when (videosState) {
-        is ApiState.Loading -> {
-            // Loading state
-            Text("Loading")
-        }
+    HandleApiState(videosState, onError = {
+        Text("Bạn phải kết bạn với người này để xem được video riêng tư của họ")
+    }) { state ->
+        val videos = state.data!!
 
-        is ApiState.Error -> {
-            // Error state
-            Text("Error")
-        }
-
-        is ApiState.Success -> {
-            // Success state
-            val videos = videosState.data!!
-
-            val space = 2.dp
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                verticalArrangement = Arrangement.spacedBy(space),
-                horizontalArrangement = Arrangement.spacedBy(space),
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                items(videos) { video ->
-                    AsyncImage(
-                        model = video.thumbnail,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+        val space = 2.dp
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(space),
+            horizontalArrangement = Arrangement.spacedBy(space),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(videos) { video ->
+                AsyncImage(
+                    model = video.thumbnail,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentScale = ContentScale.Crop
+                )
             }
         }
     }
@@ -315,7 +290,6 @@ fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Vi
 @Composable
 fun PreviewUserProfileScreen() {
     UserProfileScreen(
-        navController = rememberNavController(),
-        userId = 1,
+        userId = 1
     )
 }

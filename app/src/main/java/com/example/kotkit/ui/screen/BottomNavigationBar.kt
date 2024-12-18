@@ -14,6 +14,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -24,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.kotkit.LocalAuthViewModel
+import com.example.kotkit.LocalNavController
 import com.example.kotkit.R
 import com.example.kotkit.ui.icon.Chat_bubble
 import com.example.kotkit.ui.icon.Home
@@ -38,7 +41,6 @@ data class BottomNavItem(
 
 @Composable
 fun BottomNavigationBar(
-    navController: NavController
 ) {
     val items = listOf(
         BottomNavItem("home", "Trang chủ", Home),
@@ -46,6 +48,8 @@ fun BottomNavigationBar(
         BottomNavItem("notification", "Th Báo", Notifications),
         BottomNavItem("profile", "Tài khoản", User),
     )
+
+    val navController = LocalNavController.current
 
     NavigationBar(
         containerColor = Color.Transparent,
@@ -81,10 +85,4 @@ fun BottomNavigationBar(
             )
         }
     }
-}
-
-@Composable
-@Preview
-fun BottomNavigationBarPreview() {
-    BottomNavigationBar(navController = rememberNavController())
 }

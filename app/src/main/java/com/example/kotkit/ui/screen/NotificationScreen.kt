@@ -6,6 +6,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
 @Composable
-fun NotificationScreen(modifier: Modifier = Modifier, navController: NavController) {
-    Text("Notification Screen")
+fun NotificationScreen(modifier: Modifier = Modifier) {
+    Text("Notification Screens")
 }

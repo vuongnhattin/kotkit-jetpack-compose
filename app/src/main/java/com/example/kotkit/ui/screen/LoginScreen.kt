@@ -12,13 +12,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.kotkit.LocalAuthViewModel
+import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.viewmodel.AuthViewModel
 
 data class UserLogin(val name: String = "", val token: String = "")
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun LoginScreen(modifier: Modifier = Modifier) {
     val authViewModel = LocalAuthViewModel.current
+    val navController = LocalNavController.current
 
     if (authViewModel.isAuthenticated) {
         navController.navigate("home")
