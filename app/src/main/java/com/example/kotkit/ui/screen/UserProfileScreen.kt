@@ -73,7 +73,7 @@ fun UserProfileScreen(
     navController: NavController,
     userId: Int,
 ) {
-    val userViewModel: UserViewModel = viewModel()
+    val userViewModel: UserViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
         userViewModel.getUserDetails(userId)

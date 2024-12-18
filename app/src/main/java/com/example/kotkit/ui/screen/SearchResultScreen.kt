@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -44,6 +46,7 @@ import com.example.kotkit.ui.icon.DotsHorizontal
 import com.example.kotkit.ui.icon.Search
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.ui.component.UserList
+import com.example.kotkit.ui.screen.utils.HandleApiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,50 +164,30 @@ fun VideoSearchResult(modifier: Modifier = Modifier) {
     Text("Video result")
 }
 
+
 @Composable
 fun UserSearchResult(
     modifier: Modifier = Modifier,
     query: TextFieldValue,
     navController: NavController
 ) {
-    val userViewModel = viewModel<UserViewModel>()
+    val userViewModel = hiltViewModel<UserViewModel>()
     val userSearchResult = userViewModel.listUserDetails
 
     LaunchedEffect(query.text) {
         userViewModel.searchUsers(query.text)
     }
 
-    when (userSearchResult) {
-        is ApiState.Loading -> {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is ApiState.Success -> {
-//            LazyColumn() {
-//                items(userSearchResult.data ?: emptyList()) { user ->
-//                    UserResultItem(user = user, navController = navController)
-//                    Spacer(modifier = Modifier.height(8.dp))
-//                }
-//            }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 12.dp)
-            ) {
-                UserList(
-                    users = userSearchResult.data ?: emptyList(),
-                    navController = navController
-                )
-            }
-        }
-
-        is ApiState.Error -> {
-            Text(userSearchResult.toString())
+    HandleApiState(userSearchResult) { res ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp)
+        ) {
+            UserList(
+                users =  res.data!!,
+                navController = navController
+            )
         }
     }
 }

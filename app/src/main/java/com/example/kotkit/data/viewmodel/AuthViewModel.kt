@@ -6,16 +6,21 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.kotkit.data.localstorage.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val tokenManager: TokenManager
 ) : ViewModel() {
-    var authenticated by mutableStateOf(false)
+    var isAuthenticated by mutableStateOf(tokenManager.isAuthenticated())
         private set
+
+    var isTokenExpired by mutableStateOf(false)
+        private set
+
+    fun expireToken() {
+        isTokenExpired = true
+    }
 
     fun getCurrentUsername(): String {
         return tokenManager.getCurrentUsername()
@@ -23,11 +28,12 @@ class AuthViewModel @Inject constructor(
 
     fun logout() {
         tokenManager.clearToken()
-        authenticated = false
+        isAuthenticated = false
     }
 
     fun login(token: String) {
         tokenManager.saveToken(token)
-        authenticated = true
+        isAuthenticated = true
+        isTokenExpired = false
     }
 }

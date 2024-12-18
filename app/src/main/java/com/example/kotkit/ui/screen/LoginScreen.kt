@@ -11,13 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.data.viewmodel.AuthViewModel
 
-data class UserLogin(val name: String, val token: String)
+data class UserLogin(val name: String = "", val token: String = "")
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
+fun LoginScreen(modifier: Modifier = Modifier, navController: NavController) {
+    val authViewModel = LocalAuthViewModel.current
 
+    if (authViewModel.isAuthenticated) {
+        navController.navigate("home")
+    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -28,6 +33,7 @@ fun LoginScreen(modifier: Modifier = Modifier, navController: NavController, aut
             UserLogin(
                 name = "User 1",
                 token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aW4iLCJpYXQiOjE3MzMxNjAzMDksImV4cCI6MTc0MzE2MDMwOX0.tn5oD4LrCcUhZ7lv5FDsJxCbGZSNiKxx6UvuZjCuvfw"
+//                token = ""
             ),
             UserLogin(
                 name = "User 2",

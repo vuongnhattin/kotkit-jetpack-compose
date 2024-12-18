@@ -4,11 +4,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.kotkit.data.api.fetchApi
+import com.example.kotkit.data.api.service.UserApiService
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.mock.UserMock
 import com.example.kotkit.data.model.UserDetails
+import dagger.hilt.android.lifecycle.HiltViewModel
+import retrofit2.Retrofit
+import javax.inject.Inject
 
-class UserViewModel : ViewModel() {
+@HiltViewModel
+class UserViewModel @Inject constructor(
+    retrofit: Retrofit
+) : ViewModel() {
     var listUserDetails by mutableStateOf<ApiState<List<UserDetails>>>(ApiState.Loading())
         private set
 
@@ -17,11 +25,13 @@ class UserViewModel : ViewModel() {
 
     var filteredListUser by mutableStateOf<List<UserDetails>>(emptyList())
 
+    private val userApi = retrofit.create(UserApiService::class.java)
+
     fun searchUsers(query: String) {
         fetchApi(stateSetter = { listUserDetails = it }) {
-//            val response = RetrofitInstance.userApi.searchUsers(query).data ?: emptyList()
+            val response = userApi.searchUsers(query).data!!
 //            delay(1000)
-            val response = UserMock.users.data ?: emptyList()
+//            val response = UserMock.users.data ?: emptyList()
             response
         }
     }

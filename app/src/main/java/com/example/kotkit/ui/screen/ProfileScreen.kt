@@ -12,17 +12,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.data.viewmodel.AuthViewModel
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
+fun ProfileScreen(modifier: Modifier = Modifier, navController: NavController) {
+    val authViewModel = LocalAuthViewModel.current
+
     Column() {
         Text("Profile Screen")
         Text("Username: ${authViewModel.getCurrentUsername()}")
+
         Button(onClick = {
             authViewModel.logout()
         }) {
             Text("Logout")
+        }
+
+        Button(onClick = {
+            authViewModel.expireToken()
+        }) {
+            Text("Test expire token")
         }
     }
 }

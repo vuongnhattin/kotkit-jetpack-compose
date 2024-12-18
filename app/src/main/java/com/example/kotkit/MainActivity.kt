@@ -11,27 +11,18 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navDeepLink
 import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.ui.screen.BottomNavigationBar
 import com.example.kotkit.ui.screen.ChatScreen
@@ -42,13 +33,10 @@ import com.example.kotkit.ui.screen.SearchResultScreen
 import com.example.kotkit.ui.screen.SearchScreen
 import com.example.kotkit.ui.screen.UserProfileScreen
 import com.example.kotkit.ui.theme.KotkitTheme
-import com.example.kotkit.data.viewmodel.UserViewModel
-import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.screen.ListFriendScreen
 import com.example.kotkit.ui.screen.LoginScreen
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
-import kotlin.math.log
 
 @HiltAndroidApp
 class MyApplication : Application() {
@@ -56,6 +44,10 @@ class MyApplication : Application() {
         super.onCreate()
         // Application-level initialization can go here
     }
+}
+
+val LocalAuthViewModel = staticCompositionLocalOf<AuthViewModel> {
+    error("AuthViewModel is not provided")
 }
 
 @AndroidEntryPoint
@@ -66,7 +58,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             KotkitTheme {
-                MyApp()
+                val authViewModel: AuthViewModel = hiltViewModel()
+                CompositionLocalProvider(LocalAuthViewModel provides authViewModel) {
+                    MyApp()
+                }
             }
         }
     }
@@ -81,9 +76,8 @@ fun MyApp(modifier: Modifier = Modifier) {
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    val authViewModel: AuthViewModel = hiltViewModel()
-    val authenticated = authViewModel.authenticated
-
+//    val authViewModel: AuthViewModel = hiltViewModel()
+    val authViewModel = LocalAuthViewModel.current
     Scaffold(
         bottomBar = {
             if (currentRoute in screensWithBottomNav) {
@@ -93,7 +87,8 @@ fun MyApp(modifier: Modifier = Modifier) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "login",
+            startDestination = if (authViewModel.isAuthenticated) "home" else "login",
+//            startDestination = "login",
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
             modifier = if (currentRoute in screensWithBottomNav) {
@@ -102,11 +97,11 @@ fun MyApp(modifier: Modifier = Modifier) {
                 Modifier
             }
         ) {
-            composable("login") { LoginScreen(navController = navController, authViewModel = authViewModel) }
+            composable("login") { LoginScreen(navController = navController) }
             composable("home") { HomeScreen(navController = navController) }
             composable("chat") { ChatScreen(navController = navController) }
             composable("notification") { NotificationScreen(navController = navController) }
-            composable("profile") { ProfileScreen(navController = navController, authViewModel = authViewModel) }
+            composable("profile") { ProfileScreen(navController = navController) }
             composable("search/{query}") { backStackEntry ->
                 val query = backStackEntry.arguments?.getString("query") ?: ""
                 SearchScreen(navController = navController, query = query)
@@ -125,14 +120,15 @@ fun MyApp(modifier: Modifier = Modifier) {
             }
         }
 
-        if (!authenticated && currentRoute != "login") {
+        if (authViewModel.isTokenExpired && currentRoute != "login") {
             AlertDialog(
                 onDismissRequest = { },
                 title = { Text("Phiên đăng nhập hết hạn") },
                 text = { Text("Phiên đăng nhập của bạn đã hết hạn, vui lòng đăng nhập lại") },
                 confirmButton = {
                     Button(onClick = {
-                        navController.navigate("login") // Navigate to login page
+                        authViewModel.logout()
+//                        navController.navigate("login") // Navigate to login page
                     }) {
                         Text("Đăng nhập")
                     }

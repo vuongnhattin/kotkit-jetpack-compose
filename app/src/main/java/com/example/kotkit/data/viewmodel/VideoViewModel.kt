@@ -1,10 +1,10 @@
 package com.example.kotkit.data.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.VideoApiService
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.mock.VideoMock

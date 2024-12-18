@@ -1,8 +1,8 @@
-package com.example.kotkit.data.viewmodel
+package com.example.kotkit.data.api
 
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.data.model.ApiResponse
 import com.example.kotkit.data.model.ApiState
 import com.google.gson.Gson
@@ -12,10 +12,8 @@ import retrofit2.HttpException
 fun parseErrorResponse(exception: HttpException): ApiResponse<*>? {
     return try {
         val errorBody = exception.response()?.errorBody()?.string()
-        if (errorBody != null) {
-            val gson = Gson() // Use Gson or any JSON parser
-            gson.fromJson(errorBody, ApiResponse::class.java)
-        } else null
+
+        Gson().fromJson(errorBody, ApiResponse::class.java)
     } catch (e: Exception) {
         e.printStackTrace()
         null
@@ -30,14 +28,19 @@ fun <T> ViewModel.fetchApi(
     viewModelScope.launch {
         try {
             val result = apiCall()
+
+            println("result: $result")
+
             stateSetter(ApiState.Success(result))
         } catch (e: HttpException) {
             val errorResponse = parseErrorResponse(e)
-            stateSetter(ApiState.Error(errorResponse?.status, errorResponse?.code))
+            stateSetter(ApiState.Error(data = errorResponse?.data ,status = errorResponse?.status, code = errorResponse?.code))
+
             e.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()
-            stateSetter(ApiState.Error(null, null))
+
+            stateSetter(ApiState.Error())
         }
     }
 }

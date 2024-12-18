@@ -1,12 +1,15 @@
 package com.example.kotkit.data.localstorage
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import org.json.JSONObject
 
 class TokenManager(private val sharedPreferences: SharedPreferences) {
     private val jwtKey = "jwt_token"
+
+    fun isAuthenticated(): Boolean {
+        return getToken() != null
+    }
 
     fun getToken(): String? {
         return sharedPreferences.getString(jwtKey, null)

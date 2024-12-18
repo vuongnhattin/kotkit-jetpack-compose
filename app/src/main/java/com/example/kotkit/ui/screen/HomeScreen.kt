@@ -32,9 +32,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
-
         VideoPlayer(videoUri = videoUri)
-
 
         Box(
             modifier = Modifier
@@ -82,7 +80,6 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
                             .shadow(elevation = elevation)
                     )
                 }
-
             }
         }
     }
