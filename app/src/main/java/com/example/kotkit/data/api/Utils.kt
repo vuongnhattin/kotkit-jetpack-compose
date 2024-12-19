@@ -18,6 +18,7 @@ fun <T> ViewModel.fetchApi(
     apiCall: suspend () -> ApiResponse<T>
 ) {
     stateSetter(ApiState.Loading())
+
     viewModelScope.launch {
         try {
             delay(300)
