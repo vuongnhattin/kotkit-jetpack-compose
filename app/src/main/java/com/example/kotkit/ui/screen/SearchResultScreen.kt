@@ -40,6 +40,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.ui.component.CustomTextField
 import com.example.kotkit.ui.icon.DotsHorizontal
@@ -52,10 +53,10 @@ import com.example.kotkit.ui.screen.utils.HandleApiState
 @Composable
 fun SearchResultScreen(
     modifier: Modifier = Modifier,
-    navController: NavController = rememberNavController(),
     query: String = "",
 ) {
     var text by remember { mutableStateOf(TextFieldValue(query)) }
+    val navController = LocalNavController.current
 
     Scaffold(
         topBar = {

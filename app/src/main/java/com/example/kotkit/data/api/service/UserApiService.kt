@@ -7,6 +7,6 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface UserApiService {
-    @GET("users")
+    @GET("users?mock=true")
     suspend fun searchUsers(@Query("q") query: String): ApiResponse<List<UserDetails>>
 }

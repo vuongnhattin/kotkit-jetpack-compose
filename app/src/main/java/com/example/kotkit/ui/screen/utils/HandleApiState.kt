@@ -15,8 +15,7 @@ import com.example.kotkit.data.viewmodel.AuthViewModel
 
 @Composable
 fun <T> HandleApiState(
-    state: ApiState<T>,
-    onLoading: @Composable () -> Unit = {
+    state: ApiState<T>, onLoading: @Composable () -> Unit = {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -24,11 +23,9 @@ fun <T> HandleApiState(
         ) {
             CircularProgressIndicator()
         }
-    },
-    onError: @Composable (ApiState.Error<T>) -> Unit = {
+    }, onError: @Composable (ApiState.Error<T>) -> Unit = {
         ErrorSnackBar(it.code)
-    },
-    onSuccess: @Composable (ApiState.Success<T>) -> Unit
+    }, onSuccess: @Composable (ApiState.Success<T>) -> Unit
 ) {
     when (state) {
         is ApiState.Loading -> {
@@ -38,9 +35,9 @@ fun <T> HandleApiState(
         is ApiState.Error -> {
             // Errors that must be handled in every api call, such as token expired
             when (state.code) {
-                "TOKEN_EXPIRED" -> {
-                    HandleTokenExpired()
-                }
+                "TOKEN_EXPIRED" -> HandleTokenExpired()
+                "TIMEOUT", "CONNECT_ERROR" -> ErrorSnackBar("Lỗi kết nối, vui lòng kiểm tra lại kết nối Internet")
+
                 else -> onError(state) // Handle other errors
             }
         }

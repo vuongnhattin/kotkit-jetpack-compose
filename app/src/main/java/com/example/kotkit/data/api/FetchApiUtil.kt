@@ -1,9 +1,7 @@
 package com.example.kotkit.data.api
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.data.model.ApiResponse
 import com.example.kotkit.data.model.ApiState
 import com.google.gson.Gson

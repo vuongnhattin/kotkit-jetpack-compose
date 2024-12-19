@@ -10,6 +10,7 @@ import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.mock.UserMock
 import com.example.kotkit.data.model.ApiResponse
 import com.example.kotkit.data.model.UserDetails
+import com.example.kotkit.ui.icon.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -30,8 +31,9 @@ class UserViewModel @Inject constructor(
     fun searchUsers(query: String) {
         fetchApi(stateSetter = { listUserDetails = it }) {
             val response = userApiService.searchUsers(query)
-//            delay(1000)
-//            val response = UserMock.users.data ?: emptyList()
+
+//            val response = UserMock.users
+
             response
         }
     }
@@ -46,9 +48,9 @@ class UserViewModel @Inject constructor(
 
     fun getFriendsOfUser(userId: Int) {
         fetchApi(stateSetter = { listUserDetails = it }) {
-            val friends = UserMock.users.data ?: emptyList()
-            val response = ApiResponse(friends)
-            filteredListUser = friends
+//            val friends = UserMock.users
+            val response = UserMock.users
+            filteredListUser = response.data!!
 
             response
         }
