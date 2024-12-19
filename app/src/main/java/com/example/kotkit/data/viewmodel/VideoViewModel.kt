@@ -25,9 +25,12 @@ class VideoViewModel @Inject constructor(
 
     fun getPublicVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { publicVideos = it }) {
+            // This is api call
             val response = videoApiService.getVideosOfUser(userId, "public")
+
+            // This is mock call
 //            val response = VideoMock.publicVideos
-            println("video response: $response")
+
             response
         }
     }
