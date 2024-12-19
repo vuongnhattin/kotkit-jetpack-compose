@@ -26,10 +26,10 @@ class VideoViewModel @Inject constructor(
     fun getPublicVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { publicVideos = it }) {
             // This is api call
-            val response = videoApiService.getVideosOfUser(userId, "public")
+//            val response = videoApiService.getVideosOfUser(userId, "public")
 
             // This is mock call
-//            val response = VideoMock.publicVideos
+            val response = VideoMock.publicVideos
 
             response
         }
@@ -37,8 +37,10 @@ class VideoViewModel @Inject constructor(
 
     fun getPrivateVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { privateVideos = it }) {
-            val response = videoApiService.getVideosOfUser(userId, "private")
-//            val response = VideoMock.privateVideos
+//            val response = videoApiService.getVideosOfUser(userId, "private")
+
+            val response = VideoMock.privateVideos
+
             response
         }
     }

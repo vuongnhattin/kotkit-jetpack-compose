@@ -31,10 +31,10 @@ class UserViewModel @Inject constructor(
     fun searchUsers(query: String) {
         fetchApi(stateSetter = { listUserDetails = it }) {
             // This is actual api call
-            val response = userApiService.searchUsers(query)
+//            val response = userApiService.searchUsers(query)
 
             //This is mock call
-//            val response = UserMock.users
+            val response = UserMock.users
 
             response
         }
@@ -50,7 +50,6 @@ class UserViewModel @Inject constructor(
 
     fun getFriendsOfUser(userId: Int) {
         fetchApi(stateSetter = { listUserDetails = it }) {
-//            val friends = UserMock.users
             val response = UserMock.users
             filteredListUser = response.data!!
 
