@@ -4,17 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.data.model.ApiState
-import com.example.kotkit.data.viewmodel.AuthViewModel
 
 @Composable
-fun <T> HandleApiState(
+fun <T> DisplayApiResult(
     state: ApiState<T>, onLoading: @Composable () -> Unit = {
         Column(
             modifier = Modifier.fillMaxSize(),

@@ -24,18 +24,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.kotkit.LocalNavController
-import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.ui.component.CustomTextField
 import com.example.kotkit.ui.component.UserList
 import com.example.kotkit.ui.constant.TopAppBarTitleStyle
 import com.example.kotkit.ui.icon.Search
-import com.example.kotkit.ui.screen.utils.HandleApiState
+import com.example.kotkit.ui.screen.utils.DisplayApiResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,8 +48,8 @@ fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int) {
     val userState = userViewModel.userDetails
     val friendsState = userViewModel.listUserDetails
 
-    HandleApiState(userState) { user ->
-        HandleApiState(friendsState) { _ ->
+    DisplayApiResult(userState) { user ->
+        DisplayApiResult(friendsState) { _ ->
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(

@@ -82,7 +82,6 @@ fun MyApp(modifier: Modifier = Modifier) {
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
 
-//    val authViewModel: AuthViewModel = hiltViewModel()
     val authViewModel = LocalAuthViewModel.current
 
     CompositionLocalProvider(LocalNavController provides navController) {
@@ -129,5 +128,4 @@ fun MyApp(modifier: Modifier = Modifier) {
             }
         }
     }
-
 }

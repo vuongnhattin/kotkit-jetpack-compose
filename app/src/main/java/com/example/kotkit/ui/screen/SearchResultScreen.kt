@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,18 +35,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.kotkit.LocalNavController
-import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.ui.component.CustomTextField
 import com.example.kotkit.ui.icon.DotsHorizontal
 import com.example.kotkit.ui.icon.Search
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.ui.component.UserList
-import com.example.kotkit.ui.screen.utils.HandleApiState
+import com.example.kotkit.ui.screen.utils.DisplayApiResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -179,7 +174,7 @@ fun UserSearchResult(
         userViewModel.searchUsers(query.text)
     }
 
-    HandleApiState(userSearchResult) { res ->
+    DisplayApiResult(userSearchResult) { res ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

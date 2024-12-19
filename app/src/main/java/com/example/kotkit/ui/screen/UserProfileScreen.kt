@@ -32,7 +32,6 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,23 +42,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.LocalNavController
-import com.example.kotkit.data.localstorage.TokenManager
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.model.Video
-import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.component.FriendshipButton
@@ -68,9 +61,7 @@ import com.example.kotkit.ui.icon.Lock
 import com.example.kotkit.ui.icon.Public
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.icon.Share
-import com.example.kotkit.ui.screen.utils.HandleApiState
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_android_components_ViewModelComponent
+import com.example.kotkit.ui.screen.utils.DisplayApiResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,7 +78,7 @@ fun UserProfileScreen(
 
     val userDetailsState = userViewModel.userDetails
 
-    HandleApiState(userDetailsState) { state ->
+    DisplayApiResult(userDetailsState) { state ->
         val userDetails = state.data!!
         Scaffold(topBar = {
             CenterAlignedTopAppBar(title = {
@@ -260,7 +251,7 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails)
 
 @Composable
 fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Video>>) {
-    HandleApiState(videosState, onError = {
+    DisplayApiResult(videosState, onError = {
         Text("Bạn phải kết bạn với người này để xem được video riêng tư của họ")
     }) { state ->
         val videos = state.data!!
