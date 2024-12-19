@@ -1,7 +1,6 @@
 package com.example.kotkit
 
 import android.app.Application
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,15 +8,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -36,6 +31,7 @@ import com.example.kotkit.ui.screen.UserProfileScreen
 import com.example.kotkit.ui.theme.KotkitTheme
 import com.example.kotkit.ui.screen.ListFriendScreen
 import com.example.kotkit.ui.screen.LoginScreen
+import com.example.kotkit.ui.screen.UploadVideoScreen
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 
@@ -106,6 +102,7 @@ fun MyApp(modifier: Modifier = Modifier) {
             ) {
                 composable("login") { LoginScreen() }
                 composable("home") { HomeScreen() }
+                composable("upload-video") { UploadVideoScreen() }
                 composable("chat") { ChatScreen() }
                 composable("notification") { NotificationScreen() }
                 composable("profile") { ProfileScreen() }
