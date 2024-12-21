@@ -61,7 +61,9 @@ fun BottomNavigationBar(
             if (index == 2) {
 
                 IconButton(
-                    onClick = { },
+                    onClick = {
+                        navController.navigate("camera")
+                    },
                     modifier = Modifier.size(64.dp)
                 ) {
                     Image(
