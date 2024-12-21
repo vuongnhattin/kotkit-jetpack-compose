@@ -114,12 +114,11 @@ fun UploadVideoScreen(
                 }
             }
 
-            // Video Preview với kích thước nhỏ hơn
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.5f) // Chiều rộng bằng 1/2 màn hình
-                    .aspectRatio(9f/16f) // Giữ tỷ lệ 9:16
-                    .align(Alignment.CenterHorizontally) // Căn giữa theo chiều ngang
+                    .fillMaxWidth(0.5f)
+                    .aspectRatio(9f/16f)
+                    .align(Alignment.CenterHorizontally)
             ) {
                 AndroidView(
                     factory = { context ->
@@ -137,7 +136,6 @@ fun UploadVideoScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Title Input
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
@@ -147,7 +145,6 @@ fun UploadVideoScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Privacy Type Selection
             Column {
                 Text("Chế độ hiển thị", style = MaterialTheme.typography.titleMedium)
                 VideoMode.values().forEach { type ->
@@ -168,7 +165,6 @@ fun UploadVideoScreen(
                 }
             }
 
-            // Thêm padding ở dưới để tránh bị che bởi bottom bar
             Spacer(modifier = Modifier.height(80.dp))
         }
     }

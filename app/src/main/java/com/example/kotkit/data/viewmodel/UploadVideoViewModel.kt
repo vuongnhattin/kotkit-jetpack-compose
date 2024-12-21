@@ -44,43 +44,26 @@ class UploadVideoViewModel @Inject constructor(
             return
         }
 
-        try {
-            // Chuyển đổi Uri thành File
-            val videoFile = getFileFromUri(context, videoUri)
+        val videoFile = getFileFromUri(context, videoUri)
 
-            // Tạo MultipartBody.Part cho video file
-            val videoRequestBody = videoFile.asRequestBody("video/*".toMediaTypeOrNull())
-            val videoPart = MultipartBody.Part.createFormData(
-                "file", // phải đúng với tên field trong VideoInput
-                videoFile.name,
-                videoRequestBody
-            )
+        val videoRequestBody = videoFile.asRequestBody("video/*".toMediaTypeOrNull())
+        val videoPart = MultipartBody.Part.createFormData(
+            "file",
+            videoFile.name,
+            videoRequestBody
+        )
 
-            // Tạo các RequestBody parts cho các field khác
-            val titlePart = title.toRequestBody("text/plain".toMediaTypeOrNull())
-            val creatorIdPart = creatorId.toString()
-                .toRequestBody("text/plain".toMediaTypeOrNull())
-            val modePart = videoMode.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-
-            // Gọi API với form data
-            fetchApi(
-                stateSetter = { state -> uploadState = state }
-            ) {
+        fetchApi(
+            stateSetter = { state -> uploadState = state },
+            apiCall = {
                 videoApiService.uploadVideo(
-                    title = titlePart,
-                    creatorId = creatorIdPart,
-                    mode = modePart,
+                    title = title,
+                    creatorId = creatorId,
+                    mode = videoMode.toString(),
                     file = videoPart
                 )
             }
-
-        } catch (e: Exception) {
-            uploadState = ApiState.Error(
-                data = null,
-                status = 500,
-                code = "INTERNAL_ERROR"
-            )
-        }
+        )
     }
 
     private fun getFileFromUri(context: Context, uri: Uri): File {
