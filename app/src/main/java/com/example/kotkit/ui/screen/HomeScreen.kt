@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,9 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.kotkit.LocalNavController
+import com.example.kotkit.data.viewmodel.CommentViewModel
 import com.example.kotkit.ui.icon.Search
 
 @Composable
@@ -31,11 +34,23 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val videoUri = Uri.parse("android.resource://${context.packageName}/raw/video_test")
     val navController = LocalNavController.current
+    val commentViewModel: CommentViewModel = hiltViewModel()
 
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
-        VideoPlayer(videoUri = videoUri)
+
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .fillMaxHeight(1f)
+        ) {
+            VideoPlayer(videoUri = videoUri)
+            CommentScreen(
+                viewModel = commentViewModel,
+                videoId = 1,
+            )
+        }
+
 
         Box(
             modifier = Modifier
