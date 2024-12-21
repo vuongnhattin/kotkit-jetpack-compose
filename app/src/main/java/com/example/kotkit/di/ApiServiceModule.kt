@@ -1,5 +1,6 @@
 package com.example.kotkit.di
 
+import com.example.kotkit.data.api.service.CommentApiService
 import com.example.kotkit.data.api.service.UserApiService
 import com.example.kotkit.data.api.service.VideoApiService
 import dagger.Module
@@ -22,5 +23,10 @@ object ApiServiceModule {
     @Singleton
     fun provideUserApiService(retrofit: Retrofit): UserApiService {
         return retrofit.create(UserApiService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideCommentApiService(retrofit: Retrofit): CommentApiService {
+        return retrofit.create(CommentApiService::class.java)
     }
 }
