@@ -87,6 +87,7 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     implementation "androidx.camera:camera-video:$camerax_version"
     implementation "androidx.camera:camera-view:$camerax_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
 }
 
 // Allow references to generated code

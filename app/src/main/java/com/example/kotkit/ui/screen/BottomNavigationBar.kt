@@ -62,7 +62,7 @@ fun BottomNavigationBar(
 
                 IconButton(
                     onClick = {
-                        navController.navigate("upload-video")
+                        navController.navigate("camera")
                     },
                     modifier = Modifier.size(64.dp)
                 ) {

@@ -1,189 +1,175 @@
 package com.example.kotkit.ui.screen
 
-import android.Manifest
-import android.content.ContentValues
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import android.provider.MediaStore
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.net.Uri
+import android.widget.MediaController
+import android.widget.VideoView
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.camera.core.*
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.*
-import androidx.camera.video.VideoCapture
-import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.kotkit.LocalNavController
+import com.example.kotkit.data.model.VideoMode
+import com.example.kotkit.data.viewmodel.UploadVideoViewModel
 
 @Composable
-fun UploadVideoScreen() {
+fun UploadVideoScreen(
+    videoUri: Uri?,
+    modifier: Modifier = Modifier,
+) {
+    val uploadVideoViewModel: UploadVideoViewModel = hiltViewModel()
+    var title by remember { mutableStateOf("") }
+    var videoMode by remember { mutableStateOf(VideoMode.PUBLIC) }
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    var recording by remember { mutableStateOf(false) }
-    var videoCapture: VideoCapture<Recorder>? by remember { mutableStateOf(null) }
-    var recordingState: Recording? by remember { mutableStateOf(null) }
-
-    val cameraExecutor: ExecutorService = remember { Executors.newSingleThreadExecutor() }
-
-    val permissions = remember {
-        mutableListOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO
-        ).apply {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val navController = LocalNavController.current
+    val onNavigateBack = {
+        navController.navigate("camera") {
+            popUpTo("camera") {
+                inclusive = true
             }
         }
     }
 
-    var hasCameraPermission by remember {
-        mutableStateOf(
-            permissions.all {
-                ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-            }
-        )
-    }
-
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionsMap ->
-        hasCameraPermission = permissionsMap.values.reduce { acc, next -> acc && next }
-    }
-
-    LaunchedEffect(key1 = true) {
-        launcher.launch(permissions.toTypedArray())
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (hasCameraPermission) {
-            AndroidView(
-                factory = { ctx ->
-                    PreviewView(ctx).apply {
-                        this.scaleType = PreviewView.ScaleType.FILL_CENTER
+    Scaffold(
+        bottomBar = {
+            Surface(
+                shadowElevation = 8.dp,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Button(
+                            onClick = onNavigateBack,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Hủy", color = Color.Black)
+                        }
                     }
-                },
-                modifier = Modifier.fillMaxSize(),
-                update = { previewView ->
-                    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-                    cameraProviderFuture.addListener({
-                        val cameraProvider = cameraProviderFuture.get()
 
-                        val preview = Preview.Builder().build().also {
-                            it.setSurfaceProvider(previewView.surfaceProvider)
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Button(
+                            onClick = {
+                                uploadVideoViewModel.uploadVideo(
+                                    context = context,
+                                    videoUri = videoUri,
+                                    title = title,
+                                    videoMode = videoMode
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Đăng")
                         }
-
-                        val recorder = Recorder.Builder()
-                            .setQualitySelector(QualitySelector.from(Quality.HIGHEST))
-                            .build()
-                        videoCapture = VideoCapture.withOutput(recorder)
-
-                        val cameraSelector = CameraSelector.Builder()
-                            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                            .build()
-
-                        try {
-                            cameraProvider.unbindAll()
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner,
-                                cameraSelector,
-                                preview,
-                                videoCapture
-                            )
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }, ContextCompat.getMainExecutor(context))
+                    }
                 }
+            }
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Quay lại",
+                        tint = Color.Black
+                    )
+                }
+            }
+
+            // Video Preview với kích thước nhỏ hơn
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f) // Chiều rộng bằng 1/2 màn hình
+                    .aspectRatio(9f/16f) // Giữ tỷ lệ 9:16
+                    .align(Alignment.CenterHorizontally) // Căn giữa theo chiều ngang
+            ) {
+                AndroidView(
+                    factory = { context ->
+                        VideoView(context).apply {
+                            setVideoURI(videoUri)
+                            setMediaController(MediaController(context).apply {
+                                setAnchorView(this@apply)
+                            })
+                            start()
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Title Input
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Tiêu đề") },
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Button(
-                onClick = {
-                    if (!recording) {
-                        startRecording(
-                            context = context,
-                            videoCapture = videoCapture,
-                            onVideoStarted = { recording = true },
-                            onError = { e -> e.printStackTrace() }
-                        ) { newRecordingState ->
-                            recordingState = newRecordingState
-                        }
-                    } else {
-                        recordingState?.stop()
-                        recording = false
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 32.dp)
-            ) {
-                Text(if (recording) "Dừng" else "Quay video")
-            }
-        }
-    }
+            Spacer(modifier = Modifier.height(16.dp))
 
-    DisposableEffect(Unit) {
-        onDispose {
-            cameraExecutor.shutdown()
-        }
-    }
-}
-
-private fun startRecording(
-    context: Context,
-    videoCapture: VideoCapture<Recorder>?,
-    onVideoStarted: () -> Unit = {},
-    onError: (Exception) -> Unit = {},
-    onRecordingState: (Recording) -> Unit = {}
-) {
-    val videoCapture = videoCapture ?: return
-
-    val name = "CameraX-video-" + SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.getDefault())
-        .format(System.currentTimeMillis()) + ".mp4"
-
-    val contentValues = ContentValues().apply {
-        put(MediaStore.Video.Media.DISPLAY_NAME, name)
-    }
-
-    val mediaStoreOutput = MediaStoreOutputOptions.Builder(
-        context.contentResolver,
-        MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
-        .setContentValues(contentValues)
-        .build()
-
-    val recording = videoCapture.output
-        .prepareRecording(context, mediaStoreOutput)
-        .apply {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                PackageManager.PERMISSION_GRANTED) {
-                withAudioEnabled()
-            }
-        }
-        .start(ContextCompat.getMainExecutor(context)) { event ->
-            when(event) {
-                is VideoRecordEvent.Start -> onVideoStarted()
-                is VideoRecordEvent.Finalize -> {
-                    if (event.hasError()) {
+            // Privacy Type Selection
+            Column {
+                Text("Chế độ hiển thị", style = MaterialTheme.typography.titleMedium)
+                VideoMode.values().forEach { type ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = videoMode == type,
+                            onClick = { videoMode = type }
+                        )
+                        Text(
+                            text = type.getDisplayName(),
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
                     }
                 }
             }
-        }
 
-    onRecordingState(recording)
+            // Thêm padding ở dưới để tránh bị che bởi bottom bar
+            Spacer(modifier = Modifier.height(80.dp))
+        }
+    }
 }
