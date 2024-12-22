@@ -39,17 +39,17 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
-
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .fillMaxHeight(1f)
-        ) {
-            VideoPlayer(videoUri = videoUri)
-            CommentScreen(
-                viewModel = commentViewModel,
-                videoId = 1,
-            )
-        }
+        VideoPlayer(videoUri = videoUri)
+//        Column(modifier = Modifier
+//            .fillMaxSize()
+//            .fillMaxHeight(1f)
+//        ) {
+//
+//            CommentScreen(
+//                viewModel = commentViewModel,
+//                videoId = 1,
+//            )
+//        }
 
 
         Box(

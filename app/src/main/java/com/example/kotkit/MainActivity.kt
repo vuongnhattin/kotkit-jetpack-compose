@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.ui.screen.BottomNavigationBar
 import com.example.kotkit.ui.screen.ChatScreen
+import com.example.kotkit.ui.screen.CommentScreen
 import com.example.kotkit.ui.screen.HomeScreen
 import com.example.kotkit.ui.screen.NotificationScreen
 import com.example.kotkit.ui.screen.ProfileScreen

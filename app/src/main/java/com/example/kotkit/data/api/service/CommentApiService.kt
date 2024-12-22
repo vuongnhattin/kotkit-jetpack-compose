@@ -16,4 +16,9 @@ interface CommentApiService {
         @Path("videoId") videoId: Int,
         @Body commentInput: CommentInput
     ): ApiResponse<Comment>
+
+    @GET("comment/{videoId}")
+    suspend fun getAllCommentInVideo(
+        @Path("videoId") videoId: Int,
+    ): ApiResponse<List<Comment>>
 }
