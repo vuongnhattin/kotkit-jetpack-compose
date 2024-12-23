@@ -24,8 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.model.VideoMode
 import com.example.kotkit.data.viewmodel.UploadVideoViewModel
-import com.example.kotkit.ui.screen.utils.DisplayApiResult
-import com.example.kotkit.ui.screen.utils.ErrorSnackBar
+import com.example.kotkit.ui.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.ErrorSnackBar
 
 @Composable
 fun UploadVideoScreen(
