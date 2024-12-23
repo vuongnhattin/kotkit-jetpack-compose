@@ -17,10 +17,10 @@ import javax.inject.Inject
 class VideoViewModel @Inject constructor(
     private val videoApiService: VideoApiService
 ) : ViewModel() {
-    var publicVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Loading())
+    var publicVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
-    var privateVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Loading())
+    var privateVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
     fun getPublicVideosOfUser(userId: Int) {

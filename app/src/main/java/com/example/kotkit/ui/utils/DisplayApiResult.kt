@@ -24,6 +24,8 @@ fun <T> DisplayApiResult(
     }, onSuccess: @Composable (ApiState.Success<T>) -> Unit
 ) {
     when (state) {
+        is ApiState.Empty -> {}
+
         is ApiState.Loading -> {
             onLoading()
         }
