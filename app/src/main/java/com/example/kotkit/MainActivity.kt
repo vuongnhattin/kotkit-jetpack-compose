@@ -110,7 +110,7 @@ fun MyApp(modifier: Modifier = Modifier) {
                     Modifier
                 }
             ) {
-                composable("login") { MockLoginScreen() }
+                composable("login") { LoginScreen() }
                 composable("real-login") { LoginScreen() }
                 composable("home") { HomeScreen() }
                 composable("camera") { CameraScreen() }

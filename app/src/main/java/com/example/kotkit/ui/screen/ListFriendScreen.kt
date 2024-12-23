@@ -3,6 +3,7 @@ package com.example.kotkit.ui.screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -107,7 +108,8 @@ fun ListFriendBody(
             leadingIcon = {
                 Icon(Search, contentDescription = "Back")
             },
-            placeholder = { Text("Tìm kiếm") }
+            placeholder = { Text("Tìm kiếm") },
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))

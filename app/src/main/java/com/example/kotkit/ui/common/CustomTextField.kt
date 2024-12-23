@@ -52,36 +52,14 @@ fun CustomTextField(
     shape: Shape = OutlinedTextFieldDefaults.shape,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-//    OutlinedTextField(
-//        leadingIcon = leadingIcon,
-//        value = value,
-//        onValueChange = onValueChange,
-//        modifier = modifier
-//            .fillMaxWidth()
-//            .height(52.dp)
-//            .padding(horizontal = 0.dp, vertical = 0.dp),
-//        placeholder = { Text(placeholder) },
-//        textStyle = textStyle,
-//        singleLine = singleLine,
-//        maxLines = maxLines,
-//        colors = TextFieldDefaults.outlinedTextFieldColors(
-//            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-//            focusedBorderColor = MaterialTheme.colorScheme.secondary,
-//            disabledBorderColor = MaterialTheme.colorScheme.secondary,
-//            errorBorderColor = MaterialTheme.colorScheme.secondary,
-//            containerColor = MaterialTheme.colorScheme.secondary,// Optional background color
-//        ),
-//        shape = RoundedCornerShape(12.dp), // Rounded corners,
-//        keyboardActions = keyboardActions,
-//        keyboardOptions = keyboardOptions
-//    )
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier
-            .fillMaxWidth()
-            .height(52.dp)
-            .padding(horizontal = 0.dp, vertical = 0.dp),
+//            .fillMaxWidth()
+//            .height(52.dp)
+//            .padding(horizontal = 0.dp, vertical = 0.dp)
+        ,
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,
@@ -105,7 +83,9 @@ fun CustomTextField(
             unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
             focusedBorderColor = MaterialTheme.colorScheme.secondary,
             disabledBorderColor = MaterialTheme.colorScheme.secondary,
-            errorBorderColor = MaterialTheme.colorScheme.secondary,
+            errorBorderColor = MaterialTheme.colorScheme.error,
+            errorContainerColor = MaterialTheme.colorScheme.secondary,
+            errorTextColor = MaterialTheme.colorScheme.error,
             containerColor = MaterialTheme.colorScheme.secondary,// Optional background color
         ),
     )

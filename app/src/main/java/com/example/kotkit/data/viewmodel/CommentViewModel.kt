@@ -7,15 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kotkit.data.api.fetchApi
-import com.example.kotkit.data.api.input.CommentInput
+import com.example.kotkit.data.dto.input.CommentInput
 import com.example.kotkit.data.api.service.CommentApiService
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Comment
-import com.example.kotkit.data.model.UserDetails
-import com.example.kotkit.di.ApiServiceModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.http.Query
 import javax.inject.Inject
 
 @HiltViewModel
