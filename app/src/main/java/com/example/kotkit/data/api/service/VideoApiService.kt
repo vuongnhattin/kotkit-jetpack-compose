@@ -19,6 +19,11 @@ interface VideoApiService {
         @Query("visibility") visibility: String,
     ): ApiResponse<List<Video>>
 
+    @GET("videos/all-videos")
+    suspend fun getAllVideos(
+
+    ): ApiResponse<List<Video>>
+
     @Multipart
     @POST("videos/upload")
     suspend fun uploadVideo(

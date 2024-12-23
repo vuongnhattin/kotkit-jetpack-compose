@@ -19,7 +19,7 @@ data class Video (
     val numberOfComments: Int = 0,
     val numberOfViews: Int = 0,
     val creator: UserDetails = UserDetails(),
-    val videoMode: VideoMode = VideoMode.PUBLIC,
+    val mode: VideoMode = VideoMode.PUBLIC,
     val createdAt: String = "",
     val updatedAt: String = "",
 )
