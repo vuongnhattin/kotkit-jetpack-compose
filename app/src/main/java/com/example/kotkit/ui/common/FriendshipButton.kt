@@ -1,4 +1,4 @@
-package com.example.kotkit.ui.component
+package com.example.kotkit.ui.common
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -63,13 +63,12 @@ fun FriendshipButton(modifier: Modifier = Modifier, friendshipStatus: Friendship
     }
 
     // Button with dynamic colors
-    Button(
+    CustomButton(
         onClick = friendshipInfo.action,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = contentColor
         ),
-        shape = MaterialTheme.shapes.medium
     ) {
         Text(friendshipInfo.text)
     }

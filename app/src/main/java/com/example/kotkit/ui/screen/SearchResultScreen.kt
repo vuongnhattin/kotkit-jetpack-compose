@@ -37,12 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.kotkit.LocalNavController
-import com.example.kotkit.ui.component.CustomTextField
+import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.icon.DotsHorizontal
 import com.example.kotkit.ui.icon.Search
 import com.example.kotkit.data.viewmodel.UserViewModel
-import com.example.kotkit.ui.component.UserList
-import com.example.kotkit.ui.screen.utils.DisplayApiResult
+import com.example.kotkit.ui.common.UserList
+import com.example.kotkit.ui.utils.DisplayApiResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

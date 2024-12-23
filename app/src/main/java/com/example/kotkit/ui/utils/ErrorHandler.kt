@@ -1,4 +1,4 @@
-package com.example.kotkit.ui.screen.utils
+package com.example.kotkit.ui.utils
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
