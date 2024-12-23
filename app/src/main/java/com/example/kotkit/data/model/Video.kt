@@ -1,6 +1,6 @@
 package com.example.kotkit.data.model
 
-enum class VideoVisibility {
+enum class VideoMode {
     PUBLIC,
     PRIVATE
 }
@@ -14,7 +14,7 @@ data class Video (
     val numberOfComments: Int = 0,
     val numberOfViews: Int = 0,
     val creator: UserDetails = UserDetails(),
-    val visibility: VideoVisibility = VideoVisibility.PUBLIC,
+    val mode: VideoMode = VideoMode.PUBLIC,
     val createdAt: String = "",
     val updatedAt: String = "",
 )

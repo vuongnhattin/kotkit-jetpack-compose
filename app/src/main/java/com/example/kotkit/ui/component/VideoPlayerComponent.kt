@@ -1,5 +1,9 @@
 package com.example.kotkit.presentation.components
 
+import android.util.Log
+import android.view.SurfaceHolder
+import android.view.SurfaceView
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,23 +15,63 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.AspectRatioFrameLayout
 import com.example.kotkit.data.model.Video
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
+@OptIn(UnstableApi::class)
 @Composable
 fun VideoPlayerComponent(
     video: Video,
-    exoPlayer: ExoPlayer,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
 
     val context = LocalContext.current
 
-    LaunchedEffect(video) {
-        exoPlayer.setMediaItem(MediaItem.fromUri(video.videoUrl))
-        exoPlayer.prepare()
-        exoPlayer.playWhenReady = true
+    // ExoPlayer setup
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context)
+            .setLoadControl(
+                DefaultLoadControl.Builder()
+                    .setBufferDurationsMs(
+                        30000, // Min buffer
+                        60000, // Max buffer
+                        2000,  // Buffer for playback
+                        3000   // Buffer for playback after rebuffer
+                    )
+                    .build()
+            )
+            .build()
+            .apply {
+                repeatMode = ExoPlayer.REPEAT_MODE_ONE
+            }
+    }
+
+    DisposableEffect(Unit) {
+        Log.i("Tan", "Dispose")
+        onDispose {
+            exoPlayer.clearVideoSurface()
+            exoPlayer.stop()
+            exoPlayer.clearMediaItems()
+            exoPlayer.clearVideoSurface()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        Log.i("Tan", "Lauch")
+        try {
+            exoPlayer.setMediaItem(MediaItem.fromUri(video.videoUrl))
+            exoPlayer.prepare()
+            exoPlayer.playWhenReady = true
+        } catch (e: Exception) {
+            Log.i("VideoPlayerComponent", "Error loading video: ${e.message}")
+        }
 
     }
 
@@ -36,9 +80,8 @@ fun VideoPlayerComponent(
         AndroidView(
             factory = { context ->
                 PlayerView(context).apply {
-                    this.player = exoPlayer
+                    player = exoPlayer
                     useController = false
-                    exoPlayer.setMediaItem(MediaItem.fromUri(video.videoUrl))
                 }
             },
             modifier = Modifier.fillMaxSize()

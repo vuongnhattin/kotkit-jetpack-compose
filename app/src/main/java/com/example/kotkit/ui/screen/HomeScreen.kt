@@ -1,18 +1,31 @@
 package com.example.kotkit.ui.screen
 
 import android.net.Uri
+import android.util.Log
+import android.view.TextureView
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
@@ -31,35 +45,73 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.mock.VideoMockData
+import com.example.kotkit.data.mock.VideoMockData.videos
+import com.example.kotkit.data.model.Video
+import com.example.kotkit.data.model.VideoMode
+import com.example.kotkit.data.viewmodel.CommentViewModel
+import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.presentation.components.VideoPlayerComponent
 import com.example.kotkit.ui.icon.Search
 
+// Thanh tim kiem?
 @Composable
-private fun TabItem(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
+private fun TopBar(
+    tabs: List<String>,
+    selectedTabIndex: Int,
+    onTabSelected: (Int) -> Unit,
+    onSearchClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .clickable(onClick = onClick)
-    ) {
-        Text(
-            text = text,
-            color = if (isSelected) Color.White else Color.White.copy(alpha = 0.6f),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-        if (isSelected) {
-            Box(
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(2.dp)
-                    .background(Color.White)
-                    .align(Alignment.CenterHorizontally)
-            )
+    Column(modifier = modifier) {
+        TabRow(
+            selectedTabIndex = selectedTabIndex,
+            containerColor = Color.Transparent,
+            contentColor = Color.White
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    text = { Text(title) },
+                    selected = selectedTabIndex == index,
+                    onClick = { onTabSelected(index) }
+                )
+            }
         }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 32.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    imageVector = Search,
+                    contentDescription = "Search",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
+}
+
+// Moi che do (de xuat, ban be) se tao 1 videocontent
+@Composable
+private fun VideoContent(
+    videos: List<Video>,
+    modifier: Modifier = Modifier,
+) {
+    val pagerState = rememberPagerState(pageCount = { videos.size })
+
+    VerticalPager(
+        state = pagerState,
+        modifier = modifier,
+        key = { page -> videos[page].id }
+    ) { page ->
+        VideoPlayerComponent(
+            video = videos[page],
+            modifier = Modifier.fillMaxSize(),
+        )
     }
 }
 
@@ -67,111 +119,61 @@ private fun TabItem(
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val videoUri = Uri.parse("android.resource://${context.packageName}/raw/video_test")
     val navController = LocalNavController.current
+    val commentViewModel: CommentViewModel = hiltViewModel()
+    val videoViewModel: VideoViewModel = hiltViewModel()
 
-    // Video config
-    // State cho selected tab
-    var selectedTab by remember { mutableStateOf(0) }
-    // State cho video mode
-    var videoMode by remember { mutableStateOf(VideoMode.PUBLIC) }
-    val videos = VideoMockData.videos
+    val publicVideos = VideoMockData.videos.filter { it.mode == VideoMode.PUBLIC }
+    val privateVideos = VideoMockData.videos.filter { it.mode == VideoMode.PRIVATE }
 
-    // ExoPlayer setup
-    val loadControl = DefaultLoadControl.Builder()
-        .setBufferDurationsMs(
-            5000,  // minBufferMs
-            50000, // maxBufferMs
-            1500,  // bufferForPlaybackMs
-            2000   // bufferForPlaybackAfterRebufferMs
-        ).build()
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    val tabs = remember { listOf("Đề xuất", "Bạn bè") }
 
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context)
-            .setLoadControl(loadControl)
-            .build()
-            .apply {
-            repeatMode = ExoPlayer.REPEAT_MODE_ONE
-            playWhenReady = true
-        }
+
+    LaunchedEffect(Unit) {
+        videoViewModel.getAllVideos()
     }
 
-    // Cleanup
     DisposableEffect(Unit) {
         onDispose {
-            exoPlayer.release()
         }
     }
-
-    val pagerState = rememberPagerState(pageCount = { videos.size })
-
 
     Box(
         modifier = modifier
             .background(Color.Black)
             .fillMaxSize(),
     ) {
-        // Video Pager
-        VerticalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
-            VideoPlayerComponent(
-                video = videos[page],
-                exoPlayer = exoPlayer,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
 
-        // Top Bar
+        // Top Bar with Tabs and Search
+        TopBar(
+            tabs = tabs,
+            selectedTabIndex = selectedTabIndex,
+            onTabSelected = { selectedTabIndex = it },
+            onSearchClick = { navController.navigate("search/") },
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+        )
+
+        // Video Content
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp),
-            contentAlignment = Alignment.Center
+                .padding(top = 100.dp) // Adjust based on TopBar height
+                .fillMaxSize()
         ) {
-
-            val elevation = 32.dp
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
-            ) {
-                val texts = listOf("Đề xuất", "Bạn bè")
-
-                for (text in texts) {
-                    Column(
-                        modifier = Modifier
-                            .shadow(elevation = elevation)
-                    ) {
-                        Text(
-                            text = text,
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp),
-                        )
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 32.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(onClick = {
-                    navController.navigate("search/")
-                }) {
-                    Icon(
-                        Search,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .shadow(elevation = elevation)
-                    )
-                }
+            when (selectedTabIndex) {
+                0 -> VideoContent(
+                    videos = publicVideos,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                1 -> VideoContent(
+                    videos = privateVideos,
+                    modifier = Modifier.fillMaxSize(),
+                )
             }
         }
+        
     }
 }
 

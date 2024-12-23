@@ -8,9 +8,14 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface VideoApiService {
-    @GET("videos-of-user")
+    @GET("videos/videos-of-user")
     suspend fun getVideosOfUser(
         @Query("userId") userId: Int,
         @Query("visibility") visibility: String,
+    ): ApiResponse<List<Video>>
+
+    @GET("videos/all-videos")
+    suspend fun getAllVideos(
+
     ): ApiResponse<List<Video>>
 }

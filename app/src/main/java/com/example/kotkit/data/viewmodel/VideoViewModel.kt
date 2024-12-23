@@ -23,14 +23,13 @@ class VideoViewModel @Inject constructor(
     var privateVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Loading())
         private set
 
+    var allVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Loading())
+        private set
+
     fun getPublicVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { publicVideos = it }) {
             // This is api call
             val response = videoApiService.getVideosOfUser(userId, "public")
-
-            // This is mock call
-//            val response = VideoMock.publicVideos
-
             response
         }
     }
@@ -38,7 +37,13 @@ class VideoViewModel @Inject constructor(
     fun getPrivateVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { privateVideos = it }) {
             val response = videoApiService.getVideosOfUser(userId, "private")
-//            val response = VideoMock.privateVideos
+            response
+        }
+    }
+
+    fun getAllVideos() {
+        fetchApi(stateSetter = { allVideos = it }) {
+            val response = videoApiService.getAllVideos()
             response
         }
     }
