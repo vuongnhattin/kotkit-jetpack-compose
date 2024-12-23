@@ -89,8 +89,7 @@ import com.example.kotkit.ui.utils.DisplayApiResult
 @Composable
 fun CommentScreen(viewModel: CommentViewModel, videoId: Int) {
     var commentText by remember { mutableStateOf("") }
-    val commentState by remember { derivedStateOf { viewModel.commentState } }
-    val allCommentsState by remember { derivedStateOf { viewModel.allCommentsState } }
+    val comments by remember { derivedStateOf { viewModel.comments } }
 
     LaunchedEffect(Unit) {
         viewModel.getAllComments(videoId)
@@ -98,20 +97,11 @@ fun CommentScreen(viewModel: CommentViewModel, videoId: Int) {
 
     Column(modifier = Modifier.padding(16.dp)) {
         // Display all comments
-        DisplayApiResult(
-            state = allCommentsState,
-            onSuccess = { comments ->
-                LazyColumn {
-                    items(comments.data ?: emptyList()) { comment ->
-                        CommentItem(comment)
-                    }
-                }
-            },
-            onError = {
-                val error = it.code ?: "Unknown error"
-                Text("Error: $error", color = Color.Red)
+        LazyColumn {
+            items(comments) { comment ->
+                CommentItem(comment)
             }
-        )
+        }
 
         // Input field and send button
         Row(

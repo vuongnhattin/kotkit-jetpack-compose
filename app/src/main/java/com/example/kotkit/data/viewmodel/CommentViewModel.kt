@@ -20,8 +20,12 @@ class CommentViewModel @Inject constructor(
     private val commentApiService: CommentApiService
 ) : ViewModel() {
 
+    var comments by mutableStateOf<List<Comment>>(emptyList())
+        private set
+
     var commentState by mutableStateOf<ApiState<Comment>>(ApiState.Empty())
         private set
+
     var allCommentsState by mutableStateOf<ApiState<List<Comment>>>(ApiState.Empty())
         private set
 
@@ -33,24 +37,23 @@ class CommentViewModel @Inject constructor(
                 commentApiService.createComment(videoId, commentInput)
             }
         )
-        viewModelScope.launch {
-            Log.e("Comment View Model", "OUTSIDE")
-            if (commentState is ApiState.Success) {
-                Log.e("Comment View Model", "if 1")
-                val newComment = (commentState as ApiState.Success).data
-                if (newComment != null && allCommentsState is ApiState.Success) {
-                    Log.e("Comment View Model", "if 2")
-                    val currentComments = (allCommentsState as ApiState.Success).data?.toMutableList() ?: mutableListOf()
-                    currentComments.add(newComment)
-                    allCommentsState = ApiState.Success(currentComments, status = 200, code = "SUCCESS")
-                }
+
+        if (commentState is ApiState.Success) {
+            val newComment = (commentState as ApiState.Success<Comment>).data
+            newComment?.let {
+                comments = comments + it // Add the new comment to the list
             }
         }
     }
+
     fun getAllComments(videoId: Int) {
         fetchApi(
             stateSetter = { allCommentsState = it },
             apiCall = { commentApiService.getAllCommentInVideo(videoId) }
         )
+
+        if (allCommentsState is ApiState.Success) {
+            comments = (allCommentsState as ApiState.Success<List<Comment>>).data ?: emptyList()
+        }
     }
 }
