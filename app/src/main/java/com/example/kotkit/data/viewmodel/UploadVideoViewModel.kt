@@ -24,7 +24,7 @@ import javax.inject.Inject
 class UploadVideoViewModel @Inject constructor(
     private val videoApiService: VideoApiService,
 ) : ViewModel() {
-    var uploadState by mutableStateOf<ApiState<Video>>(ApiState.Loading())
+    var uploadState by mutableStateOf<ApiState<Video>>(ApiState.Empty())
         private set
 
     fun uploadVideo(

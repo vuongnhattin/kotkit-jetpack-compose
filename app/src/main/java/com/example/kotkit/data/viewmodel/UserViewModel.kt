@@ -19,10 +19,10 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val userApiService: UserApiService
 ) : ViewModel() {
-    var listUserDetails by mutableStateOf<ApiState<List<UserDetails>>>(ApiState.Loading())
+    var listUserDetails by mutableStateOf<ApiState<List<UserDetails>>>(ApiState.Empty())
         private set
 
-    var userDetails by mutableStateOf<ApiState<UserDetails>>(ApiState.Loading())
+    var userDetails by mutableStateOf<ApiState<UserDetails>>(ApiState.Empty())
         private set
 
     var filteredListUser by mutableStateOf<List<UserDetails>>(emptyList())

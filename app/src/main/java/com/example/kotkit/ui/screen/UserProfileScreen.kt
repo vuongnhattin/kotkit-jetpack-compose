@@ -55,13 +55,13 @@ import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.model.Video
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.data.viewmodel.VideoViewModel
-import com.example.kotkit.ui.component.FriendshipButton
+import com.example.kotkit.ui.common.FriendshipButton
 import com.example.kotkit.ui.constant.TopAppBarTitleStyle
 import com.example.kotkit.ui.icon.Lock
 import com.example.kotkit.ui.icon.Public
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.icon.Share
-import com.example.kotkit.ui.screen.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.DisplayApiResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

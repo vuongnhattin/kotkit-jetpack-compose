@@ -1,10 +1,11 @@
-package com.example.kotkit.ui.screen.utils
+package com.example.kotkit.ui.utils
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.kotkit.data.model.ApiState
@@ -24,6 +25,8 @@ fun <T> DisplayApiResult(
     }, onSuccess: @Composable (ApiState.Success<T>) -> Unit
 ) {
     when (state) {
+        is ApiState.Empty -> {}
+
         is ApiState.Loading -> {
             onLoading()
         }

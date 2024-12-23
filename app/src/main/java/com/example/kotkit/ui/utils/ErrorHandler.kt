@@ -1,4 +1,4 @@
-package com.example.kotkit.ui.screen.utils
+package com.example.kotkit.ui.utils
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,7 @@ import com.example.kotkit.data.model.ApiState
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-private fun <T> deserializeErrorData(data: Any?, typeToken: TypeToken<T>): T {
+fun <T> deserializeErrorData(data: Any?, typeToken: TypeToken<T>): T {
     val gson = Gson()
 
     // Convert the data to a JSON string

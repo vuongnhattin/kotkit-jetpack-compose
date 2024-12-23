@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import com.example.kotkit.LocalAuthViewModel
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.viewmodel.AuthViewModel
-import com.example.kotkit.ui.screen.utils.HandleTokenExpired
+import com.example.kotkit.ui.utils.HandleTokenExpired
 
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier) {

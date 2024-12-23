@@ -34,7 +34,7 @@ import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Comment
 import com.example.kotkit.data.viewmodel.CommentViewModel
 import com.example.kotkit.ui.icon.Send
-import com.example.kotkit.ui.screen.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.DisplayApiResult
 
 //@Composable
 //fun CommentScreen(viewModel: CommentViewModel, videoId: Int) {

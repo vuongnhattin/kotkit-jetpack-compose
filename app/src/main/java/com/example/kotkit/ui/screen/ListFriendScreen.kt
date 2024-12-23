@@ -3,6 +3,7 @@ package com.example.kotkit.ui.screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -28,11 +29,11 @@ import androidx.navigation.NavController
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.viewmodel.UserViewModel
-import com.example.kotkit.ui.component.CustomTextField
-import com.example.kotkit.ui.component.UserList
+import com.example.kotkit.ui.common.CustomTextField
+import com.example.kotkit.ui.common.UserList
 import com.example.kotkit.ui.constant.TopAppBarTitleStyle
 import com.example.kotkit.ui.icon.Search
-import com.example.kotkit.ui.screen.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.DisplayApiResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +108,8 @@ fun ListFriendBody(
             leadingIcon = {
                 Icon(Search, contentDescription = "Back")
             },
-            placeholder = "Tìm kiếm"
+            placeholder = { Text("Tìm kiếm") },
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))

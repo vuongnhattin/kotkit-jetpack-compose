@@ -1,4 +1,4 @@
-package com.example.kotkit.data.api.input
+package com.example.kotkit.data.dto.input
 
 data class CommentInput(
     val comment: String = ""
