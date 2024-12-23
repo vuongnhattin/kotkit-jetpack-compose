@@ -3,6 +3,7 @@ package com.example.kotkit.ui.screen
 import android.net.Uri
 import android.widget.MediaController
 import android.widget.VideoView
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,12 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.model.VideoMode
 import com.example.kotkit.data.viewmodel.UploadVideoViewModel
+import com.example.kotkit.ui.screen.utils.DisplayApiResult
+import com.example.kotkit.ui.screen.utils.ErrorSnackBar
 
 @Composable
 fun UploadVideoScreen(
@@ -38,6 +44,8 @@ fun UploadVideoScreen(
             }
         }
     }
+    val uploadState = uploadVideoViewModel.uploadState
+    var isUploaded by remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = {
@@ -80,6 +88,7 @@ fun UploadVideoScreen(
                                     title = title,
                                     videoMode = videoMode
                                 )
+                                isUploaded = true
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -97,14 +106,16 @@ fun UploadVideoScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
                     onClick = onNavigateBack,
                     modifier = Modifier
-                        .align(Alignment.TopStart)
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
@@ -112,6 +123,17 @@ fun UploadVideoScreen(
                         tint = Color.Black
                     )
                 }
+
+                Text(
+                    text = "Thông tin video",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+
+                // Invisible box to help center the title
+                Box(modifier = Modifier.size(48.dp))
             }
 
             Box(
@@ -119,6 +141,7 @@ fun UploadVideoScreen(
                     .fillMaxWidth(0.5f)
                     .aspectRatio(9f/16f)
                     .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp)
             ) {
                 AndroidView(
                     factory = { context ->
@@ -134,23 +157,32 @@ fun UploadVideoScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            val focusManager = LocalFocusManager.current
 
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
                 label = { Text("Tiêu đề") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+                    .clickable { focusManager.clearFocus() },
+                singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Column {
-                Text("Chế độ hiển thị", style = MaterialTheme.typography.titleMedium)
+            Column(
+                modifier = Modifier.padding(bottom = 16.dp)
+            ) {
+                Text(
+                    "Chế độ hiển thị",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
                 VideoMode.values().forEach { type ->
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
@@ -165,7 +197,11 @@ fun UploadVideoScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(80.dp))
+            if (isUploaded) {
+                DisplayApiResult(uploadState) {
+                    ErrorSnackBar("Đăng thành công")
+                }
+            }
         }
     }
 }

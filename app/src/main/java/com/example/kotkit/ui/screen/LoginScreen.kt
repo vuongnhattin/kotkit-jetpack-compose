@@ -34,8 +34,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         val users = listOf(
             UserLogin(
                 name = "User 1",
-                token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aW4iLCJpYXQiOjE3MzMxNjAzMDksImV4cCI6MTc0MzE2MDMwOX0.tn5oD4LrCcUhZ7lv5FDsJxCbGZSNiKxx6UvuZjCuvfw"
-//                token = ""
+                token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmhraWV0MUBnbWFpbC5jb20iLCJpYXQiOjE3MzQ5MzA5MTksImV4cCI6MTc0NDkzMDkxOX0.C9N8oA46F-8aCLgJmm66T2lZ5--XP6VZFYFK_1EIVyw"
             ),
             UserLogin(
                 name = "User 2",
