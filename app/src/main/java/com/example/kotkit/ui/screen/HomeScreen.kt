@@ -119,6 +119,7 @@ private fun VideoContent(
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    val videoUri = Uri.parse("android.resource://${context.packageName}/raw/video_test")
     val navController = LocalNavController.current
     val commentViewModel: CommentViewModel = hiltViewModel()
     val videoViewModel: VideoViewModel = hiltViewModel()
@@ -152,7 +153,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             onTabSelected = { selectedTabIndex = it },
             onSearchClick = { navController.navigate("search/") },
             modifier = Modifier
-                .align(Alignment.TopCenter)
                 .fillMaxWidth()
         )
 
@@ -173,7 +173,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 )
             }
         }
-        
     }
 }
 

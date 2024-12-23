@@ -1,8 +1,13 @@
 package com.example.kotkit.data.model
 
 enum class VideoMode {
-    PUBLIC,
-    PRIVATE
+    PUBLIC, FRIEND, PRIVATE;
+
+    fun getDisplayName(): String = when (this) {
+        PUBLIC -> "Công khai"
+        FRIEND -> "Bạn bè"
+        PRIVATE -> "Riêng tư"
+    }
 }
 
 data class Video (

@@ -16,7 +16,7 @@ fun retrofit(tokenManager: TokenManager): Retrofit {
         .build()
 
     return Retrofit.Builder()
-        .baseUrl(BASE_URL_REMOTE_DEVICE) // Replace with your base URL
+        .baseUrl(BASE_URL) // Replace with your base URL
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create()) // Use appropriate converter
         .build()
