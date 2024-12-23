@@ -35,7 +35,7 @@ fun <T> DisplayApiResult(
             // Errors that must be handled in every api call, such as token expired
             when (state.code) {
                 "TOKEN_EXPIRED" -> HandleTokenExpired()
-                "TIMEOUT", "CONNECT_ERROR" -> ErrorSnackBar("Lỗi kết nối, vui lòng kiểm tra lại kết nối Internet")
+                "TIMEOUT", "CONNECT_ERROR" -> ErrorSnackBar("Lỗi kết nối, vui lòng kiểm tra lại mạng")
 
                 else -> onError(state) // Handle other errors
             }

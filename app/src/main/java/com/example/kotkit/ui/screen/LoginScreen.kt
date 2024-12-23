@@ -45,7 +45,6 @@ import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.utils.DisplayApiResult
 import kotlin.math.log
 
-data class UserLogin(val name: String = "", val token: String = "")
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
@@ -182,56 +181,6 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     Text("Đăng ký")
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun MockLoginScreen(modifier: Modifier = Modifier) {
-    val authViewModel = LocalAuthViewModel.current
-    val navController = LocalNavController.current
-
-    if (authViewModel.isAuthenticated) {
-        navController.navigate("home")
-    }
-
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        val users = listOf(
-            UserLogin(
-                name = "User 1",
-                token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aW4iLCJpYXQiOjE3MzMxNjAzMDksImV4cCI6MTc0MzE2MDMwOX0.tn5oD4LrCcUhZ7lv5FDsJxCbGZSNiKxx6UvuZjCuvfw"
-            ),
-            UserLogin(
-                name = "User 2",
-                token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aW4xIiwiaWF0IjoxNzMzMTYwMzM0LCJleHAiOjE3NDMxNjAzMzR9.1aCviyoU1-n5vhqKlri4lfUr6f4czk9Th4XtcmXnTA0"
-            ),
-            UserLogin(
-                name = "User 3",
-                token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aW4yIiwiaWF0IjoxNzMzODEyMjczLCJleHAiOjE3NDM4MTIyNzN9.SH2xriwjGKuCq3LUeDDrF8PWhRRnEnqpV-OTA_7b81A"
-            ),
-        )
-
-        users.forEach { user ->
-            Button(onClick = {
-                authViewModel.mockLogin(user.token)
-                navController.navigate("home")
-            }) {
-                Text(text = user.name)
-            }
-        }
-
-        TextButton(
-            onClick = {
-                navController.navigate("real-login")
-            }
-        ) {
-            Text("Đăng nhập")
         }
     }
 }
