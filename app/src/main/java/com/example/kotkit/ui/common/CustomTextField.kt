@@ -18,6 +18,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
@@ -49,7 +50,7 @@ fun CustomTextField(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = OutlinedTextFieldDefaults.shape,
+    shape: Shape = RoundedCornerShape(12.dp),
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     OutlinedTextField(
@@ -78,7 +79,7 @@ fun CustomTextField(
         maxLines = maxLines,
         minLines = minLines,
         interactionSource = interactionSource,
-        shape = RoundedCornerShape(12.dp),
+        shape = shape,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
             focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -86,7 +87,12 @@ fun CustomTextField(
             errorBorderColor = MaterialTheme.colorScheme.error,
             errorContainerColor = MaterialTheme.colorScheme.secondary,
             errorTextColor = MaterialTheme.colorScheme.error,
-            containerColor = MaterialTheme.colorScheme.secondary,// Optional background color
+            containerColor = MaterialTheme.colorScheme.secondary,
+            focusedPlaceholderColor = Color.Gray,
+            unfocusedPlaceholderColor = Color.Gray,
+            focusedLeadingIconColor = Color.Black,
+            unfocusedLeadingIconColor = Color.Black,
+            disabledLeadingIconColor = Color.Black,
         ),
     )
 }
