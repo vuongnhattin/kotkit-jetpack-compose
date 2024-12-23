@@ -20,11 +20,10 @@ interface VideoApiService {
     ): ApiResponse<List<Video>>
 
     @Multipart
-    @POST("videos/")
+    @POST("videos/upload")
     suspend fun uploadVideo(
-        @Body title: String,
-        @Body creatorId: Int,
-        @Body mode: String,
+        @Part("title") title: RequestBody,
+        @Part("mode") mode: RequestBody,
         @Part file: MultipartBody.Part
     ): ApiResponse<Video>
 }

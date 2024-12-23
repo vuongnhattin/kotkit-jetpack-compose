@@ -9,12 +9,12 @@ import androidx.lifecycle.ViewModel
 import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.VideoApiService
 import com.example.kotkit.data.model.ApiState
+import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.model.Video
 import com.example.kotkit.data.model.VideoMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
@@ -26,8 +26,6 @@ class UploadVideoViewModel @Inject constructor(
 ) : ViewModel() {
     var uploadState by mutableStateOf<ApiState<Video>>(ApiState.Loading())
         private set
-
-    var creatorId = 1
 
     fun uploadVideo(
         context: Context,
@@ -46,7 +44,10 @@ class UploadVideoViewModel @Inject constructor(
 
         val videoFile = getFileFromUri(context, videoUri)
 
-        val videoRequestBody = videoFile.asRequestBody("video/*".toMediaTypeOrNull())
+        val titleRequestBody = title.toRequestBody("text/plain".toMediaTypeOrNull())
+        val modeRequestBody = videoMode.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+
+        val videoRequestBody = videoFile.asRequestBody("video/mp4".toMediaTypeOrNull())
         val videoPart = MultipartBody.Part.createFormData(
             "file",
             videoFile.name,
@@ -54,14 +55,15 @@ class UploadVideoViewModel @Inject constructor(
         )
 
         fetchApi(
-            stateSetter = { state -> uploadState = state },
+            stateSetter = { uploadState = it },
             apiCall = {
-                videoApiService.uploadVideo(
-                    title = title,
-                    creatorId = creatorId,
-                    mode = videoMode.toString(),
+                val response = videoApiService.uploadVideo(
+                    title = titleRequestBody,
+                    mode = modeRequestBody,
                     file = videoPart
                 )
+
+                response
             }
         )
     }

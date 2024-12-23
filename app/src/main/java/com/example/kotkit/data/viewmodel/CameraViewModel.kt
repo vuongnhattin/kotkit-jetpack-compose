@@ -59,9 +59,15 @@ class CameraViewModel @Inject constructor() : ViewModel() {
                     it.setSurfaceProvider(previewView.surfaceProvider)
                 }
 
+            val qualitySelector = QualitySelector.fromOrderedList(
+                listOf(Quality.HIGHEST, Quality.HD, Quality.SD),
+                FallbackStrategy.lowerQualityOrHigherThan(Quality.SD)
+            )
+
             val recorder = Recorder.Builder()
-                .setQualitySelector(QualitySelector.from(Quality.HIGHEST))
+                .setQualitySelector(qualitySelector)
                 .build()
+
             videoCapture = VideoCapture.withOutput(recorder)
 
             val cameraSelector = CameraSelector.Builder()
@@ -102,6 +108,8 @@ class CameraViewModel @Inject constructor() : ViewModel() {
 
         val contentValues = ContentValues().apply {
             put(MediaStore.Video.Media.DISPLAY_NAME, name)
+            put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+            put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/KotKit")
         }
 
         val mediaStoreOutput = MediaStoreOutputOptions.Builder(
@@ -110,27 +118,42 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             .setContentValues(contentValues)
             .build()
 
-        recordingState = videoCapture.output
-            .prepareRecording(context, mediaStoreOutput)
-            .apply {
-                if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.RECORD_AUDIO) ==
-                    android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                    withAudioEnabled()
+        // Kiểm tra quyền RECORD_AUDIO trước khi bắt đầu recording
+        val hasAudioPermission = ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.RECORD_AUDIO
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+
+        try {
+            recordingState = videoCapture.output
+                .prepareRecording(context, mediaStoreOutput)
+                .apply {
+                    if (hasAudioPermission) {
+                        // Enable audio recording
+                        withAudioEnabled()
+                    } else {
+                        throw SecurityException("Recording requires RECORD_AUDIO permission")
+                    }
                 }
-            }
-            .start(ContextCompat.getMainExecutor(context)) { event ->
-                when(event) {
-                    is VideoRecordEvent.Start -> _isRecording.value = true
-                    is VideoRecordEvent.Finalize -> {
-                        if (!event.hasError()) {
-                            _selectedVideo.value = event.outputResults.outputUri
-                            _isPreviewMode.value = true
-                        } else {
-                            event.cause?.printStackTrace()
+                .start(ContextCompat.getMainExecutor(context)) { event ->
+                    when(event) {
+                        is VideoRecordEvent.Start -> {
+                            _isRecording.value = true
+                        }
+                        is VideoRecordEvent.Finalize -> {
+                            if (!event.hasError()) {
+                                val uri = event.outputResults.outputUri
+                                _selectedVideo.value = uri
+                                _isPreviewMode.value = true
+                            } else {
+                                event.cause?.printStackTrace()
+                            }
                         }
                     }
                 }
-            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onCleared() {
