@@ -107,7 +107,7 @@ fun ListFriendBody(
             leadingIcon = {
                 Icon(Search, contentDescription = "Back")
             },
-            placeholder = "Tìm kiếm"
+            placeholder = { Text("Tìm kiếm") }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

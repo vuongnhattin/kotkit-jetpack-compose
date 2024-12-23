@@ -35,6 +35,7 @@ data class UserLogin(val name: String = "", val token: String = "")
 fun LoginScreen(modifier: Modifier = Modifier) {
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
+    var errorMessage by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -59,18 +60,20 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(text = "Lỗi",
-                    color = MaterialTheme.colorScheme.error)
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
             CustomTextField(
                 value = email,
                 onValueChange = { email = it },
-                placeholder = "Email",
+                placeholder = { Text("Email") },
             )
             CustomTextField(
                 value = password,
                 onValueChange = { password = it },
-                placeholder = "Mật khẩu",
+                placeholder = { Text("Mật khẩu") },
             )
 
 
@@ -81,7 +84,6 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = "Đăng nhập")
-
             }
 
 
