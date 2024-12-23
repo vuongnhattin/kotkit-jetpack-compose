@@ -20,9 +20,9 @@ class CommentViewModel @Inject constructor(
     private val commentApiService: CommentApiService
 ) : ViewModel() {
 
-    var commentState by mutableStateOf<ApiState<Comment>>(ApiState.Loading())
+    var commentState by mutableStateOf<ApiState<Comment>>(ApiState.Empty())
         private set
-    var allCommentsState by mutableStateOf<ApiState<List<Comment>>>(ApiState.Loading())
+    var allCommentsState by mutableStateOf<ApiState<List<Comment>>>(ApiState.Empty())
         private set
 
     fun createComment(videoId: Int, commentText: String) {
