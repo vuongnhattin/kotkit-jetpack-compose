@@ -19,6 +19,16 @@ interface VideoApiService {
         @Query("visibility") visibility: String,
     ): ApiResponse<List<Video>>
 
+    @GET("videos/public-videos")
+    suspend fun getAllPublicVideos(
+
+    ): ApiResponse<List<Video>>
+
+    @GET("videos/private-videos")
+    suspend fun getAllPrivateVideos(
+
+    ): ApiResponse<List<Video>>
+
     @GET("videos/all-videos")
     suspend fun getAllVideos(
 
