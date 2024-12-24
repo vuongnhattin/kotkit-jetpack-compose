@@ -41,7 +41,7 @@ import com.example.kotkit.data.viewmodel.CommentViewModel
 import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.presentation.components.VideoPlayerComponent
 import com.example.kotkit.ui.icon.Search
-import com.example.kotkit.ui.screen.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.DisplayApiResult
 
 // Thanh dieu huong de xuat, ban be va icon tim kiem
 @Composable

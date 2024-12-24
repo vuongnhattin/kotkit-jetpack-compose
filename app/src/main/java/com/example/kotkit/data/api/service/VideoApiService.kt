@@ -39,6 +39,7 @@ interface VideoApiService {
     suspend fun uploadVideo(
         @Part("title") title: RequestBody,
         @Part("mode") mode: RequestBody,
-        @Part file: MultipartBody.Part
+        @Part thumbnail: MultipartBody.Part?,
+        @Part video: MultipartBody.Part
     ): ApiResponse<Video>
 }
