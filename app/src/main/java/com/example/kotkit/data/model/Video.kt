@@ -11,7 +11,7 @@ enum class VideoMode {
 }
 
 data class Video (
-    val id: Int = 0,
+    val videoId: Int = 0,
     val title: String = "",
     val videoUrl: String = "",
     val thumbnail: String = "",

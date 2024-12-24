@@ -205,7 +205,7 @@ fun MockLoginScreen(modifier: Modifier = Modifier) {
         val users = listOf(
             UserLogin(
                 name = "User 1",
-                token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aW4iLCJpYXQiOjE3MzMxNjAzMDksImV4cCI6MTc0MzE2MDMwOX0.tn5oD4LrCcUhZ7lv5FDsJxCbGZSNiKxx6UvuZjCuvfw"
+                token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0YW4iLCJpYXQiOjE3MzQ5ODY4MzMsImV4cCI6MTc0NDk4NjgzM30.oCPPNQCavVsgM-QFMr6aSVQGe4Ri2srN8NZX9dhnKyM"
             ),
             UserLogin(
                 name = "User 2",
