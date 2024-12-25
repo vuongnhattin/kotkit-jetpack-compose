@@ -1,12 +1,10 @@
 package com.example.kotkit.data.api.service
 
-import com.example.kotkit.data.model.ApiResponse
+import com.example.kotkit.data.dto.response.ApiResponse
 import com.example.kotkit.data.model.Video
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part

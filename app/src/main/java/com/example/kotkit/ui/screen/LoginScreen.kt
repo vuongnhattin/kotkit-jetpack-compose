@@ -34,6 +34,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.kotkit.LocalAuthViewModel
@@ -42,6 +43,7 @@ import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.ui.common.CustomButton
 import com.example.kotkit.ui.common.CustomTextField
+import com.example.kotkit.ui.common.LoginRegisterLayout
 import com.example.kotkit.ui.utils.DisplayApiResult
 import kotlin.math.log
 
@@ -77,6 +79,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         else -> ""
                     }
                 }
+
                 "EMAIL_NOT_FOUND" -> emailError = "Email không tồn tại"
                 "WRONG_PASSWORD" -> passwordError = "Mật khẩu không đúng"
                 else -> {}
@@ -86,101 +89,73 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         navController.navigate("home")
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 48.dp)
-                .padding(top = 100.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                "Đăng nhập",
-                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-
-            CustomTextField(
-                value = email,
-                onValueChange = { email = it },
-                placeholder = { Text("Email") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }
-                ),
-                maxLines = 1,
-                supportingText = { Text(emailError) },
-                isError = emailError.isNotEmpty(),
-                modifier = Modifier.onFocusChanged {
-                    if (it.hasFocus) {
-                        authViewModel.resetLoginState()
-                        emailError = ""
-                    }
-                }
-            )
-
-            CustomTextField(
-                value = password,
-                onValueChange = { password = it },
-                placeholder = { Text("Mật khẩu") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.clearFocus() // Clears focus to avoid looping
-                        authViewModel.login(email.text, password.text) // Trigger login
-                    }
-                ),
-                maxLines = 1,
-                supportingText = { Text(passwordError) },
-                isError = passwordError.isNotEmpty(),
-                modifier = Modifier.onFocusChanged { focusState ->
-                    if (focusState.hasFocus) {
-                        authViewModel.resetLoginState()
-                        passwordError = ""
-                    }
-                }
-            )
-
-            CustomButton(
-                onClick = {
-                    authViewModel.login(email.text, password.text)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !isLoading
-            ) {
-                Text(text = "Đăng nhập")
+    LoginRegisterLayout(
+        header = "Đăng nhập",
+        footer = {
+            Text("Bạn không có tài khoản?")
+            TextButton(onClick = {
+                navController.navigate("register")
+            }) {
+                Text("Đăng ký")
             }
         }
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom,
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .navigationBarsPadding()
-                    .background(MaterialTheme.colorScheme.secondary),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Bạn không có tài khoản?")
-                TextButton(onClick = {
-
-                }) {
-                    Text("Đăng ký")
+    ) {
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            ),
+            maxLines = 1,
+            supportingText = { Text(emailError) },
+            isError = emailError.isNotEmpty(),
+            modifier = Modifier.fillMaxWidth().onFocusChanged {
+                if (it.hasFocus) {
+                    authViewModel.resetLoginState()
+                    emailError = ""
                 }
             }
+        )
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Mật khẩu") },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.clearFocus() // Clears focus to avoid looping
+                    authViewModel.login(email.text, password.text) // Trigger login
+                }
+            ),
+            maxLines = 1,
+            supportingText = { Text(passwordError) },
+            isError = passwordError.isNotEmpty(),
+            modifier = Modifier.fillMaxWidth().onFocusChanged { focusState ->
+                if (focusState.hasFocus) {
+                    authViewModel.resetLoginState()
+                    passwordError = ""
+                }
+            },
+            visualTransformation = PasswordVisualTransformation()
+        )
+
+        CustomButton(
+            onClick = {
+                authViewModel.login(email.text, password.text)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading
+        ) {
+            Text(text = "Đăng nhập")
         }
     }
 }

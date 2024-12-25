@@ -2,7 +2,7 @@ package com.example.kotkit.data.api
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotkit.data.model.ApiResponse
+import com.example.kotkit.data.dto.response.ApiResponse
 import com.example.kotkit.data.model.ApiState
 import com.google.gson.Gson
 import kotlinx.coroutines.delay

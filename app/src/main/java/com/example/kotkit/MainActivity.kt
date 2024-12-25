@@ -40,6 +40,7 @@ import com.example.kotkit.ui.screen.UserProfileScreen
 import com.example.kotkit.ui.theme.KotkitTheme
 import com.example.kotkit.ui.screen.ListFriendScreen
 import com.example.kotkit.ui.screen.LoginScreen
+import com.example.kotkit.ui.screen.RegisterScreen
 import com.example.kotkit.ui.screen.UploadVideoScreen
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
@@ -110,7 +111,7 @@ fun MyApp(modifier: Modifier = Modifier) {
                 }
             ) {
                 composable("login") { LoginScreen() }
-                composable("real-login") { LoginScreen() }
+                composable("register") { RegisterScreen() }
                 composable("home") { HomeScreen() }
                 composable("camera") { CameraScreen() }
                 composable(

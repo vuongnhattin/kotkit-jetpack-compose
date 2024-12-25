@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.AuthApiService
 import com.example.kotkit.data.dto.input.LoginInput
+import com.example.kotkit.data.dto.input.RegisterInput
 import com.example.kotkit.data.localstorage.TokenManager
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.dto.response.LoginResponse
@@ -22,6 +23,7 @@ class AuthViewModel @Inject constructor(
         private set
 
     var loginResponse by mutableStateOf<ApiState<LoginResponse>>(ApiState.Empty())
+    var registerResponse by mutableStateOf<ApiState<Void>>(ApiState.Empty())
 
     fun getCurrentUsername(): String {
         return tokenManager.getCurrentUsername()
@@ -49,5 +51,17 @@ class AuthViewModel @Inject constructor(
 
     fun resetLoginState() {
         loginResponse = ApiState.Empty()
+    }
+
+    fun resetRegisterState() {
+        registerResponse = ApiState.Empty()
+    }
+
+    fun register(email: String, fullName: String, password: String, birthday: String, gender: String) {
+        fetchApi({registerResponse = it}) {
+            val input = RegisterInput(email, fullName, password, birthday, gender)
+            println("register input: $input")
+            authApiService.register(input)
+        }
     }
 }
