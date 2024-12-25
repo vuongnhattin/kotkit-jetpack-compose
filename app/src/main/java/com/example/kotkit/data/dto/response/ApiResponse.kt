@@ -1,4 +1,4 @@
-package com.example.kotkit.data.model
+package com.example.kotkit.data.dto.response
 
 data class ApiResponse<T> (
     var data: T? = null,

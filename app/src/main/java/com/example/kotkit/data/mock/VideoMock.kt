@@ -1,6 +1,6 @@
 package com.example.kotkit.data.mock
 
-import com.example.kotkit.data.model.ApiResponse
+import com.example.kotkit.data.dto.response.ApiResponse
 import com.example.kotkit.data.model.Video
 
 object VideoMock {

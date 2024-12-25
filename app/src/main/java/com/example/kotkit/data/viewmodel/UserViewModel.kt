@@ -8,11 +8,9 @@ import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.UserApiService
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.mock.UserMock
-import com.example.kotkit.data.model.ApiResponse
+import com.example.kotkit.data.dto.response.ApiResponse
 import com.example.kotkit.data.model.UserDetails
-import com.example.kotkit.ui.icon.User
 import dagger.hilt.android.lifecycle.HiltViewModel
-import retrofit2.Retrofit
 import javax.inject.Inject
 
 @HiltViewModel
