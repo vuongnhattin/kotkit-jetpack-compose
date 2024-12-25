@@ -45,6 +45,7 @@ import com.example.kotkit.ui.common.CustomButton
 import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.common.LoginRegisterLayout
 import com.example.kotkit.ui.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.ErrorSnackBar
 import kotlin.math.log
 
 
@@ -82,7 +83,9 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
                 "EMAIL_NOT_FOUND" -> emailError = "Email không tồn tại"
                 "WRONG_PASSWORD" -> passwordError = "Mật khẩu không đúng"
-                else -> {}
+                else -> {
+                    ErrorSnackBar(error.code)
+                }
             }
         }
     ) {
