@@ -42,7 +42,11 @@ fun UserList(
 }
 
 @Composable
-fun UserResultItem(modifier: Modifier = Modifier, user: UserDetails, navController: NavController) {
+fun UserResultItem(
+    modifier: Modifier = Modifier,
+    user: UserDetails,
+    navController: NavController
+) {
     val authViewModel: AuthViewModel = hiltViewModel()
     println("Current username: ${authViewModel.getCurrentUsername()}")
 

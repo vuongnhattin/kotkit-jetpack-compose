@@ -7,5 +7,5 @@ import androidx.navigation.NavController
 
 @Composable
 fun NotificationScreen(modifier: Modifier = Modifier) {
-    Text("Notification Screens")
+    SearchScreen()
 }
