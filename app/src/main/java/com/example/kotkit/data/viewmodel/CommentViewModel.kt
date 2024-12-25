@@ -34,26 +34,59 @@ class CommentViewModel @Inject constructor(
             stateSetter = { commentState = it },
             apiCall = {
                 val commentInput = CommentInput(comment = commentText)
-                commentApiService.createComment(videoId, commentInput)
+                val response = commentApiService.createComment(videoId, commentInput)
+                if (commentState is ApiState.Success || response.status == 200) {
+                    Log.i("API Send", "Success")
+                    val newComment = response.data
+                    newComment?.let {
+                        comments = comments + it // Add the new comment to the list
+                    }
+                }
+                response
             }
         )
-
-        if (commentState is ApiState.Success) {
-            val newComment = (commentState as ApiState.Success<Comment>).data
-            newComment?.let {
-                comments = comments + it // Add the new comment to the list
-            }
-        }
     }
 
     fun getAllComments(videoId: Int) {
         fetchApi(
             stateSetter = { allCommentsState = it },
-            apiCall = { commentApiService.getAllCommentInVideo(videoId) }
+            apiCall = {
+                val response = commentApiService.getAllCommentInVideo(videoId)
+                if (allCommentsState is ApiState.Success || response.status == 200) {
+                    Log.i("API Get ALL", "Success")
+                    val listComment = response.data
+                    if (listComment != null) {
+                        comments = listComment
+                    }
+                }
+                response
+            }
         )
-
-        if (allCommentsState is ApiState.Success) {
-            comments = (allCommentsState as ApiState.Success<List<Comment>>).data ?: emptyList()
-        }
     }
 }
+//@HiltViewModel
+//class CommentViewModel @Inject constructor(
+//    private val commentApiService: CommentApiService
+//) : ViewModel() {
+//
+//    var commentState by mutableStateOf<ApiState<Comment>>(ApiState.Empty())
+//        private set
+//    var allCommentsState by mutableStateOf<ApiState<List<Comment>>>(ApiState.Empty())
+//        private set
+//    fun createComment(videoId: Int, commentText: String) {
+//        fetchApi(
+//            stateSetter = { commentState = it },
+//            apiCall = {
+//                val commentInput = CommentInput(comment = commentText)
+//                commentApiService.createComment(videoId, commentInput)
+//            }
+//        )
+//
+//    }
+//    fun getAllComments(videoId: Int) {
+//        fetchApi(
+//            stateSetter = { allCommentsState = it },
+//            apiCall = { commentApiService.getAllCommentInVideo(videoId) }
+//        )
+//    }
+//}

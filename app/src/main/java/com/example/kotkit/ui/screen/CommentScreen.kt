@@ -1,13 +1,26 @@
 package com.example.kotkit.ui.screen
 
+import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -36,68 +49,46 @@ import com.example.kotkit.data.viewmodel.CommentViewModel
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.utils.DisplayApiResult
 
-//@Composable
-//fun CommentScreen(viewModel: CommentViewModel, videoId: Int) {
-//    var commentText by remember { mutableStateOf("") }
-//    val commentState by remember { derivedStateOf { viewModel.commentState } }
-//
-//    Column(modifier = Modifier.padding(16.dp)) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(8.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            OutlinedTextField(
-//                value = commentText,
-//                onValueChange = { commentText = it },
-//                label = { Text("Write a comment...") },
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .padding(end = 8.dp),
-//                maxLines = 3
-//            )
-//            IconButton(
-//                onClick = {
-//                    if (commentText.isNotBlank()) {
-//                        viewModel.createComment(videoId, commentText)
-//                        commentText = ""  // Clear input after sending
-//                    }
-//                },
-//                enabled = commentText.isNotBlank()
-//            ) {
-//                Icon(
-//                    imageVector = Send,
-//                    contentDescription = "Send Comment",
-//                    tint = if (commentText.isNotBlank()) Color.Blue else Color.Gray
-//                )
-//            }
-//        }
-//
-//        DisplayApiResult(
-//            state = commentState,
-//            onSuccess = {
-//                Text("Comment added successfully!", color = Color.Green)
-//            },
-//            onError = {
-//                val error = it.code ?: "Unknown error"
-//                Text("Error: $error", color = Color.Red)
-//            }
-//        )
-//    }
-//}
+
 @Composable
-fun CommentScreen(viewModel: CommentViewModel, videoId: Int) {
+fun CommentScreen(
+    viewModel: CommentViewModel,
+    videoId: Int,
+    onClose: () -> Unit
+) {
     var commentText by remember { mutableStateOf("") }
     val comments by remember { derivedStateOf { viewModel.comments } }
-
+    val listState = rememberLazyListState()
+    LaunchedEffect(comments) {
+        if (comments.size >= 1) {
+            listState.animateScrollToItem(comments.size - 1) // Scroll to the bottom on comments update
+        }
+    }
     LaunchedEffect(Unit) {
         viewModel.getAllComments(videoId)
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        // Display all comments
-        LazyColumn {
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Close button
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(onClick = { onClose() }) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "Close Comments")
+            }
+        }
+
+        // Display comments in a pleasant layout
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 16.dp),
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             items(comments) { comment ->
                 CommentItem(comment)
             }
@@ -137,12 +128,55 @@ fun CommentScreen(viewModel: CommentViewModel, videoId: Int) {
         }
     }
 }
+
 @Composable
 fun CommentItem(comment: Comment) {
-    Column(modifier = Modifier.padding(8.dp)) {
-        Text(text = comment.fullName, fontWeight = FontWeight.Bold)
-        Text(text = comment.comment)
-        Text(text = comment.createdAt, style = MaterialTheme.typography.bodySmall)
-        Divider(modifier = Modifier.padding(vertical = 4.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Profile picture placeholder
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.Gray, shape = CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = comment.fullName.firstOrNull()?.uppercase() ?: "",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Column {
+            // Commenter's name
+            Text(
+                text = comment.fullName,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            // Comment text
+            Text(
+                text = comment.comment,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.DarkGray
+            )
+            // Time of comment
+            Text(
+                text = comment.createdAt,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
+        }
     }
 }
