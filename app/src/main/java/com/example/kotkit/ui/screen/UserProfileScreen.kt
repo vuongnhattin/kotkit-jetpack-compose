@@ -234,8 +234,8 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails)
     val videoViewModel: VideoViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
-        videoViewModel.getPublicVideosOfUser(userDetails.id)
-        videoViewModel.getPrivateVideosOfUser(userDetails.id)
+//        videoViewModel.getPublicVideosOfUser(userDetails.id)
+//        videoViewModel.getPrivateVideosOfUser(userDetails.id)
     }
 
     when (selectedIndex) {

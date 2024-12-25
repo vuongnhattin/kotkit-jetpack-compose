@@ -8,7 +8,7 @@ import com.example.kotkit.data.model.VideoMode
 object VideoMockData {
     val videos = listOf(
         Video(
-            id = 1,
+            videoId = 1,
             title = "PUBLIC VIDEO TEST",
             videoUrl = "http://192.168.1.214:9001/api/v1/buckets/videos/objects/download?prefix=vid1.mp4&version_id=null",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -19,7 +19,7 @@ object VideoMockData {
             mode = VideoMode.PUBLIC
         ),
         Video(
-            id = 2,
+            videoId = 2,
             title = "PUBLIC VIDEO TEST",
             videoUrl = "http://192.168.1.214:9001/api/v1/buckets/videos/objects/download?prefix=vid2.mov&version_id=null",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -30,7 +30,7 @@ object VideoMockData {
             mode = VideoMode.PUBLIC
         ),
         Video(
-            id = 3,
+            videoId = 3,
             title = "PUBLIC VIDEO TEST",
             videoUrl = "http://192.168.1.214:9001/api/v1/buckets/videos/objects/download?prefix=vid3.mp4&version_id=null",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -41,7 +41,7 @@ object VideoMockData {
             mode = VideoMode.PUBLIC
         ),
         Video(
-            id = 4,
+            videoId = 4,
             title = "Coffee Time #lifestyle",
             videoUrl = "http://192.168.1.214:9001/api/v1/buckets/videos/objects/download?prefix=vid4.mp4&version_id=null",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -52,7 +52,7 @@ object VideoMockData {
             mode = VideoMode.PRIVATE
         ),
         Video(
-            id = 5,
+            videoId = 5,
             title = "PUBLIC VIDEO TEST",
             videoUrl = "android.resource://com.example.kotkit/raw/video_test11",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -63,7 +63,7 @@ object VideoMockData {
             mode = VideoMode.PUBLIC
         ),
         Video(
-            id = 6,
+            videoId = 6,
             title = "PUBLIC VIDEO TEST",
             videoUrl = "android.resource://com.example.kotkit/raw/video_test11",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -74,7 +74,7 @@ object VideoMockData {
             mode = VideoMode.PUBLIC
         ),
         Video(
-            id = 7,
+            videoId = 7,
             title = "PRIVATE VIDEO TEST",
             videoUrl = "http://localhost:9001/browser/videos/vid10.mov",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -85,7 +85,7 @@ object VideoMockData {
             mode = VideoMode.PRIVATE
         ),
         Video(
-            id = 8,
+            videoId = 8,
             title = "PUBLIC VIDEO TEST",
             videoUrl = "android.resource://com.example.kotkit/raw/video_test11",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -96,7 +96,7 @@ object VideoMockData {
             mode = VideoMode.PUBLIC
         ),
         Video(
-            id = 9,
+            videoId = 9,
             title = "Music Cover #music",
             videoUrl = "android.resource://com.example.kotkit/raw/video_test10",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",
@@ -107,7 +107,7 @@ object VideoMockData {
             mode = VideoMode.PRIVATE
         ),
         Video(
-            id = 10,
+            videoId = 10,
             title = "PUBLIC VIDEO TEST",
             videoUrl = "android.resource://com.example.kotkit/raw/video_test11",
             thumbnail = "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg",

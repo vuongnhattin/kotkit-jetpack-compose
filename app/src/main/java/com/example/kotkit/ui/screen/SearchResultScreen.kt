@@ -41,7 +41,9 @@ import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.icon.DotsHorizontal
 import com.example.kotkit.ui.icon.Search
 import com.example.kotkit.data.viewmodel.UserViewModel
+import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.common.UserList
+import com.example.kotkit.ui.common.VideoDetailsList
 import com.example.kotkit.ui.utils.DisplayApiResult
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,7 +146,7 @@ fun SearchScreenTabRow(
         ) {
             when (selectedIndex) {
                 0 -> {
-                    VideoSearchResult()
+                    VideoSearchResult(query = query, navController = navController)
                 }
 
                 1 -> {
@@ -156,8 +158,29 @@ fun SearchScreenTabRow(
 }
 
 @Composable
-fun VideoSearchResult(modifier: Modifier = Modifier) {
-    Text("Video result")
+fun VideoSearchResult(
+    modifier: Modifier = Modifier,
+    query: TextFieldValue,
+    navController: NavController
+) {
+    val videoViewModel = hiltViewModel<VideoViewModel>()
+    val searchVideos = videoViewModel.searchVideos
+    LaunchedEffect(query.text) {
+        videoViewModel.searchVideos(query.text)
+    }
+
+    DisplayApiResult(searchVideos) { res ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp)
+        ) {
+            VideoDetailsList(
+                videos =  res.data!!,
+                navController = navController
+            )
+        }
+    }
 }
 
 
