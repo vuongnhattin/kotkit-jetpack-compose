@@ -19,6 +19,16 @@ interface VideoApiService {
         @Query("visibility") visibility: String,
     ): ApiResponse<List<Video>>
 
+    @GET("videos/public-videos")
+    suspend fun getAllPublicVideos(
+
+    ): ApiResponse<List<Video>>
+
+    @GET("videos/private-videos")
+    suspend fun getAllPrivateVideos(
+
+    ): ApiResponse<List<Video>>
+
     @GET("videos/all-videos")
     suspend fun getAllVideos(
 
@@ -29,6 +39,7 @@ interface VideoApiService {
     suspend fun uploadVideo(
         @Part("title") title: RequestBody,
         @Part("mode") mode: RequestBody,
-        @Part file: MultipartBody.Part
+        @Part thumbnail: MultipartBody.Part?,
+        @Part video: MultipartBody.Part
     ): ApiResponse<Video>
 }
