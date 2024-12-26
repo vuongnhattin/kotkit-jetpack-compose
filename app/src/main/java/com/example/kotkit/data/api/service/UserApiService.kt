@@ -13,4 +13,14 @@ interface UserApiService {
     suspend fun searchUsers(
         @Query("q") query: String
     ): ApiResponse<List<UserDetails>>
+
+    @GET("users/{userId}/details")
+    suspend fun getUserDetails(
+        @Path("userId") userId: Int
+    ): ApiResponse<UserDetails>
+
+    @GET("users/{userId}/friends")
+    suspend fun getFriendsOfUser(
+        @Path("userId") userId: Int
+    ): ApiResponse<List<UserDetails>>
 }

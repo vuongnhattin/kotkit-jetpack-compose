@@ -159,7 +159,7 @@ fun ProfileDetailsSection(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                "@${userDetails.username}",
+                userDetails.email,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleMedium
 //                    .copy(fontWeight = FontWeight.ExtraBold)
@@ -167,7 +167,7 @@ fun ProfileDetailsSection(
         }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable {
-            navController.navigate("friends/${userDetails.id}")
+            navController.navigate("friends/${userDetails.userId}")
         }) {
             Text(
                 userDetails.numberOfFriends.toString(),

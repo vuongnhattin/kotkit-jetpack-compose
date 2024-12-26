@@ -56,7 +56,7 @@ fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int) {
                     CenterAlignedTopAppBar(
                         title = {
                             Text(
-                                user.data?.username ?: "",
+                                user.data?.email ?: "",
                                 style = TopAppBarTitleStyle()
                             )
                         },

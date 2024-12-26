@@ -46,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Comment
 import com.example.kotkit.data.viewmodel.CommentViewModel
+import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.utils.DisplayApiResult
 
@@ -101,10 +102,11 @@ fun CommentScreen(
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
+            CustomTextField(
+                shape = RoundedCornerShape(64.dp),
                 value = commentText,
                 onValueChange = { commentText = it },
-                label = { Text("Write a comment...") },
+                placeholder = { Text("Write a comment...") },
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp),

@@ -48,16 +48,16 @@ fun UserResultItem(
     navController: NavController
 ) {
     val authViewModel: AuthViewModel = hiltViewModel()
-    println("Current username: ${authViewModel.getCurrentUsername()}")
+    println("Current email: ${authViewModel.getCurrentUsername()}")
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (authViewModel.getCurrentUsername() == user.username) {
+                if (authViewModel.getCurrentUsername() == user.email) {
                     navController.navigate("profile")
                 } else {
-                    navController.navigate("user-profile/${user.id}")
+                    navController.navigate("user-profile/${user.userId}")
                 }
             },
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -86,7 +86,7 @@ fun UserResultItem(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    user.username,
+                    user.email,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
