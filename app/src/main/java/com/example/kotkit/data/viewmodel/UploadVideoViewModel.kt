@@ -140,4 +140,8 @@ class UploadVideoViewModel @Inject constructor(
             ?.let { ".$it" }
             ?: ".jpg"
     }
+
+    fun setEmptyState() {
+        uploadState = ApiState.Empty()
+    }
 }

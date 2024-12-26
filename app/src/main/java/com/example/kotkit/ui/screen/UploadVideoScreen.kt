@@ -44,6 +44,10 @@ fun UploadVideoScreen(
     val context = LocalContext.current
     val navController = LocalNavController.current
 
+    var messageError by remember { mutableStateOf("") }
+    var titleError by remember { mutableStateOf("") }
+    var videoError by remember { mutableStateOf("") }
+
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -58,7 +62,6 @@ fun UploadVideoScreen(
         }
     }
     val uploadState = uploadVideoViewModel.uploadState
-    var isUploaded by remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = {
@@ -102,7 +105,6 @@ fun UploadVideoScreen(
                                     title = title,
                                     mode = mode
                                 )
-                                isUploaded = true
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -184,7 +186,7 @@ fun UploadVideoScreen(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Nhập tiêu đề cho video của bạn") },
+                    placeholder = { Text("Nhập tiêu đề cho video của bạn") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { focusManager.clearFocus() },
@@ -260,10 +262,56 @@ fun UploadVideoScreen(
                 }
             }
 
-            if (isUploaded) {
-                DisplayApiResult(uploadState) {
-                    ErrorSnackBar("Đăng thành công")
+            DisplayApiResult(uploadState,
+                onError = { error ->
+                    when (error.code) {
+                        "VALIDATION_ERROR" -> error.data?.let { data ->
+                            val dataMap = data as Map<String, String>
+                            titleError = when (dataMap["title"]) {
+                                "TITLE_REQUIRED" -> "Tiêu đề không được để trống!"
+                                else -> ""
+                            }
+                            videoError = when (dataMap["video"]) {
+                                "VIDEO_REQUIRED" -> "Không có Video!"
+                                "PAYLOAD_TOO_LARGE" -> "Dung lượng video quá lớn (không được quá 100MB)!"
+                                else -> ""
+                            }
+                        }
+                        else -> messageError = "Lỗi không xác định!"
+                    }
+
+                    if (videoError.isNotEmpty())
+                        messageError = videoError
+                    else if (titleError.isNotEmpty())
+                        messageError = titleError
+
+                    AlertDialog(
+                        onDismissRequest = { /* Dismiss the dialog */ },
+                        title = { Text("Đăng video thất bại") },
+                        text = { Text(messageError) },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                messageError = ""
+                                uploadVideoViewModel.setEmptyState()
+                            }) {
+                                Text("OK")
+                            }
+                        }
+                    )
                 }
+            ) {
+                AlertDialog(
+                    onDismissRequest = { /* Dismiss the dialog */ },
+                    title = { Text("Đăng video thành công") },
+                    text = { Text("Video của bạn đã được đăng thành công!") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            navController.navigate("home")
+                        }) {
+                            Text("OK")
+                        }
+                    }
+                )
             }
         }
     }
