@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.kotkit.LocalNavController
+import com.example.kotkit.LocalUserViewModel
 import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.icon.DotsHorizontal
 import com.example.kotkit.ui.icon.Search
@@ -190,7 +191,7 @@ fun UserSearchResult(
     query: TextFieldValue,
     navController: NavController
 ) {
-    val userViewModel = hiltViewModel<UserViewModel>()
+    val userViewModel: UserViewModel = LocalUserViewModel.current
     val userSearchResult = userViewModel.listUserDetails
 
     LaunchedEffect(query.text) {
@@ -205,7 +206,7 @@ fun UserSearchResult(
         ) {
             UserList(
                 users =  res.data!!,
-                navController = navController
+                navController = navController,
             )
         }
     }
