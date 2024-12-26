@@ -50,6 +50,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.kotkit.LocalNavController
+import com.example.kotkit.LocalUserViewModel
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.model.Video
@@ -69,7 +70,7 @@ fun UserProfileScreen(
     modifier: Modifier = Modifier,
     userId: Int,
 ) {
-    val userViewModel: UserViewModel = hiltViewModel()
+    val userViewModel: UserViewModel = LocalUserViewModel.current
     val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
@@ -102,17 +103,16 @@ fun UserProfileScreen(
             UserProfileBody(
                 modifier = Modifier.padding(innerPadding),
                 userDetails = userDetails,
-                navController = navController
+                navController = navController,
+                userViewModel = userViewModel
             )
         }
     }
-
-
 }
 
 @Composable
 fun UserProfileBody(
-    modifier: Modifier = Modifier, userDetails: UserDetails, navController: NavController
+    modifier: Modifier = Modifier, userDetails: UserDetails, navController: NavController, userViewModel: UserViewModel
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -122,7 +122,7 @@ fun UserProfileBody(
                 .weight(3.5f)
                 .fillMaxSize()
         ) {
-            ProfileDetailsSection(userDetails = userDetails, navController = navController)
+            ProfileDetailsSection(userDetails = userDetails, navController = navController, userViewModel = userViewModel)
         }
 
         Column(
@@ -137,7 +137,7 @@ fun UserProfileBody(
 
 @Composable
 fun ProfileDetailsSection(
-    modifier: Modifier = Modifier, userDetails: UserDetails, navController: NavController
+    modifier: Modifier = Modifier, userDetails: UserDetails, navController: NavController, userViewModel: UserViewModel
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -182,7 +182,8 @@ fun ProfileDetailsSection(
         Row(
             modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
         ) {
-            FriendshipButton(friendshipStatus = userDetails.friendStatus)
+            println("ProfileDetailsSection: userDetails: $userDetails")
+            FriendshipButton(friendshipStatus = userDetails.friendStatus, userId = userDetails.userId)
             Spacer(modifier = Modifier.width(4.dp))
             Button(
                 onClick = {},

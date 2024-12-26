@@ -24,5 +24,5 @@ data class UserDetails(
     val numberOfVideos: Int = 0,
     val isBlock: Boolean = false,
     val isVerified: Boolean = false,
-    val friendStatus: FriendshipStatus? = null,
+    var friendStatus: FriendshipStatus? = null,
 )
