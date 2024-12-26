@@ -14,13 +14,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.camera.view.PreviewView
@@ -28,6 +31,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.ui.icon.Gallery_thumbnail
 import com.example.kotkit.data.viewmodel.CameraViewModel
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun CameraScreen(
@@ -42,7 +47,26 @@ fun CameraScreen(
     val isPreviewMode by cameraViewModel.isPreviewMode.collectAsState()
     val selectedVideo by cameraViewModel.selectedVideo.collectAsState()
 
-    // Define required permissions
+    // Timer state
+    var elapsedTime by remember { mutableStateOf(0) }
+
+    // Timer effect
+    LaunchedEffect(isRecording) {
+        elapsedTime = 0
+        while (isRecording) {
+            delay(1000)
+            elapsedTime++
+        }
+    }
+
+    // Format time function
+    fun formatTime(seconds: Int): String {
+        val minutes = seconds / 60
+        val remainingSeconds = seconds % 60
+        return "%02d:%02d".format(minutes, remainingSeconds)
+    }
+
+    // Rest of the permissions code remains the same...
     val permissions = remember {
         mutableListOf(
             Manifest.permission.CAMERA,
@@ -54,7 +78,6 @@ fun CameraScreen(
         }
     }
 
-    // Check if we have permissions
     var hasCameraPermission by remember {
         mutableStateOf(
             permissions.all {
@@ -63,14 +86,12 @@ fun CameraScreen(
         )
     }
 
-    // Permission launcher
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionsMap ->
         hasCameraPermission = permissionsMap.values.reduce { acc, next -> acc && next }
     }
 
-    // Gallery launcher
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -80,12 +101,10 @@ fun CameraScreen(
         }
     }
 
-    // Request permissions when the component is first launched
     LaunchedEffect(key1 = true) {
         permissionLauncher.launch(permissions.toTypedArray())
     }
 
-    // Handle navigation to upload screen after recording
     LaunchedEffect(selectedVideo) {
         selectedVideo?.let { uri ->
             if (isPreviewMode) {
@@ -96,7 +115,6 @@ fun CameraScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (hasCameraPermission) {
-            // Camera Preview
             AndroidView(
                 factory = { ctx ->
                     PreviewView(ctx).apply {
@@ -108,7 +126,6 @@ fun CameraScreen(
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Camera Controls
             if (!isPreviewMode) {
                 // Back Button
                 IconButton(
@@ -124,6 +141,24 @@ fun CameraScreen(
                     )
                 }
 
+                // Recording Timer
+                if (isRecording) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(top = 16.dp)
+                            .background(Color.Black.copy(alpha = 0.6f))
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = formatTime(elapsedTime),
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
                 // Recording and Gallery Controls
                 Row(
                     modifier = Modifier
@@ -133,10 +168,8 @@ fun CameraScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Empty space for layout balance
                     Box(modifier = Modifier.weight(1f)) {}
 
-                    // Record Button
                     Box(
                         modifier = Modifier.weight(1f),
                         contentAlignment = Alignment.Center
@@ -164,7 +197,6 @@ fun CameraScreen(
                         }
                     }
 
-                    // Gallery Button
                     Box(
                         modifier = Modifier.weight(1f),
                         contentAlignment = Alignment.CenterStart
