@@ -38,7 +38,8 @@ class UserViewModel @Inject constructor(
 
     fun getUserDetails(userId: Int) {
         fetchApi(stateSetter = { userDetails = it }) {
-            val user = UserMock.users.data?.firstOrNull { it.id == userId }
+//            val user = UserMock.users.data?.firstOrNull { it.userId == userId }
+            val user = userApiService.getUserDetails(userId).data
             val response = ApiResponse(user)
             response
         }
@@ -46,7 +47,8 @@ class UserViewModel @Inject constructor(
 
     fun getFriendsOfUser(userId: Int) {
         fetchApi(stateSetter = { listUserDetails = it }) {
-            val response = UserMock.users
+//            val response = UserMock.users
+            val response = userApiService.getFriendsOfUser(userId)
             filteredListUser = response.data!!
 
             response
@@ -60,7 +62,7 @@ class UserViewModel @Inject constructor(
             users
         } else {
             users.filter {
-                it.username.contains(query, ignoreCase = true) || it.fullName.contains(query, ignoreCase = true)
+                it.email.contains(query, ignoreCase = true) || it.fullName.contains(query, ignoreCase = true)
             }
         }
     }

@@ -8,7 +8,6 @@ import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.VideoApiService
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Video
-import com.example.kotkit.data.model.VideoDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -24,7 +23,7 @@ class VideoViewModel @Inject constructor(
 
     var allVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Loading())
         private set
-    var searchVideos by mutableStateOf<ApiState<List<VideoDetails>>>(ApiState.Empty())
+    var searchVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
 //    fun getPublicVideosOfUser(userId: Int) {
