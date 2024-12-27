@@ -25,7 +25,7 @@ class AuthViewModel @Inject constructor(
     var loginResponse by mutableStateOf<ApiState<LoginResponse>>(ApiState.Empty())
     var registerResponse by mutableStateOf<ApiState<Void>>(ApiState.Empty())
 
-    fun getCurrentUsername(): String {
+    fun getEmailOfMe(): String {
         return tokenManager.getCurrentUsername()
     }
 

@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.kotkit.data.viewmodel.AuthViewModel
+import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.ui.screen.BottomNavigationBar
 import com.example.kotkit.ui.screen.CameraScreen
 import com.example.kotkit.ui.screen.ChatScreen
@@ -61,6 +62,10 @@ val LocalNavController = staticCompositionLocalOf<NavController> {
     error("NavController is not provided")
 }
 
+val LocalUserViewModel = staticCompositionLocalOf<UserViewModel> {
+    error("UserViewModel is not provided")
+}
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,8 +75,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             KotkitTheme {
                 val authViewModel: AuthViewModel = hiltViewModel()
+                val userViewModel: UserViewModel = hiltViewModel()
                 CompositionLocalProvider(
                     LocalAuthViewModel provides authViewModel,
+                    LocalUserViewModel provides userViewModel
                 ) {
                     MyApp()
                 }

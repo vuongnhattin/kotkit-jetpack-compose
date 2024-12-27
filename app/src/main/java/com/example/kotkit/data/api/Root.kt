@@ -11,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 // Tin's IP
 const val BASE_URL = "http://192.168.23.167:8080/"
+//const val BASE_URL = "http://172.20.10.3:8080/"
 
 const val BASE_URL_EMULATOR = "http://10.0.2.2:8080/"
 const val BASE_URL_REMOTE_DEVICE = "http://192.168.1.214:8080/"

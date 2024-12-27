@@ -2,7 +2,6 @@ package com.example.kotkit.data.api.service
 
 import com.example.kotkit.data.dto.response.ApiResponse
 import com.example.kotkit.data.model.Video
-import com.example.kotkit.data.model.VideoDetails
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.GET
@@ -44,5 +43,5 @@ interface VideoApiService {
     @GET("videos/search")
     suspend fun searchVideos(
         @Query("q") query: String
-    ): ApiResponse<List<VideoDetails>>
+    ): ApiResponse<List<Video>>
 }

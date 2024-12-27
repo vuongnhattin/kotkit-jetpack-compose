@@ -133,10 +133,10 @@ fun CustomTextField(
         disabledLeadingIconColor = Color.Black,
     ),
 ) {
-    CustomTextField(
-        value = TextFieldValue(value),
-        onValueChange = { onValueChange(it.text) },
-        modifier = modifier,
+    OutlinedTextField(
+        value = value,
+        onValueChange = { onValueChange(it) },
+        modifier = modifier.fillMaxWidth(),
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,

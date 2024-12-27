@@ -24,14 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.kotkit.data.model.FriendshipStatus
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.viewmodel.AuthViewModel
+import com.example.kotkit.data.viewmodel.FriendViewModel
+import com.example.kotkit.data.viewmodel.UserViewModel
 
 @Composable
 fun UserList(
     modifier: Modifier = Modifier,
     users: List<UserDetails>,
-    navController: NavController
+    navController: NavController,
 ) {
     LazyColumn() {
         items(users) { user ->
@@ -45,19 +48,20 @@ fun UserList(
 fun UserResultItem(
     modifier: Modifier = Modifier,
     user: UserDetails,
-    navController: NavController
+    navController: NavController,
 ) {
     val authViewModel: AuthViewModel = hiltViewModel()
-    println("Current username: ${authViewModel.getCurrentUsername()}")
+    val friendViewModel: FriendViewModel = hiltViewModel()
+    println("Current email: ${authViewModel.getEmailOfMe()}")
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (authViewModel.getCurrentUsername() == user.username) {
+                if (authViewModel.getEmailOfMe() == user.email) {
                     navController.navigate("profile")
                 } else {
-                    navController.navigate("user-profile/${user.id}")
+                    navController.navigate("user-profile/${user.userId}")
                 }
             },
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -86,12 +90,16 @@ fun UserResultItem(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    user.username,
+                    user.email,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
             }
         }
-        FriendshipButton(friendshipStatus = user.friendStatus)
+        if (user.email != authViewModel.getEmailOfMe()) {
+            FriendshipButton(
+                friendshipStatus = user.friendStatus, userId = user.userId
+            )
+        }
     }
 }

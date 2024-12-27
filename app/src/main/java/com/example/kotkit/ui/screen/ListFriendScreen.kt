@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.kotkit.LocalNavController
+import com.example.kotkit.LocalUserViewModel
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.ui.common.CustomTextField
@@ -38,7 +39,7 @@ import com.example.kotkit.ui.utils.DisplayApiResult
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int) {
-    val userViewModel: UserViewModel = hiltViewModel()
+    val userViewModel: UserViewModel = LocalUserViewModel.current
     val navController = LocalNavController.current
 
     LaunchedEffect(userId) {
@@ -56,7 +57,7 @@ fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int) {
                     CenterAlignedTopAppBar(
                         title = {
                             Text(
-                                user.data?.username ?: "",
+                                user.data?.email ?: "",
                                 style = TopAppBarTitleStyle()
                             )
                         },

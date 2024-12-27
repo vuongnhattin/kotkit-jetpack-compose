@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.kotkit.R
-import com.example.kotkit.data.model.VideoDetails
+import com.example.kotkit.data.model.Video
 
 @Composable
 fun VideoDetailsItem(
     modifier: Modifier = Modifier,
-    video: VideoDetails,
+    video: Video,
     navController: NavController
 ) {
     Card(
@@ -50,7 +50,7 @@ fun VideoDetailsItem(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = video.fullName,
+                    text = video.creator.fullName,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
@@ -86,7 +86,7 @@ fun VideoDetailsItem(
 @Composable
 fun VideoDetailsList(
     modifier: Modifier = Modifier,
-    videos: List<VideoDetails>,
+    videos: List<Video>,
     navController: NavController
 ) {
     LazyVerticalGrid(

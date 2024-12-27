@@ -2,6 +2,7 @@ package com.example.kotkit.di
 
 import com.example.kotkit.data.api.service.AuthApiService
 import com.example.kotkit.data.api.service.CommentApiService
+import com.example.kotkit.data.api.service.FriendApiService
 import com.example.kotkit.data.api.service.UserApiService
 import com.example.kotkit.data.api.service.VideoApiService
 import dagger.Module
@@ -36,5 +37,11 @@ object ApiServiceModule {
     @Singleton
     fun provideAuthApiService(retrofit: Retrofit): AuthApiService {
         return retrofit.create(AuthApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFriendApiService(retrofit: Retrofit): FriendApiService {
+        return retrofit.create(FriendApiService::class.java)
     }
 }

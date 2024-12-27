@@ -1,22 +1,12 @@
 package com.example.kotkit.ui.screen
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.kotkit.LocalAuthViewModel
-import com.example.kotkit.LocalNavController
-import com.example.kotkit.data.viewmodel.AuthViewModel
-import com.example.kotkit.ui.utils.HandleTokenExpired
 
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier) {
@@ -25,7 +15,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 
     Column() {
         Text("Profile Screen")
-        Text("Username: ${authViewModel.getCurrentUsername()}")
+        Text("Username: ${authViewModel.getEmailOfMe()}")
 
         Button(onClick = {
             authViewModel.logout()
@@ -33,6 +23,8 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             Text("Logout")
         }
     }
+
+
 }
 
 @Preview

@@ -1,51 +1,37 @@
 package com.example.kotkit.ui.common
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.kotkit.LocalUserViewModel
 import com.example.kotkit.data.model.FriendshipStatus
+import com.example.kotkit.data.viewmodel.FriendViewModel
+import com.example.kotkit.data.viewmodel.UserViewModel
 
-data class FriendshipInfo(
-    val text: String = "",
-    val action: () -> Unit = {}
-) {
-    companion object {
-        fun getFriendshipInfo(friendshipStatus: FriendshipStatus?): FriendshipInfo {
-            when (friendshipStatus) {
-                null -> {
-                    return FriendshipInfo("Kết bạn") {
-                        println("Kết bạn")
-                    }
-                }
-
-                FriendshipStatus.SENT -> {
-                    return FriendshipInfo("Huỷ lời mời") {
-                        println("Huỷ lời mời")
-                    }
-                }
-
-                FriendshipStatus.RECEIVED -> {
-                    return FriendshipInfo("Phản hồi") {
-                        println("Phản hồi")
-                    }
-                }
-
-                FriendshipStatus.FRIEND -> {
-                    return FriendshipInfo("Huỷ kết bạn") {
-                        println("Huỷ kết bạn")
-                    }
-                }
-            }
-        }
-    }
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendshipButton(modifier: Modifier = Modifier, friendshipStatus: FriendshipStatus?) {
-    val friendshipInfo = FriendshipInfo.getFriendshipInfo(friendshipStatus)
+fun FriendshipButton(modifier: Modifier = Modifier, friendshipStatus: FriendshipStatus?, userId: Int) {
+    val userViewModel: UserViewModel = LocalUserViewModel.current
+    val friendViewModel: FriendViewModel = hiltViewModel()
+    var isReplyOpen by remember { mutableStateOf(false) }
+    var isUnfriendOpen by remember { mutableStateOf(false) }
 
     // Get colors from MaterialTheme
     val backgroundColor = when (friendshipStatus) {
@@ -62,15 +48,65 @@ fun FriendshipButton(modifier: Modifier = Modifier, friendshipStatus: Friendship
         FriendshipStatus.FRIEND -> MaterialTheme.colorScheme.onSurface
     }
 
+    val text = when (friendshipStatus) {
+        null -> "Kết bạn"
+        FriendshipStatus.SENT -> "Huỷ lời mời"
+        FriendshipStatus.RECEIVED -> "Phản hồi"
+        FriendshipStatus.FRIEND -> "Bạn bè"
+    }
+
     // Button with dynamic colors
     CustomButton(
-        onClick = friendshipInfo.action,
+        onClick = {
+            println("cccc")
+            when (friendshipStatus) {
+                null -> {
+                    friendViewModel.sendFriendRequest(userId)
+                    userViewModel.updateFriendStatus(userId, FriendshipStatus.SENT)
+                }
+                FriendshipStatus.SENT -> {
+                    friendViewModel.takeBackFriendRequest(userId)
+                    userViewModel.updateFriendStatus(userId, null)
+                }
+                FriendshipStatus.RECEIVED -> {
+                    isReplyOpen = true
+                }
+                FriendshipStatus.FRIEND -> {
+                    isUnfriendOpen = true
+                }
+            }
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = contentColor
         ),
     ) {
-        Text(friendshipInfo.text)
+        Text(text)
+    }
+
+    val replyOptions = listOf("Chấp nhận", "Từ chối")
+    CustomModalBottomSheet(
+        isSheetOpen = isReplyOpen,
+        onDismissRequest = { isReplyOpen = false },
+        options = replyOptions
+        ) { selectedOption ->
+        if (selectedOption == "Chấp nhận") {
+            friendViewModel.acceptFriendRequest(userId)
+            userViewModel.updateFriendStatus(userId, FriendshipStatus.FRIEND)
+        } else {
+            friendViewModel.rejectFriendRequest(userId)
+            userViewModel.updateFriendStatus(userId, null)
+        }
+    }
+
+    val unFriendOption = listOf("Huỷ kết bạn")
+    CustomModalBottomSheet(
+        isSheetOpen = isUnfriendOpen,
+        onDismissRequest = { isUnfriendOpen = false },
+        options = unFriendOption
+    ) {
+        friendViewModel.unfriend(userId)
+        userViewModel.updateFriendStatus(userId, null)
     }
 }
 
