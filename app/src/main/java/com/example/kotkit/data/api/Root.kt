@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-//
+//Long's IP
 //const val BASE_URL = "http://192.168.1.7:8080/"
 
 // Tin's IP
