@@ -1,13 +1,10 @@
 package com.example.kotkit.presentation.components
 
 import android.util.Log
-import android.view.SurfaceHolder
-import android.view.SurfaceView
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,8 +22,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import androidx.media3.ui.AspectRatioFrameLayout
-import com.example.kotkit.data.api.BASE_URL
 import com.example.kotkit.data.api.BASE_URL_MINIO
 import com.example.kotkit.data.model.Video
 import com.example.kotkit.data.viewmodel.UploadVideoViewModel
