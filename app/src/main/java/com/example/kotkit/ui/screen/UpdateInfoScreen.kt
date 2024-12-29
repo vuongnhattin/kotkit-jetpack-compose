@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -63,8 +65,6 @@ fun UpdateInfoScreen(modifier: Modifier = Modifier) {
 
     var email by remember { mutableStateOf("") }
     var fullName by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordConfirm by remember { mutableStateOf("") }
     var birthday by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
     var genderExpanded by remember { mutableStateOf(false) }
@@ -90,10 +90,6 @@ fun UpdateInfoScreen(modifier: Modifier = Modifier) {
     var fullNameError by remember { mutableStateOf("") }
 
     var isInitialized by remember { mutableStateOf(false) }
-
-    val loginState = authViewModel.registerResponse
-    val isLoading = loginState is ApiState.Loading
-    val horizontalSpace = 8.dp
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = {
@@ -167,7 +163,7 @@ fun UpdateInfoScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth()
                             .onFocusChanged { focusState ->
                                 if (focusState.hasFocus) {
-                                    authViewModel.resetRegisterState()
+                                    userViewModel.resetUpdateInfoState()
                                     fullNameError = ""
                                 }
                             })
@@ -197,7 +193,6 @@ fun UpdateInfoScreen(modifier: Modifier = Modifier) {
                     )
                     Box(
                         modifier = Modifier.fillMaxWidth()
-//            .weight(1f)
                     ) {
                         OutlinedTextField(
                             gender,
@@ -234,8 +229,18 @@ fun UpdateInfoScreen(modifier: Modifier = Modifier) {
     DisplayApiResult(
         state = updateInfoState
     ) {
-        userViewModel.resetUpdateInfoState()
-        navController.popBackStack()
+        AlertDialog(
+            onDismissRequest = { },
+            title = { Text("Thông báo") },
+            text = { Text("Cập nhật thông tin thành công") },
+            confirmButton = {
+                Button(onClick = {
+                    userViewModel.resetUpdateInfoState()
+                    navController.popBackStack()
+                }) {
+                    Text("Đồng ý")
+                }
+            })
     }
 }
 

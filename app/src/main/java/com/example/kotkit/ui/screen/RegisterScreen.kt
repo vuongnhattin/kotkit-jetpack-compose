@@ -32,6 +32,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -188,6 +189,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                     imeAction = ImeAction.Done
                 ),
                 supportingText = { Text(passwordError) },
+                visualTransformation = PasswordVisualTransformation()
             )
             OutlinedTextField(
                 passwordConfirm,
@@ -212,6 +214,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                     imeAction = ImeAction.Done
                 ),
                 supportingText = { Text(passwordConfirmError) },
+                visualTransformation = PasswordVisualTransformation()
             )
         }
         Row(

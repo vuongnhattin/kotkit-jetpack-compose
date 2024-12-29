@@ -27,6 +27,7 @@ import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.ui.screen.BottomNavigationBar
 import com.example.kotkit.ui.screen.CameraScreen
+import com.example.kotkit.ui.screen.ChangePasswordScreen
 import com.example.kotkit.ui.screen.ChatScreen
 import com.example.kotkit.ui.screen.HomeScreen
 import com.example.kotkit.ui.screen.NotificationScreen
@@ -140,6 +141,7 @@ fun MyApp(modifier: Modifier = Modifier) {
                 composable("profile") { MeProfileScreen() }
                 composable("setting") { SettingsScreen() }
                 composable("update-info") { UpdateInfoScreen() }
+                composable("change-password") { ChangePasswordScreen() }
                 composable("search/{query}") { backStackEntry ->
                     val query = backStackEntry.arguments?.getString("query") ?: ""
                     SearchScreen(query = query)
