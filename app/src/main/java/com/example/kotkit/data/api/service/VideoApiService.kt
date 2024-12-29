@@ -14,8 +14,11 @@ interface VideoApiService {
     @GET("videos/videos-of-user")
     suspend fun getVideosOfUser(
         @Query("userId") userId: Int,
-        @Query("visibility") visibility: String,
+        @Query("mode") mode: String,
     ): ApiResponse<List<Video>>
+
+    @GET("saved-videos")
+    suspend fun getSavedVideos(): ApiResponse<List<Video>>
 
     @GET("videos/public-videos")
     suspend fun getAllPublicVideos(
@@ -40,6 +43,7 @@ interface VideoApiService {
         @Part thumbnail: MultipartBody.Part?,
         @Part video: MultipartBody.Part
     ): ApiResponse<Video>
+
     @GET("videos/search")
     suspend fun searchVideos(
         @Query("q") query: String

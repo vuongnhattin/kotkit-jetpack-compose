@@ -57,11 +57,13 @@ import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.constant.secondaryButtonColor
 import com.example.kotkit.ui.constant.topAppBarTitleStyle
+import com.example.kotkit.ui.icon.Bookmark
 import com.example.kotkit.ui.icon.Lock
 import com.example.kotkit.ui.icon.Public
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.icon.Share
 import com.example.kotkit.ui.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.ErrorSnackBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,7 +146,7 @@ fun ProfileContent(
     ) {
         Column(
             modifier = Modifier
-                .weight(3.5f)
+                .weight(if (!isMe) 3.5f else 4f)
                 .fillMaxSize()
         ) {
             UserInfoSection(
@@ -253,7 +255,8 @@ fun UserInfoSection(
 fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails, isMe: Boolean) {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
-    val tabs = listOf(Public, Lock)
+    val tabs = mutableListOf(Public, Lock)
+    if (isMe) tabs.add(Bookmark)
 
     Column(modifier = modifier) {
         TabRow(selectedTabIndex = selectedIndex, indicator = { tabPositions ->
@@ -279,25 +282,45 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails,
     val videoViewModel: VideoViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
-//        videoViewModel.getPublicVideosOfUser(userDetails.id)
-//        videoViewModel.getPrivateVideosOfUser(userDetails.id)
+        videoViewModel.getPublicVideosOfUser(userDetails.userId)
+        videoViewModel.getPrivateVideosOfUser(userDetails.userId)
+        if (isMe) videoViewModel.getSavedVideos()
     }
 
     when (selectedIndex) {
         0 -> {
-            VideoThumbnails(videosState = videoViewModel.publicVideos)
+            VideoThumbnails(videosState = videoViewModel.publicVideosOfUser)
         }
 
         1 -> {
-            VideoThumbnails(videosState = videoViewModel.privateVideos)
+            VideoThumbnails(videosState = videoViewModel.privateVideosOfUser)
+        }
+
+        2 -> {
+            VideoThumbnails(videosState = videoViewModel.savedVideos)
         }
     }
 }
 
 @Composable
 fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Video>>) {
-    DisplayApiResult(videosState, onError = {
-        Text("Bạn phải kết bạn với người này để xem được video riêng tư của họ")
+    DisplayApiResult(videosState, onError = { error ->
+        when (error.code) {
+            "IS_NOT_FRIEND" -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(Lock, contentDescription = null, modifier = Modifier.size(48.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Bạn phải kết bạn với người này để xem được video riêng tư của họ", textAlign = TextAlign.Center, color = Color.Gray)
+                }
+            }
+            else -> ErrorSnackBar("Có lỗi xảy ra")
+        }
     }) { state ->
         val videos = state.data!!
 
