@@ -23,4 +23,7 @@ interface UserApiService {
     suspend fun getFriendsOfUser(
         @Path("userId") userId: Int
     ): ApiResponse<List<UserDetails>>
+
+    @GET("me")
+    suspend fun getMe(): ApiResponse<UserDetails>
 }

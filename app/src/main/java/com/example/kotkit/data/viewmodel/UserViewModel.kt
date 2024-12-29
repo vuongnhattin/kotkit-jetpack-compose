@@ -72,6 +72,12 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun getMe() {
+        fetchApi(stateSetter = { userDetails = it }) {
+            userApiService.getMe()
+        }
+    }
+
     fun getFriendsOfUser(userId: Int) {
         fetchApi(stateSetter = { listUserDetails = it }) {
 //            val response = UserMock.users
