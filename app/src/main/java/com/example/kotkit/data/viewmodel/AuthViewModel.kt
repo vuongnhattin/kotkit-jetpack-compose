@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.AuthApiService
+import com.example.kotkit.data.dto.input.ChangePasswordInput
 import com.example.kotkit.data.dto.input.LoginInput
 import com.example.kotkit.data.dto.input.RegisterInput
 import com.example.kotkit.data.localstorage.TokenManager
@@ -24,6 +25,17 @@ class AuthViewModel @Inject constructor(
 
     var loginResponse by mutableStateOf<ApiState<LoginResponse>>(ApiState.Empty())
     var registerResponse by mutableStateOf<ApiState<Void>>(ApiState.Empty())
+    var changePasswordResponse by mutableStateOf<ApiState<Void>>(ApiState.Empty())
+
+    fun changePassword(oldPassword: String, newPassword: String) {
+        fetchApi({ changePasswordResponse = it }) {
+            authApiService.changePassword(ChangePasswordInput(oldPassword, newPassword))
+        }
+    }
+
+    fun resetChangePasswordState() {
+        changePasswordResponse = ApiState.Empty()
+    }
 
     fun getEmailOfMe(): String {
         return tokenManager.getCurrentUsername()
