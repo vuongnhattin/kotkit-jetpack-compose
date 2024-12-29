@@ -69,7 +69,9 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
             SettingsContent()
         }
@@ -79,11 +81,14 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 @Composable
 fun SettingsContent() {
     val authViewModel = LocalAuthViewModel.current
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    val navController = LocalNavController.current
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         Section(
             title = "Tài khoản",
             items = listOf(
-                SettingItem(User, "Sửa thông tin"),
+                SettingItem(User, "Sửa thông tin", { navController.navigate("update-info") }),
                 SettingItem(Lock, "Đổi mật khẩu"),
             )
         )

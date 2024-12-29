@@ -40,6 +40,7 @@ import com.example.kotkit.ui.screen.LoginScreen
 import com.example.kotkit.ui.screen.MeProfileTopBar
 import com.example.kotkit.ui.screen.RegisterScreen
 import com.example.kotkit.ui.screen.SettingsScreen
+import com.example.kotkit.ui.screen.UpdateInfoScreen
 import com.example.kotkit.ui.screen.UploadVideoScreen
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
@@ -138,6 +139,7 @@ fun MyApp(modifier: Modifier = Modifier) {
                 composable("notification") { NotificationScreen() }
                 composable("profile") { MeProfileScreen() }
                 composable("setting") { SettingsScreen() }
+                composable("update-info") { UpdateInfoScreen() }
                 composable("search/{query}") { backStackEntry ->
                     val query = backStackEntry.arguments?.getString("query") ?: ""
                     SearchScreen(query = query)

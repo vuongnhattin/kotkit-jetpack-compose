@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -46,9 +47,10 @@ fun CustomModalBottomSheet(
                                 onOptionSelected(option)
                                 onDismissRequest() // Close the sheet
                             }
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                     )
-                    HorizontalDivider()
+                    HorizontalDivider(thickness =0.4.dp)
                 }
             }
         }

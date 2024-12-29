@@ -238,7 +238,7 @@ fun UserInfoSection(
             } else {
                 CustomButton(
                     onClick = {
-
+                        navController.navigate("update-info")
                     },
                     colors = secondaryButtonColor(),
                 ) {
