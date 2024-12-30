@@ -34,6 +34,7 @@ class VideoViewModel @Inject constructor(
         private set
 
     var likedVideosList by mutableStateOf<List<Int>>(emptyList())
+        private set
 
     var publicVideosOfUser by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
@@ -42,6 +43,12 @@ class VideoViewModel @Inject constructor(
         private set
 
     var savedVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+        private set
+
+    var savedVideosList by mutableStateOf<List<Int>>(emptyList())
+        private set
+
+    var updateSaveVideo by mutableStateOf<ApiState<Video>>(ApiState.Empty())
         private set
 
     fun getPublicVideosOfUser(userId: Int) {
@@ -58,8 +65,14 @@ class VideoViewModel @Inject constructor(
     }
 
     fun getSavedVideos() {
-        fetchApi(stateSetter = { savedVideos = it }) {
-            videoApiService.getSavedVideos()
+        fetchApi(stateSetter = { state ->
+            savedVideos = state
+            if (state is ApiState.Success) {
+                savedVideosList = state.data?.map { it.videoId } ?: emptyList()
+            }
+        }) {
+            val response = videoApiService.getSavedVideos()
+            response
         }
     }
 
@@ -109,7 +122,9 @@ class VideoViewModel @Inject constructor(
 
     fun isVideoLiked(videoId: Int): Boolean = likedVideosList.contains(videoId)
 
-    fun updateNumberOfLikes(videoId: Int) {
+    fun isVideoSaved(videoId: Int): Boolean = savedVideosList.contains(videoId)
+
+    fun updateLikeVideoState(videoId: Int) {
         fetchApi(stateSetter = { newState ->
             updateLikeVideo = newState
 
@@ -129,7 +144,24 @@ class VideoViewModel @Inject constructor(
                 }
             }
         }) {
-            val response = videoApiService.updateNumberOfLikes(videoId)
+            val response = videoApiService.updateLikeVideoState(videoId)
+            response
+        }
+    }
+
+    fun updateSaveVideoState(videoId: Int) {
+        fetchApi(stateSetter = { newState ->
+            updateSaveVideo = newState
+
+            if (newState is ApiState.Success) {
+                savedVideosList = if (savedVideosList.contains(videoId)) {
+                    savedVideosList - videoId
+                } else {
+                    savedVideosList + videoId
+                }
+            }
+        }) {
+            val response = videoApiService.updateSaveVideoState(videoId)
             response
         }
     }
@@ -138,7 +170,6 @@ class VideoViewModel @Inject constructor(
         fetchApi(stateSetter = { state ->
             likedVideos = state
             if (state is ApiState.Success) {
-                // Cập nhật danh sách videoId đã like
                 likedVideosList = state.data?.map { it.videoId } ?: emptyList()
             }
         }) {
