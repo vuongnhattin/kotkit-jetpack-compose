@@ -54,6 +54,8 @@ private fun TopBar(
 ) {
     Row(modifier = modifier) {
         TabRow(
+            modifier = Modifier
+                .weight(1f),
             selectedTabIndex = selectedTabIndex,
             containerColor = Color.Transparent,
             contentColor = Color.White
@@ -69,8 +71,8 @@ private fun TopBar(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 32.dp),
+                .weight(0.2f)
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp),
         ) {
             IconButton(onClick = onSearchClick) {
                 Icon(
@@ -119,13 +121,9 @@ private fun VideoContent(
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val videoUri = Uri.parse("android.resource://${context.packageName}/raw/video_test")
     val navController = LocalNavController.current
     val commentViewModel: CommentViewModel = hiltViewModel()
     val videoViewModel: VideoViewModel = hiltViewModel()
-
-    val publicVideos = VideoMockData.videos.filter { it.mode == VideoMode.PUBLIC }
-    val privateVideos = VideoMockData.videos.filter { it.mode == VideoMode.PRIVATE }
 
     val publicVideosState = videoViewModel.publicVideos
     val privateVideosState = videoViewModel.privateVideos

@@ -143,7 +143,7 @@ fun SearchScreenTabRow(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 8.dp)
+                .padding(top = 2.dp)
         ) {
             when (selectedIndex) {
                 0 -> {
@@ -174,11 +174,12 @@ fun VideoSearchResult(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = 2.dp)
         ) {
             VideoDetailsList(
                 videos =  res.data!!,
-                navController = navController
+                navController = navController,
+
             )
         }
     }
@@ -202,7 +203,7 @@ fun UserSearchResult(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = 5.dp)
         ) {
             UserList(
                 users =  res.data!!,
