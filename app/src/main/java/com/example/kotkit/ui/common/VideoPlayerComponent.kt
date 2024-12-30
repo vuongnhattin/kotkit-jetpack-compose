@@ -22,6 +22,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.example.kotkit.LocalVideoViewModel
 import com.example.kotkit.data.api.BASE_URL_MINIO
 import com.example.kotkit.data.model.Video
 import com.example.kotkit.data.viewmodel.UploadVideoViewModel
@@ -77,7 +78,7 @@ fun VideoPlayerComponent(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val videoViewModel: VideoViewModel = hiltViewModel()
+    val videoViewModel = LocalVideoViewModel.current
     var showComments by remember { mutableStateOf(false) }
 
     val exoPlayer = remember {
