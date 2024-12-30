@@ -24,4 +24,3 @@ fun retrofit(tokenManager: TokenManager): Retrofit {
         .build()
 }
 
-

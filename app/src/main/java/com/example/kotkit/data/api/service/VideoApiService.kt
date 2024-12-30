@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface VideoApiService {
@@ -47,5 +48,14 @@ interface VideoApiService {
     @GET("videos/search")
     suspend fun searchVideos(
         @Query("q") query: String
+    ): ApiResponse<List<Video>>
+
+    @POST("videos/{videoId}/like")
+    suspend fun updateNumberOfLikes(
+        @Path("videoId") videoId: Int
+    ): ApiResponse<Video>
+
+    @GET("videos/liked")
+    suspend fun getAllLikedVideos(
     ): ApiResponse<List<Video>>
 }
