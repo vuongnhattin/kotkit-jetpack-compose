@@ -46,10 +46,13 @@ class VideoViewModel @Inject constructor(
     var publicVideosOfUser by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
-    var privateVideosOfUser by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+    var friendVideosOfUser by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
-    var savedVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+    var privateVideosOfMe by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+        private set
+
+    var savedVideosOfMe by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
     var savedVideosList by mutableStateOf<List<Int>>(emptyList())
@@ -61,37 +64,43 @@ class VideoViewModel @Inject constructor(
     fun getPublicVideosOfUser(userId: Int) {
         fetchApi(stateSetter = { publicVideosOfUser = it }) {
             // This is api call
-            videoApiService.getVideosOfUser(userId, "public")
+            videoApiService.getVideosOfUser(userId, "PUBLIC")
         }
     }
 
-    fun getPrivateVideosOfUser(userId: Int) {
-        fetchApi(stateSetter = { privateVideosOfUser = it }) {
-            videoApiService.getVideosOfUser(userId, "private")
+    fun getFriendVideosOfUser(userId: Int) {
+        fetchApi(stateSetter = { friendVideosOfUser = it }) {
+            videoApiService.getVideosOfUser(userId, "FRIEND")
         }
     }
 
-    fun getSavedVideos() {
+    fun getPrivateVideosOfMe() {
+        fetchApi(stateSetter = { privateVideosOfMe = it }) {
+            videoApiService.getPrivateVideosOfMe()
+        }
+    }
+
+    fun getSavedVideosOfMe() {
         fetchApi(stateSetter = { state ->
-            savedVideos = state
+            savedVideosOfMe = state
             if (state is ApiState.Success) {
                 savedVideosList = state.data?.map { it.videoId } ?: emptyList()
             }
         }) {
-            val response = videoApiService.getSavedVideos()
+            val response = videoApiService.getSavedVideosOfMe()
             response
         }
     }
 
     fun getAllPublicVideos() {
-        fetchApi(stateSetter = { publicVideos = it}) {
+        fetchApi(stateSetter = { publicVideos = it }) {
             val response = videoApiService.getAllPublicVideos()
             response
         }
     }
 
     fun getAllPrivateVideos() {
-        fetchApi(stateSetter = { privateVideos = it}) {
+        fetchApi(stateSetter = { privateVideos = it }) {
             val response = videoApiService.getAllPrivateVideos()
             response
         }
@@ -104,9 +113,9 @@ class VideoViewModel @Inject constructor(
         }
     }
 
-    fun searchVideos(query: String){
+    fun searchVideos(query: String) {
         fetchApi(
-            stateSetter = {searchVideos = it},
+            stateSetter = { searchVideos = it },
             apiCall = {
                 val response = videoApiService.searchVideos(query)
                 response
@@ -114,7 +123,10 @@ class VideoViewModel @Inject constructor(
         )
     }
 
-    private fun updateVideoInList(videos: ApiState<List<Video>>, updatedVideo: Video): ApiState<List<Video>> {
+    private fun updateVideoInList(
+        videos: ApiState<List<Video>>,
+        updatedVideo: Video
+    ): ApiState<List<Video>> {
         return when (videos) {
             is ApiState.Success -> {
                 ApiState.Success(
@@ -123,6 +135,7 @@ class VideoViewModel @Inject constructor(
                     }
                 )
             }
+
             else -> videos
         }
     }
@@ -173,14 +186,14 @@ class VideoViewModel @Inject constructor(
         }
     }
 
-    fun getAllLikedVideos() {
+    fun getLikedVideosOfMe() {
         fetchApi(stateSetter = { state ->
             likedVideos = state
             if (state is ApiState.Success) {
                 likedVideosList = state.data?.map { it.videoId } ?: emptyList()
             }
         }) {
-            val response = videoApiService.getAllLikedVideos()
+            val response = videoApiService.getLikedVideosOfMe()
             response
         }
     }
