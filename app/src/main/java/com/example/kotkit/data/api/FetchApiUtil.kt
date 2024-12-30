@@ -19,7 +19,7 @@ fun <T> ViewModel.fetchApi(
 
     viewModelScope.launch {
         try {
-            delay(300)
+            delay(0)
             val result = apiCall()
             stateSetter(ApiState.Success(result.data, result.status, result.code))
 

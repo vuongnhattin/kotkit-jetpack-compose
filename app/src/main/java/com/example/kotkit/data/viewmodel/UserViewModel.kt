@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.UserApiService
+import com.example.kotkit.data.dto.input.UpdateInfoInput
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.mock.UserMock
 import com.example.kotkit.data.dto.response.ApiResponse
@@ -25,6 +26,8 @@ class UserViewModel @Inject constructor(
         private set
 
     var filteredListUser by mutableStateOf<List<UserDetails>>(emptyList())
+
+    var updateInfoResponse by mutableStateOf<ApiState<UserDetails>>(ApiState.Empty())
 
     fun searchUsers(query: String) {
         fetchApi(
@@ -70,6 +73,22 @@ class UserViewModel @Inject constructor(
             val response = userApiService.getUserDetails(userId)
             response
         }
+    }
+
+    fun getMe() {
+        fetchApi(stateSetter = { userDetails = it }) {
+            userApiService.getMe()
+        }
+    }
+
+    fun updateMe(updateInfoInput: UpdateInfoInput) {
+        fetchApi(stateSetter = { updateInfoResponse = it }) {
+            userApiService.updateMe(updateInfoInput)
+        }
+    }
+
+    fun resetUpdateInfoState() {
+        updateInfoResponse = ApiState.Empty()
     }
 
     fun getFriendsOfUser(userId: Int) {
