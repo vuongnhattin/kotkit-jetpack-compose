@@ -32,7 +32,7 @@ import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.common.UserList
-import com.example.kotkit.ui.constant.TopAppBarTitleStyle
+import com.example.kotkit.ui.constant.topAppBarTitleStyle
 import com.example.kotkit.ui.icon.Search
 import com.example.kotkit.ui.utils.DisplayApiResult
 
@@ -58,7 +58,7 @@ fun ListFriendScreen(modifier: Modifier = Modifier, userId: Int) {
                         title = {
                             Text(
                                 user.data?.email ?: "",
-                                style = TopAppBarTitleStyle()
+                                style = topAppBarTitleStyle()
                             )
                         },
                         navigationIcon = {

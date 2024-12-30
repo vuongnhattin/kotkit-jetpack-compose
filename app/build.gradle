@@ -93,6 +93,8 @@ dependencies {
     implementation "androidx.camera:camera-view:$camerax_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
     implementation "io.coil-kt:coil-compose:2.5.0"
+
+    implementation libs.dotenv.kotlin
 }
 
 // Allow references to generated code

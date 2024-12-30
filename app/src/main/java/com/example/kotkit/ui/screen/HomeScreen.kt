@@ -135,6 +135,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         videoViewModel.getAllVideos()
         videoViewModel.getAllPublicVideos()
         videoViewModel.getAllPrivateVideos()
+        videoViewModel.getAllLikedVideos()
     }
 
     DisposableEffect(Unit) {

@@ -10,12 +10,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 //const val BASE_URL = "http://192.168.1.7:8080/"
 
 // Tin's IP
-const val BASE_URL = "http://10.0.2.2:8080"
-//const val BASE_URL = "http://172.20.10.3:8080/"
+//const val BASE_URL = "http://192.168.241.167"
 
-const val BASE_URL_EMULATOR = "http://10.0.2.2:8080/"
-const val BASE_URL_REMOTE_DEVICE = "http://192.168.1.214:8080/"
-const val BASE_URL_MINIO = "http://10.0.2.2:9001"
+// emulator's IP
+const val BASE_URL = "http://10.0.2.2"
+
+const val BACKEND_URL = "${BASE_URL}:8080/"
+const val BASE_URL_MINIO = "${BASE_URL}:9001"
+// BASE_URL_MINIO khong co dau / o cuoi nhe dm Tin
 
 fun retrofit(tokenManager: TokenManager): Retrofit {
     val okHttpClient = OkHttpClient.Builder()
@@ -23,7 +25,7 @@ fun retrofit(tokenManager: TokenManager): Retrofit {
         .build()
 
     return Retrofit.Builder()
-        .baseUrl(BASE_URL) // Replace with your base URL
+        .baseUrl(BACKEND_URL) // Replace with your base URL
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create()) // Use appropriate converter
         .build()

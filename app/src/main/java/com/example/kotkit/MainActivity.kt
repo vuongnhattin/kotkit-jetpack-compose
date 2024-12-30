@@ -1,7 +1,6 @@
 package com.example.kotkit
 
 import android.app.Application
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,15 +9,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -32,10 +28,11 @@ import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.screen.BottomNavigationBar
 import com.example.kotkit.ui.screen.CameraScreen
+import com.example.kotkit.ui.screen.ChangePasswordScreen
 import com.example.kotkit.ui.screen.ChatScreen
 import com.example.kotkit.ui.screen.HomeScreen
 import com.example.kotkit.ui.screen.NotificationScreen
-import com.example.kotkit.ui.screen.ProfileScreen
+import com.example.kotkit.ui.screen.MeProfileScreen
 import com.example.kotkit.ui.screen.SearchResultScreen
 import com.example.kotkit.ui.screen.SearchScreen
 import com.example.kotkit.ui.screen.UserProfileScreen
@@ -44,7 +41,10 @@ import com.example.kotkit.ui.screen.ListFriendScreen
 import com.example.kotkit.ui.screen.LoginScreen
 import com.example.kotkit.ui.screen.PlayVideoScreen
 import com.example.kotkit.ui.screen.PlayVideoScreen
+import com.example.kotkit.ui.screen.MeProfileTopBar
 import com.example.kotkit.ui.screen.RegisterScreen
+import com.example.kotkit.ui.screen.SettingsScreen
+import com.example.kotkit.ui.screen.UpdateInfoScreen
 import com.example.kotkit.ui.screen.UploadVideoScreen
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
@@ -96,6 +96,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
@@ -112,12 +113,16 @@ fun MyApp(modifier: Modifier = Modifier) {
                 if (currentRoute in screensWithBottomNav) {
                     BottomNavigationBar()
                 }
+            },
+            topBar = {
+                if (currentRoute == "profile") {
+                    MeProfileTopBar()
+                }
             }
         ) { innerPadding ->
             NavHost(
                 navController = navController,
                 startDestination = if (authViewModel.isAuthenticated) "home" else "login",
-//            startDestination = "login",
                 enterTransition = { EnterTransition.None },
                 exitTransition = { ExitTransition.None },
                 modifier = if (currentRoute in screensWithBottomNav) {
@@ -134,14 +139,18 @@ fun MyApp(modifier: Modifier = Modifier) {
                     "upload-video/{videoUri}",
                     arguments = listOf(navArgument("videoUri") { type = NavType.StringType })
                 ) { backStackEntry ->
-                    val videoUri = backStackEntry.arguments?.getString("videoUri")?.let { Uri.parse(it) }
+                    val videoUri =
+                        backStackEntry.arguments?.getString("videoUri")?.let { Uri.parse(it) }
                     UploadVideoScreen(
                         videoUri = videoUri,
                     )
                 }
                 composable("chat") { ChatScreen() }
                 composable("notification") { NotificationScreen() }
-                composable("profile") { ProfileScreen() }
+                composable("profile") { MeProfileScreen() }
+                composable("setting") { SettingsScreen() }
+                composable("update-info") { UpdateInfoScreen() }
+                composable("change-password") { ChangePasswordScreen() }
                 composable("search/{query}") { backStackEntry ->
                     val query = backStackEntry.arguments?.getString("query") ?: ""
                     SearchScreen(query = query)

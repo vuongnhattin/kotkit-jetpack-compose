@@ -20,10 +20,10 @@ fun CustomButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = MaterialTheme.shapes.medium,
-    colors: ButtonColors = ButtonDefaults. buttonColors(),
-    elevation: ButtonElevation? = ButtonDefaults. buttonElevation(),
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = ButtonDefaults. ContentPadding,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable() (RowScope.() -> Unit)
 ) {

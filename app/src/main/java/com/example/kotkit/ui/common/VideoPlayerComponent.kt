@@ -1,13 +1,10 @@
 package com.example.kotkit.presentation.components
 
 import android.util.Log
-import android.view.SurfaceHolder
-import android.view.SurfaceView
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,40 +16,44 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import androidx.media3.ui.AspectRatioFrameLayout
-import com.example.kotkit.data.api.BASE_URL
 import com.example.kotkit.data.api.BASE_URL_MINIO
 import com.example.kotkit.data.model.Video
+import com.example.kotkit.data.viewmodel.UploadVideoViewModel
+import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.icon.Comment
 import com.example.kotkit.ui.icon.DotsHorizontal
 import com.example.kotkit.ui.icon.Heart
 import com.example.kotkit.ui.icon.PersonCircle
 import com.example.kotkit.ui.icon.Save
 import com.example.kotkit.ui.icon.Share
+import com.example.kotkit.ui.screen.CommentScreen
 import com.example.kotkit.ui.utils.FormatUtils.formatNumber
 import com.example.kotkit.ui.utils.FormatUtils.formatVideoUrl
 
-// icon tim va so tim, icon comment va so comment...
 @Composable
 private fun ActionComponent(
     icon: ImageVector,
     count: Int? = null,
     onClick: () -> Unit,
+    liked: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.clickable { onClick() }
+        modifier = modifier
+            .clickable { onClick() }
+            .padding(vertical = 4.dp)
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color.White,
+            tint = if (liked) Color.Red else Color.White,
             modifier = Modifier.size(32.dp)
         )
 
@@ -60,7 +61,8 @@ private fun ActionComponent(
             Text(
                 text = formatNumber(count),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White
+                color = Color.White,
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
@@ -72,10 +74,10 @@ fun VideoPlayerComponent(
     video: Video,
     modifier: Modifier = Modifier,
 ) {
-
     val context = LocalContext.current
+    val videoViewModel: VideoViewModel = hiltViewModel()
+    var showComments by remember { mutableStateOf(false) }
 
-    // ExoPlayer setup
     val exoPlayer = remember {
         ExoPlayer.Builder(context)
             .setLoadControl(
@@ -105,7 +107,7 @@ fun VideoPlayerComponent(
     }
 
     LaunchedEffect(Unit) {
-        Log.i("Tan", "Lauch")
+        Log.i("Tan", "${formatVideoUrl(video.videoUrl)}")
         try {
             exoPlayer.setMediaItem(MediaItem.fromUri(formatVideoUrl(video.videoUrl)))
             exoPlayer.prepare()
@@ -113,7 +115,6 @@ fun VideoPlayerComponent(
         } catch (e: Exception) {
             Log.i("VideoPlayerComponent", "Error loading video: ${e.message}")
         }
-
     }
 
     Box(modifier = modifier
@@ -144,31 +145,55 @@ fun VideoPlayerComponent(
             )
         }
 
+        // Comment component displayed from the bottom
+        if (showComments) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.5f) // Half of the screen
+                    .background(Color.White)
+                    .align(Alignment.BottomCenter)
+            ) {
+                CommentScreen(
+                    viewModel = hiltViewModel(),
+                    videoId = 1,
+                    onClose = { showComments = false }
+                )
+            }
+        }
+
+        // Action buttons column
         Column(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(vertical = 4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 8.dp, vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
             // Avatar
             ActionComponent(
                 icon = PersonCircle,
-                onClick = { }
+                onClick = { },
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
             // React Button
             ActionComponent(
                 icon = Heart,
                 count = video.numberOfLikes,
-                onClick = { }
+                liked = videoViewModel.isVideoLiked(video.videoId),
+                onClick = {
+                    videoViewModel.updateNumberOfLikes(video.videoId)
+                }
             )
 
             // Comment Button
             ActionComponent(
                 icon = Comment,
                 count = video.numberOfComments,
-                onClick = { }
+                onClick = {
+                    showComments = true
+                }
             )
 
             // Share Button
