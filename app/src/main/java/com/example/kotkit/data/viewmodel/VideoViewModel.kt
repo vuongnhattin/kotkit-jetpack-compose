@@ -23,8 +23,16 @@ class VideoViewModel @Inject constructor(
 
     var allVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Loading())
         private set
+
     var searchVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
+
+    var selectedVideoToPlay by mutableStateOf<Video?>(null)
+        private set
+
+    fun selectVideoToPlay(video: Video) {
+        selectedVideoToPlay = video
+    }
 
 //    fun getPublicVideosOfUser(userId: Int) {
 //        fetchApi(stateSetter = { publicVideos = it }) {

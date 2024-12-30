@@ -40,6 +40,7 @@ interface VideoApiService {
         @Part thumbnail: MultipartBody.Part?,
         @Part video: MultipartBody.Part
     ): ApiResponse<Video>
+
     @GET("videos/search")
     suspend fun searchVideos(
         @Query("q") query: String

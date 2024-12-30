@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.data.viewmodel.UserViewModel
+import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.screen.BottomNavigationBar
 import com.example.kotkit.ui.screen.CameraScreen
 import com.example.kotkit.ui.screen.ChatScreen
@@ -41,6 +42,8 @@ import com.example.kotkit.ui.screen.UserProfileScreen
 import com.example.kotkit.ui.theme.KotkitTheme
 import com.example.kotkit.ui.screen.ListFriendScreen
 import com.example.kotkit.ui.screen.LoginScreen
+import com.example.kotkit.ui.screen.PlayVideoScreen
+import com.example.kotkit.ui.screen.PlayVideoScreen
 import com.example.kotkit.ui.screen.RegisterScreen
 import com.example.kotkit.ui.screen.UploadVideoScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,6 +69,10 @@ val LocalUserViewModel = staticCompositionLocalOf<UserViewModel> {
     error("UserViewModel is not provided")
 }
 
+val LocalVideoViewModel = staticCompositionLocalOf<VideoViewModel> {
+    error("VideoViewModel is not provided")
+}
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,9 +83,11 @@ class MainActivity : ComponentActivity() {
             KotkitTheme {
                 val authViewModel: AuthViewModel = hiltViewModel()
                 val userViewModel: UserViewModel = hiltViewModel()
+                val videoViewModel: VideoViewModel = hiltViewModel()
                 CompositionLocalProvider(
                     LocalAuthViewModel provides authViewModel,
-                    LocalUserViewModel provides userViewModel
+                    LocalUserViewModel provides userViewModel,
+                    LocalVideoViewModel provides videoViewModel,
                 ) {
                     MyApp()
                 }
@@ -149,6 +158,7 @@ fun MyApp(modifier: Modifier = Modifier) {
                     val userId = backStackEntry.arguments?.getString("userId")?.toInt() ?: 0
                     ListFriendScreen(userId = userId)
                 }
+                composable("search-result/video") { PlayVideoScreen() }
             }
         }
     }

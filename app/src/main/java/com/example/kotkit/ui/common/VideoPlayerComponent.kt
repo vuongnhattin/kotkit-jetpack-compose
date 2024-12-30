@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.annotation.OptIn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -33,6 +34,8 @@ import com.example.kotkit.ui.icon.Heart
 import com.example.kotkit.ui.icon.PersonCircle
 import com.example.kotkit.ui.icon.Save
 import com.example.kotkit.ui.icon.Share
+import com.example.kotkit.ui.utils.FormatUtils.formatNumber
+import com.example.kotkit.ui.utils.FormatUtils.formatVideoUrl
 
 // icon tim va so tim, icon comment va so comment...
 @Composable
@@ -55,19 +58,11 @@ private fun ActionComponent(
 
         if (count != null) {
             Text(
-                text = formatCount(count),
+                text = formatNumber(count),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White
             )
         }
-    }
-}
-
-private fun formatCount(count: Int): String {
-    return when {
-        count >= 1_000_000 -> String.format("%.1fM", count / 1_000_000.0)
-        count >= 1_000 -> String.format("%.1fK", count / 1_000.0)
-        else -> count.toString()
     }
 }
 
@@ -112,7 +107,6 @@ fun VideoPlayerComponent(
     LaunchedEffect(Unit) {
         Log.i("Tan", "Lauch")
         try {
-            Log.i("VideoPlayerComponent", "video url ${formatVideoUrl(video.videoUrl)}")
             exoPlayer.setMediaItem(MediaItem.fromUri(formatVideoUrl(video.videoUrl)))
             exoPlayer.prepare()
             exoPlayer.playWhenReady = true
@@ -122,7 +116,10 @@ fun VideoPlayerComponent(
 
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier
+        .background(Color.Black)
+        .fillMaxSize()
+    ) {
         // Video Player
         AndroidView(
             factory = { context ->
@@ -193,8 +190,4 @@ fun VideoPlayerComponent(
             )
         }
     }
-}
-
-private fun formatVideoUrl(videoUrl: String) : String {
-    return BASE_URL_MINIO + videoUrl;
 }

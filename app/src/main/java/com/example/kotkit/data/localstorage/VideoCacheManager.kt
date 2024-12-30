@@ -49,9 +49,4 @@ class VideoCacheManager(context: Context) {
         cachedVideoQueue.clear()
         cache.release()
     }
-
-//
-//    private fun extractVideoId(cacheKey: String): String {
-//        return cacheKey.substringAfterLast("/")
-//    }
 }
