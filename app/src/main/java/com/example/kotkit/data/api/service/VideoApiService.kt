@@ -18,23 +18,22 @@ interface VideoApiService {
         @Query("mode") mode: String,
     ): ApiResponse<List<Video>>
 
-    @GET("saved-videos")
+    @GET("videos/saved")
     suspend fun getSavedVideos(): ApiResponse<List<Video>>
 
-    @GET("videos/public-videos")
-    suspend fun getAllPublicVideos(
+    @POST("videos/{videoId}/save")
+    suspend fun updateSaveVideoState(
+        @Path("videoId") videoId: Int
+    ): ApiResponse<Video>
 
-    ): ApiResponse<List<Video>>
+    @GET("videos/public-videos")
+    suspend fun getAllPublicVideos(): ApiResponse<List<Video>>
 
     @GET("videos/private-videos")
-    suspend fun getAllPrivateVideos(
-
-    ): ApiResponse<List<Video>>
+    suspend fun getAllPrivateVideos(): ApiResponse<List<Video>>
 
     @GET("videos/all-videos")
-    suspend fun getAllVideos(
-
-    ): ApiResponse<List<Video>>
+    suspend fun getAllVideos(): ApiResponse<List<Video>>
 
     @Multipart
     @POST("videos/upload")
@@ -51,11 +50,10 @@ interface VideoApiService {
     ): ApiResponse<List<Video>>
 
     @POST("videos/{videoId}/like")
-    suspend fun updateNumberOfLikes(
+    suspend fun updateLikeVideoState(
         @Path("videoId") videoId: Int
     ): ApiResponse<Video>
 
     @GET("videos/liked")
-    suspend fun getAllLikedVideos(
-    ): ApiResponse<List<Video>>
+    suspend fun getAllLikedVideos(): ApiResponse<List<Video>>
 }

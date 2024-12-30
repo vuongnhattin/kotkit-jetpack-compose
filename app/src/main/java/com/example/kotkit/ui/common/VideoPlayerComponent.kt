@@ -22,10 +22,12 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.example.kotkit.LocalVideoViewModel
 import com.example.kotkit.data.api.BASE_URL_MINIO
 import com.example.kotkit.data.model.Video
 import com.example.kotkit.data.viewmodel.UploadVideoViewModel
 import com.example.kotkit.data.viewmodel.VideoViewModel
+import com.example.kotkit.ui.icon.Bookmark_filled
 import com.example.kotkit.ui.icon.Comment
 import com.example.kotkit.ui.icon.DotsHorizontal
 import com.example.kotkit.ui.icon.Heart
@@ -42,6 +44,7 @@ private fun ActionComponent(
     count: Int? = null,
     onClick: () -> Unit,
     liked: Boolean = false,
+    saved: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -53,7 +56,7 @@ private fun ActionComponent(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = if (liked) Color.Red else Color.White,
+            tint = if (saved) Color.Yellow else if (liked) Color.Red else Color.White,
             modifier = Modifier.size(32.dp)
         )
 
@@ -75,7 +78,7 @@ fun VideoPlayerComponent(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val videoViewModel: VideoViewModel = hiltViewModel()
+    val videoViewModel = LocalVideoViewModel.current
     var showComments by remember { mutableStateOf(false) }
 
     val exoPlayer = remember {
@@ -183,7 +186,7 @@ fun VideoPlayerComponent(
                 count = video.numberOfLikes,
                 liked = videoViewModel.isVideoLiked(video.videoId),
                 onClick = {
-                    videoViewModel.updateNumberOfLikes(video.videoId)
+                    videoViewModel.updateLikeVideoState(video.videoId)
                 }
             )
 
@@ -196,13 +199,16 @@ fun VideoPlayerComponent(
                 }
             )
 
-            // Share Button
+            // Save Button
             ActionComponent(
-                icon = Save,
-                onClick = { }
+                icon = Bookmark_filled,
+                saved = videoViewModel.isVideoSaved(video.videoId),
+                onClick = {
+                    videoViewModel.updateSaveVideoState(video.videoId)
+                }
             )
 
-            // Save Button
+            // Share Button
             ActionComponent(
                 icon = Share,
                 onClick = { }

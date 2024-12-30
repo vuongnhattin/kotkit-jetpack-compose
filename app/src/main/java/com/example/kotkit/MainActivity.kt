@@ -24,6 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.kotkit.data.viewmodel.AuthViewModel
+import com.example.kotkit.data.viewmodel.UploadVideoViewModel
 import com.example.kotkit.data.viewmodel.UserViewModel
 import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.screen.BottomNavigationBar
@@ -44,6 +45,7 @@ import com.example.kotkit.ui.screen.PlayVideoScreen
 import com.example.kotkit.ui.screen.MeProfileTopBar
 import com.example.kotkit.ui.screen.RegisterScreen
 import com.example.kotkit.ui.screen.SettingsScreen
+import com.example.kotkit.ui.screen.UpdateAvatarScreen
 import com.example.kotkit.ui.screen.UpdateInfoScreen
 import com.example.kotkit.ui.screen.UploadVideoScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,7 +89,7 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(
                     LocalAuthViewModel provides authViewModel,
                     LocalUserViewModel provides userViewModel,
-                    LocalVideoViewModel provides videoViewModel,
+                    LocalVideoViewModel provides videoViewModel
                 ) {
                     MyApp()
                 }
@@ -150,6 +152,7 @@ fun MyApp(modifier: Modifier = Modifier) {
                 composable("profile") { MeProfileScreen() }
                 composable("setting") { SettingsScreen() }
                 composable("update-info") { UpdateInfoScreen() }
+                composable("update-avatar") { UpdateAvatarScreen() }
                 composable("change-password") { ChangePasswordScreen() }
                 composable("search/{query}") { backStackEntry ->
                     val query = backStackEntry.arguments?.getString("query") ?: ""
