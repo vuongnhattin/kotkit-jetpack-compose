@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -59,6 +61,7 @@ import com.example.kotkit.ui.constant.secondaryButtonColor
 import com.example.kotkit.ui.constant.topAppBarTitleStyle
 import com.example.kotkit.ui.icon.Bookmark
 import com.example.kotkit.ui.icon.Lock
+import com.example.kotkit.ui.icon.Photo_camera
 import com.example.kotkit.ui.icon.Public
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.icon.Share
@@ -184,15 +187,41 @@ fun UserInfoSection(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            AsyncImage(
-                model = userDetails.avatar,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black)
-                    .border(1.dp, Color.Gray, CircleShape)
-            )
+            Box(
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                AsyncImage(
+                    model = userDetails.avatar,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(Color.Black)
+                        .border(1.dp, Color.Gray, CircleShape)
+                        .then(if (isMe) {
+                            Modifier.clickable {
+                                navController.navigate("update-avatar")
+                            }
+                        } else Modifier)
+                )
+
+                if (isMe) {
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Photo_camera,
+                            contentDescription = "Change avatar",
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 userDetails.email,
