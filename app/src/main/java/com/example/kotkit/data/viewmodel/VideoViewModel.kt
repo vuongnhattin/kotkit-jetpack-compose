@@ -27,6 +27,13 @@ class VideoViewModel @Inject constructor(
     var searchVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
+    var updateLikeVideo by mutableStateOf<ApiState<Video>>(ApiState.Empty())
+        private set
+
+    var likedVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+        private set
+
+    var likedVideosList by mutableStateOf<List<Int>>(emptyList())
 
     var publicVideosOfUser by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
@@ -76,6 +83,7 @@ class VideoViewModel @Inject constructor(
             response
         }
     }
+
     fun searchVideos(query: String){
         fetchApi(
             stateSetter = {searchVideos = it},
@@ -84,6 +92,59 @@ class VideoViewModel @Inject constructor(
                 response
             }
         )
+    }
+
+    private fun updateVideoInList(videos: ApiState<List<Video>>, updatedVideo: Video): ApiState<List<Video>> {
+        return when (videos) {
+            is ApiState.Success -> {
+                ApiState.Success(
+                    videos.data?.map { video ->
+                        if (video.videoId == updatedVideo.videoId) updatedVideo else video
+                    }
+                )
+            }
+            else -> videos
+        }
+    }
+
+    fun isVideoLiked(videoId: Int): Boolean = likedVideosList.contains(videoId)
+
+    fun updateNumberOfLikes(videoId: Int) {
+        fetchApi(stateSetter = { newState ->
+            updateLikeVideo = newState
+
+            if (newState is ApiState.Success) {
+                val updatedVideo = newState.data
+
+                allVideos = updatedVideo?.let { updateVideoInList(allVideos, it) }!!
+
+                publicVideos = updateVideoInList(publicVideos, updatedVideo)
+
+                privateVideos = updateVideoInList(privateVideos, updatedVideo)
+
+                likedVideosList = if (likedVideosList.contains(videoId)) {
+                    likedVideosList - videoId
+                } else {
+                    likedVideosList + videoId
+                }
+            }
+        }) {
+            val response = videoApiService.updateNumberOfLikes(videoId)
+            response
+        }
+    }
+
+    fun getAllLikedVideos() {
+        fetchApi(stateSetter = { state ->
+            likedVideos = state
+            if (state is ApiState.Success) {
+                // Cập nhật danh sách videoId đã like
+                likedVideosList = state.data?.map { it.videoId } ?: emptyList()
+            }
+        }) {
+            val response = videoApiService.getAllLikedVideos()
+            response
+        }
     }
 
 }

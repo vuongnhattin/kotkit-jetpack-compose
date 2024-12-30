@@ -15,47 +15,32 @@ public val Comment: ImageVector
 			return _Comment!!
 		}
 		_Comment = ImageVector.Builder(
-            name = "Comment",
-            defaultWidth = 16.dp,
-            defaultHeight = 16.dp,
-            viewportWidth = 16f,
-            viewportHeight = 16f
-        ).apply {
+			name = "Comment",
+			defaultWidth = 16.dp,
+			defaultHeight = 16.dp,
+			viewportWidth = 16f,
+			viewportHeight = 16f
+		).apply {
 			path(
-    			fill = SolidColor(Color(0xFF000000)),
-    			fillAlpha = 1.0f,
-    			stroke = null,
-    			strokeAlpha = 1.0f,
-    			strokeLineWidth = 1.0f,
-    			strokeLineCap = StrokeCap.Butt,
-    			strokeLineJoin = StrokeJoin.Miter,
-    			strokeLineMiter = 1.0f,
-    			pathFillType = PathFillType.NonZero
+				fill = SolidColor(Color(0xFF000000)),
+				fillAlpha = 1.0f,
+				stroke = null,
+				strokeAlpha = 1.0f,
+				strokeLineWidth = 1.0f,
+				strokeLineCap = StrokeCap.Butt,
+				strokeLineJoin = StrokeJoin.Miter,
+				strokeLineMiter = 1.0f,
+				pathFillType = PathFillType.EvenOdd
 			) {
-				moveTo(14.5f, 2f)
-				horizontalLineToRelative(-13f)
-				lineToRelative(-0.5f, 0.5f)
+				moveTo(1.5f, 2f)
+				horizontalLineToRelative(13f)
 				verticalLineToRelative(9f)
-				lineToRelative(0.5f, 0.5f)
-				horizontalLineTo(4f)
-				verticalLineToRelative(2.5f)
-				lineToRelative(0.854f, 0.354f)
-				lineTo(7.707f, 12f)
-				horizontalLineTo(14.5f)
-				lineToRelative(0.5f, -0.5f)
+				horizontalLineTo(7.707f)
+				lineTo(4.854f, 13.854f)
+				lineTo(4f, 13.5f)
+				verticalLineTo(11f)
+				horizontalLineTo(1.5f)
 				verticalLineToRelative(-9f)
-				lineToRelative(-0.5f, -0.5f)
-				close()
-				moveToRelative(-0.5f, 9f)
-				horizontalLineTo(7.5f)
-				lineToRelative(-0.354f, 0.146f)
-				lineTo(5f, 13.293f)
-				verticalLineTo(11.5f)
-				lineToRelative(-0.5f, -0.5f)
-				horizontalLineTo(2f)
-				verticalLineTo(3f)
-				horizontalLineToRelative(12f)
-				verticalLineToRelative(8f)
 				close()
 			}
 		}.build()
