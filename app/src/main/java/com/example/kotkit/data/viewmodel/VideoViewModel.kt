@@ -10,7 +10,6 @@ import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Video
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import android.util.Log
 
 @HiltViewModel
 class VideoViewModel @Inject constructor(
@@ -36,6 +35,34 @@ class VideoViewModel @Inject constructor(
 
     var likedVideosList by mutableStateOf<List<Int>>(emptyList())
 
+    var publicVideosOfUser by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+        private set
+
+    var privateVideosOfUser by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+        private set
+
+    var savedVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+        private set
+
+    fun getPublicVideosOfUser(userId: Int) {
+        fetchApi(stateSetter = { publicVideosOfUser = it }) {
+            // This is api call
+            videoApiService.getVideosOfUser(userId, "public")
+        }
+    }
+
+    fun getPrivateVideosOfUser(userId: Int) {
+        fetchApi(stateSetter = { privateVideosOfUser = it }) {
+            videoApiService.getVideosOfUser(userId, "private")
+        }
+    }
+
+    fun getSavedVideos() {
+        fetchApi(stateSetter = { savedVideos = it }) {
+            videoApiService.getSavedVideos()
+        }
+    }
+
     fun getAllPublicVideos() {
         fetchApi(stateSetter = { publicVideos = it}) {
             val response = videoApiService.getAllPublicVideos()
@@ -51,7 +78,7 @@ class VideoViewModel @Inject constructor(
     }
 
     fun getAllVideos() {
-        fetchApi(stateSetter = { allVideos = it}) {
+        fetchApi(stateSetter = { allVideos = it }) {
             val response = videoApiService.getAllVideos()
             response
         }
@@ -119,4 +146,5 @@ class VideoViewModel @Inject constructor(
             response
         }
     }
+
 }

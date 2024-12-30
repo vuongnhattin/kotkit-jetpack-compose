@@ -32,6 +32,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,7 @@ import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.common.LoginRegisterLayout
 import com.example.kotkit.ui.icon.Edit_calendar
 import com.example.kotkit.ui.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.ErrorSnackBar
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,9 +75,12 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
     // DatePickerDialog
     val datePickerDialog = DatePickerDialog(
         LocalContext.current, { _, selectedYear, selectedMonth, selectedDay ->
-            birthday = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+            val formattedMonth = String.format("%02d", selectedMonth + 1)
+            val formattedDay = String.format("%02d", selectedDay)
+            birthday = "$selectedYear-$formattedMonth-$formattedDay"
         }, year, month, day
     )
+
 
     var emailError by remember { mutableStateOf("") }
     var fullNameError by remember { mutableStateOf("") }
@@ -92,16 +97,10 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         onLoading = {},
         onError = { error ->
             when (error.code) {
-                "VALIDATION_ERROR" -> error.data?.let { data ->
-                    val dataMap = data as Map<String, String>
-                    emailError = when (dataMap["email"]) {
-                        "REQUIRED" -> "Email không được để trống"
-                        else -> ""
-                    }
-                }
-
                 "EMAIL_DUPLICATED" -> emailError = "Email này đã tồn tại"
-                else -> {}
+                else -> {
+                    ErrorSnackBar("Lỗi không xác định")
+                }
             }
         }
     ) {
@@ -190,6 +189,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                     imeAction = ImeAction.Done
                 ),
                 supportingText = { Text(passwordError) },
+                visualTransformation = PasswordVisualTransformation()
             )
             OutlinedTextField(
                 passwordConfirm,
@@ -214,6 +214,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                     imeAction = ImeAction.Done
                 ),
                 supportingText = { Text(passwordConfirmError) },
+                visualTransformation = PasswordVisualTransformation()
             )
         }
         Row(
@@ -264,7 +265,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                     },
                     supportingText = { Text(genderError) },
                     isError = genderError.isNotEmpty(),
-                    modifier = Modifier
+                    modifier = Modifier.fillMaxWidth()
                 )
                 DropdownMenu(
                     expanded = genderExpanded,
