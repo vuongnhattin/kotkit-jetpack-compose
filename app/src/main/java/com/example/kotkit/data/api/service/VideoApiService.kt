@@ -18,8 +18,11 @@ interface VideoApiService {
         @Query("mode") mode: String,
     ): ApiResponse<List<Video>>
 
-    @GET("videos/saved")
-    suspend fun getSavedVideos(): ApiResponse<List<Video>>
+    @GET("videos/saved-videos-of-me")
+    suspend fun getSavedVideosOfMe(): ApiResponse<List<Video>>
+
+    @GET("videos/private-videos-of-me")
+    suspend fun getPrivateVideosOfMe(): ApiResponse<List<Video>>
 
     @POST("videos/{videoId}/save")
     suspend fun updateSaveVideoState(
@@ -55,5 +58,5 @@ interface VideoApiService {
     ): ApiResponse<Video>
 
     @GET("videos/liked")
-    suspend fun getAllLikedVideos(): ApiResponse<List<Video>>
+    suspend fun getLikedVideosOfMe(): ApiResponse<List<Video>>
 }

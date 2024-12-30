@@ -19,10 +19,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -52,6 +50,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.LocalUserViewModel
+import com.example.kotkit.LocalVideoViewModel
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.model.Video
@@ -65,8 +64,10 @@ import com.example.kotkit.ui.icon.Photo_camera
 import com.example.kotkit.ui.icon.Public
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.icon.Share
+import com.example.kotkit.ui.icon.Users
 import com.example.kotkit.ui.utils.DisplayApiResult
 import com.example.kotkit.ui.utils.ErrorSnackBar
+import com.example.kotkit.ui.utils.FormatUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -284,8 +285,11 @@ fun UserInfoSection(
 fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails, isMe: Boolean) {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
-    val tabs = mutableListOf(Public, Lock)
-    if (isMe) tabs.add(Bookmark)
+    val tabs = mutableListOf(Public, Users)
+    if (isMe) {
+        tabs.add(Lock)
+        tabs.add(Bookmark)
+    }
 
     Column(modifier = modifier) {
         TabRow(selectedTabIndex = selectedIndex, indicator = { tabPositions ->
@@ -308,12 +312,15 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails,
         }
     }
 
-    val videoViewModel: VideoViewModel = hiltViewModel()
+    val videoViewModel = LocalVideoViewModel.current
 
     LaunchedEffect(Unit) {
         videoViewModel.getPublicVideosOfUser(userDetails.userId)
-        videoViewModel.getPrivateVideosOfUser(userDetails.userId)
-        if (isMe) videoViewModel.getSavedVideos()
+        videoViewModel.getFriendVideosOfUser(userDetails.userId)
+        if (isMe) {
+            videoViewModel.getPrivateVideosOfMe()
+            videoViewModel.getSavedVideosOfMe()
+        }
     }
 
     when (selectedIndex) {
@@ -322,11 +329,15 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails,
         }
 
         1 -> {
-            VideoThumbnails(videosState = videoViewModel.privateVideosOfUser)
+            VideoThumbnails(videosState = videoViewModel.friendVideosOfUser)
         }
 
         2 -> {
-            VideoThumbnails(videosState = videoViewModel.savedVideos)
+            VideoThumbnails(videosState = videoViewModel.privateVideosOfMe)
+        }
+
+        3 -> {
+            VideoThumbnails(videosState = videoViewModel.savedVideosOfMe)
         }
     }
 }
@@ -362,7 +373,7 @@ fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Vi
         ) {
             items(videos) { video ->
                 AsyncImage(
-                    model = video.thumbnail,
+                    model = FormatUtils.formatImageUrl(video.thumbnail),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()

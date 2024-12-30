@@ -1,6 +1,5 @@
 package com.example.kotkit.ui.screen
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -33,13 +32,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.LocalVideoViewModel
-import com.example.kotkit.data.mock.VideoMockData
 import com.example.kotkit.data.mock.VideoMockData.videos
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Video
-import com.example.kotkit.data.model.VideoMode
 import com.example.kotkit.data.viewmodel.CommentViewModel
-import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.presentation.components.VideoPlayerComponent
 import com.example.kotkit.ui.icon.Search
 import com.example.kotkit.ui.utils.DisplayApiResult
@@ -136,8 +132,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         videoViewModel.getAllVideos()
         videoViewModel.getAllPublicVideos()
         videoViewModel.getAllPrivateVideos()
-        videoViewModel.getAllLikedVideos()
-        videoViewModel.getSavedVideos()
+        videoViewModel.getLikedVideosOfMe()
+        videoViewModel.getSavedVideosOfMe()
     }
 
     DisposableEffect(Unit) {
