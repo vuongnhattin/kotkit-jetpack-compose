@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomModalBottomSheet(
+fun OptionModalBottomSheet(
     isSheetOpen: Boolean,
     onDismissRequest: () -> Unit,
     options: List<String>,
