@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.kotkit.LocalAuthViewModel
+import com.example.kotkit.LocalUserViewModel
 import com.example.kotkit.data.model.FriendshipStatus
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.viewmodel.AuthViewModel
@@ -51,7 +53,8 @@ fun UserResultItem(
     user: UserDetails,
     navController: NavController,
 ) {
-    val authViewModel: AuthViewModel = hiltViewModel()
+    val authViewModel = LocalAuthViewModel.current
+    val userViewModel = LocalUserViewModel.current
     val friendViewModel: FriendViewModel = hiltViewModel()
     println("Current email: ${authViewModel.getEmailOfMe()}")
 
@@ -59,7 +62,7 @@ fun UserResultItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate("user-profile/${user.userId}")
+                    navController.navigate("user-profile/${user.userId}")
             },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

@@ -19,6 +19,9 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val userApiService: UserApiService
 ) : ViewModel() {
+
+    var me: UserDetails = UserDetails()
+
     var listUserDetails by mutableStateOf<ApiState<List<UserDetails>>>(ApiState.Empty())
         private set
 
@@ -28,6 +31,14 @@ class UserViewModel @Inject constructor(
     var filteredListUser by mutableStateOf<List<UserDetails>>(emptyList())
 
     var updateInfoResponse by mutableStateOf<ApiState<UserDetails>>(ApiState.Empty())
+
+    fun initMe() {
+        fetchApi(stateSetter = { userDetails = it }) {
+            val response = userApiService.getMe()
+            me = response.data!!
+            response
+        }
+    }
 
     fun searchUsers(query: String) {
         fetchApi(

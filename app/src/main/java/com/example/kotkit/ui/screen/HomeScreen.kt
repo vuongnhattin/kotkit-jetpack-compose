@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import com.example.kotkit.LocalNavController
+import com.example.kotkit.LocalUserViewModel
 import com.example.kotkit.LocalVideoViewModel
 import com.example.kotkit.data.mock.VideoMockData.videos
 import com.example.kotkit.data.model.ApiState
@@ -121,6 +122,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     val navController = LocalNavController.current
     val commentViewModel: CommentViewModel = hiltViewModel()
     val videoViewModel = LocalVideoViewModel.current
+    val userViewModel = LocalUserViewModel.current
 
     val publicVideosState = videoViewModel.publicVideos
     val privateVideosState = videoViewModel.videosOfFriends
@@ -134,6 +136,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         videoViewModel.getVideosOfFriends()
         videoViewModel.getLikedVideosOfMe()
         videoViewModel.getSavedVideosOfMe()
+        userViewModel.initMe()
     }
 
     DisposableEffect(Unit) {
