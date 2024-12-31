@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 //const val BASE_URL = "http://192.168.241.167"
 
 // emulator's IP
-const val BASE_URL = "http://192.168.1.4"
+const val BASE_URL = "http://10.0.2.2"
 
 const val BACKEND_URL = "${BASE_URL}:8080"
 const val BASE_URL_MINIO = "${BASE_URL}:9001"

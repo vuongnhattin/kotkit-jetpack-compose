@@ -26,9 +26,11 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.example.kotkit.LocalUserViewModel
 import coil.compose.AsyncImage
 import com.example.kotkit.LocalNavController
 import com.example.kotkit.LocalVideoViewModel
+import com.example.kotkit.data.dto.input.UpdateVideoInput
 import com.example.kotkit.data.model.FriendshipStatus
 import com.example.kotkit.data.model.Video
 import com.example.kotkit.data.viewmodel.UploadFileViewModel
@@ -43,6 +45,8 @@ import com.example.kotkit.ui.screen.CommentScreen
 import com.example.kotkit.ui.utils.FormatUtils
 import com.example.kotkit.ui.utils.FormatUtils.formatNumber
 import com.example.kotkit.ui.utils.FormatUtils.formatVideoUrl
+import com.example.kotkit.ui.common.UpdateVideoModalBottomSheet
+import com.example.kotkit.ui.icon.Settings
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
@@ -87,8 +91,11 @@ fun VideoPlayerComponent(
     val navController = LocalNavController.current
     val context = LocalContext.current
     val videoViewModel = LocalVideoViewModel.current
+    val userViewModel = LocalUserViewModel.current
     var showComments by remember { mutableStateOf(false) }
     var showOptions by remember { mutableStateOf(false) }
+    var showUpdateVideo by remember { mutableStateOf(false) }
+    var currentTitle by remember { mutableStateOf(video.title) }
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context)
@@ -109,17 +116,14 @@ fun VideoPlayerComponent(
     }
 
     DisposableEffect(Unit) {
-        Log.i("Tan", "Dispose")
         onDispose {
             exoPlayer.clearVideoSurface()
             exoPlayer.stop()
             exoPlayer.clearMediaItems()
-            exoPlayer.clearVideoSurface()
         }
     }
 
     LaunchedEffect(Unit) {
-        Log.i("Tan", "${formatVideoUrl(video.videoUrl)}")
         try {
             exoPlayer.setMediaItem(MediaItem.fromUri(formatVideoUrl(video.videoUrl)))
             exoPlayer.prepare()
@@ -151,7 +155,7 @@ fun VideoPlayerComponent(
                 .padding(16.dp)
         ) {
             Text(
-                text = video.title,
+                text = currentTitle,
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White
             )
@@ -173,6 +177,24 @@ fun VideoPlayerComponent(
                 )
             }
         }
+
+        // Edit video component displayed from the bottom
+        UpdateVideoModalBottomSheet(
+            video = video,
+            isVisible = showUpdateVideo,
+            onDismiss = { showUpdateVideo = false },
+            onSave = { newTitle, newMode ->
+                currentTitle = newTitle
+                videoViewModel.updateVideoInfo(
+                    video.videoId,
+                    UpdateVideoInput(
+                        newTitle,
+                        newMode
+                    )
+                )
+            },
+            modifier = modifier
+        )
 
         // Action buttons column
         Column(
@@ -239,6 +261,16 @@ fun VideoPlayerComponent(
                     showOptions = true
                 }
             )
+
+            // Setting
+            if (userViewModel.me.userId === video.creator.userId) {
+                ActionComponent(
+                    icon = Settings,
+                    onClick = {
+                        showUpdateVideo = true
+                    }
+                )
+            }
         }
     }
 
