@@ -155,7 +155,7 @@ fun VideoPlayerComponent(
             ) {
                 CommentScreen(
                     viewModel = hiltViewModel(),
-                    videoId = 1,
+                    videoId = video.videoId,
                     onClose = { showComments = false }
                 )
             }
