@@ -437,7 +437,7 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails,
 fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Video>>) {
     DisplayApiResult(videosState, onError = { error ->
         when (error.code) {
-            "IS_NOT_FRIEND" -> {
+            "NOT_FRIEND" -> {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -447,7 +447,7 @@ fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Vi
                 ) {
                     Icon(Lock, contentDescription = null, modifier = Modifier.size(48.dp))
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Bạn phải kết bạn với người này để xem được video riêng tư của họ", textAlign = TextAlign.Center, color = Color.Gray)
+                    Text("Bạn phải kết bạn với người này để xem được những video này", textAlign = TextAlign.Center, color = Color.Gray)
                 }
             }
             else -> ErrorSnackBar("Có lỗi xảy ra")
