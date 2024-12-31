@@ -101,7 +101,7 @@ class VideoViewModel @Inject constructor(
 
     fun getVideosOfFriends() {
         fetchApi(stateSetter = { videosOfFriends = it }) {
-            val response = videoApiService.getFriendVideosOfFriends()
+            val response = videoApiService.getVideosOfFriends()
             response
         }
     }
