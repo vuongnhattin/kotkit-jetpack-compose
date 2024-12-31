@@ -27,6 +27,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.kotkit.LocalNavController
+import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.VideoMode
 import com.example.kotkit.data.viewmodel.UploadFileViewModel
 import com.example.kotkit.ui.utils.DisplayApiResult
@@ -47,7 +48,7 @@ fun UploadVideoScreen(
     var titleError by remember { mutableStateOf("") }
     var videoError by remember { mutableStateOf("") }
 
-    var isUploading by remember { mutableStateOf(false) }
+    val isUploading = uploadFileViewModel.uploadState is ApiState.Loading
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -272,9 +273,7 @@ fun UploadVideoScreen(
             }
 
             DisplayApiResult(uploadState,
-                onLoading = {
-                    isUploading = true
-                },
+                onLoading = {},
                 onError = { error ->
                     when (error.code) {
                         "VALIDATION_ERROR" -> error.data?.let { data ->
@@ -313,7 +312,6 @@ fun UploadVideoScreen(
                         }
                     )
 
-                    isUploading = false
                 }
             ) {
                 AlertDialog(
@@ -329,7 +327,6 @@ fun UploadVideoScreen(
                     }
                 )
 
-                isUploading = false
             }
         }
     }
