@@ -24,8 +24,8 @@ interface VideoApiService {
     @GET("videos/private-videos-of-me")
     suspend fun getPrivateVideosOfMe(): ApiResponse<List<Video>>
 
-    @GET("videos/friend-videos-of-friends")
-    suspend fun getFriendVideosOfFriends(): ApiResponse<List<Video>>
+    @GET("videos/videos-of-friends")
+    suspend fun getVideosOfFriends(): ApiResponse<List<Video>>
 
     @POST("videos/{videoId}/save")
     suspend fun updateSaveVideoState(
