@@ -29,6 +29,7 @@ import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.viewmodel.AuthViewModel
 import com.example.kotkit.data.viewmodel.FriendViewModel
 import com.example.kotkit.data.viewmodel.UserViewModel
+import com.example.kotkit.ui.utils.FormatUtils
 
 @Composable
 fun UserList(
@@ -58,11 +59,7 @@ fun UserResultItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (authViewModel.getEmailOfMe() == user.email) {
-                    navController.navigate("profile")
-                } else {
-                    navController.navigate("user-profile/${user.userId}")
-                }
+                navController.navigate("user-profile/${user.userId}")
             },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -73,7 +70,7 @@ fun UserResultItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = user.avatar,
+                model = FormatUtils.formatImageUrl(user.avatar),
                 contentDescription = null,
                 modifier = Modifier
                     .size(56.dp)

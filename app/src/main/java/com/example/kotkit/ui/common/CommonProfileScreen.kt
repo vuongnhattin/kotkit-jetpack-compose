@@ -81,13 +81,13 @@ fun CommonProfileScreen(modifier: Modifier = Modifier, userId: Int = 0, isMe: Bo
 
     val userState = userViewModel.userDetails
 
-    LaunchedEffect(Unit) {
-        if (isMe) {
-            userViewModel.getMe()
-        } else {
-            userViewModel.getUserDetails(userId)
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        if (isMe) {
+//            userViewModel.getMe()
+//        } else {
+//            userViewModel.getUserDetails(userId)
+//        }
+//    }
 
     Column(
         modifier = Modifier
@@ -204,7 +204,7 @@ fun UserInfoSection(
                 contentAlignment = Alignment.BottomEnd
             ) {
                 AsyncImage(
-                    model = userDetails.avatar,
+                    model = FormatUtils.formatImageUrl(userDetails.avatar),
                     contentDescription = null,
                     modifier = Modifier
                         .size(80.dp)
