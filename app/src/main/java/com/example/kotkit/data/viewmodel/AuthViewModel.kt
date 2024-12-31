@@ -12,6 +12,7 @@ import com.example.kotkit.data.dto.input.RegisterInput
 import com.example.kotkit.data.localstorage.TokenManager
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.dto.response.LoginResponse
+import com.example.kotkit.data.model.UserDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -23,9 +24,13 @@ class AuthViewModel @Inject constructor(
     var isAuthenticated by mutableStateOf(tokenManager.isAuthenticated())
         private set
 
+
+
     var loginResponse by mutableStateOf<ApiState<LoginResponse>>(ApiState.Empty())
     var registerResponse by mutableStateOf<ApiState<Void>>(ApiState.Empty())
     var changePasswordResponse by mutableStateOf<ApiState<Void>>(ApiState.Empty())
+
+
 
     fun changePassword(oldPassword: String, newPassword: String) {
         fetchApi({ changePasswordResponse = it }) {
@@ -39,6 +44,10 @@ class AuthViewModel @Inject constructor(
 
     fun getEmailOfMe(): String {
         return tokenManager.getCurrentUsername()
+    }
+
+    fun getMeId(): Int {
+        return tokenManager.getMeId()
     }
 
     fun logout() {

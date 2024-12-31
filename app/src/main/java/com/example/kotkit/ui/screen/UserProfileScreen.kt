@@ -15,19 +15,12 @@ fun UserProfileScreen(
     userId: Int,
 ) {
     val userViewModel = LocalUserViewModel.current
-    val authViewModel = LocalAuthViewModel.current
     val navController = LocalNavController.current
-    val userState = userViewModel.userDetails
-    LaunchedEffect(userId) { userViewModel.getUserDetails(userId) }
-    DisplayApiResult(
-        userState,
-    ) { state ->
-        val user = state.data!!
-        if (user.email == authViewModel.getEmailOfMe()) {
-            navController.navigate("profile")
-        } else {
-            CommonProfileScreen(userId = userId, isMe = false)
-        }
+    println("userId, meId: $userId, ${userViewModel.me.userId}")
+    if (userViewModel.me.userId == userId) {
+        navController.navigate("profile")
+    } else {
+        CommonProfileScreen(userId = userId)
     }
 }
 
