@@ -1,5 +1,7 @@
 package com.example.kotkit.data.viewmodel
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,12 +11,28 @@ import com.example.kotkit.data.api.service.VideoApiService
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Video
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import android.content.ContentValues
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import com.example.kotkit.data.api.BASE_URL_MINIO
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.concurrent.thread
 
 @HiltViewModel
 class VideoViewModel @Inject constructor(
     private val videoApiService: VideoApiService
 ) : ViewModel() {
+    val minioHost = BASE_URL_MINIO
+
     var publicVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
@@ -198,4 +216,7 @@ class VideoViewModel @Inject constructor(
         }
     }
 
+    fun downloadVideo(context: Context, fileUrl: String) {
+        println("cc")
+    }
 }
