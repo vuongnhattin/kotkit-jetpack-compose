@@ -47,6 +47,8 @@ fun UploadVideoScreen(
     var titleError by remember { mutableStateOf("") }
     var videoError by remember { mutableStateOf("") }
 
+    var isUploading by remember { mutableStateOf(false) }
+
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -105,9 +107,17 @@ fun UploadVideoScreen(
                                     mode = mode
                                 )
                             },
+                            enabled = !isUploading,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text("Đăng")
+                            if (isUploading) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                CircularProgressIndicator(
+                                    color = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -262,6 +272,9 @@ fun UploadVideoScreen(
             }
 
             DisplayApiResult(uploadState,
+                onLoading = {
+                    isUploading = true
+                },
                 onError = { error ->
                     when (error.code) {
                         "VALIDATION_ERROR" -> error.data?.let { data ->
@@ -299,6 +312,8 @@ fun UploadVideoScreen(
                             }
                         }
                     )
+
+                    isUploading = false
                 }
             ) {
                 AlertDialog(
@@ -313,6 +328,8 @@ fun UploadVideoScreen(
                         }
                     }
                 )
+
+                isUploading = false
             }
         }
     }
