@@ -47,4 +47,10 @@ class TokenManager(private val sharedPreferences: SharedPreferences) {
         val jwtDecoded = decode(jwt)
         return jwtDecoded?.getString("sub")!!
     }
+
+    fun getMeId(): Int {
+        val jwt = getToken() ?: return -1
+        val jwtDecoded = decode(jwt)
+        return jwtDecoded?.getInt("userId")!!
+    }
 }

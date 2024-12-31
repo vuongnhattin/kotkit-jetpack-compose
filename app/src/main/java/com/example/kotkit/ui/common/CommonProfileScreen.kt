@@ -81,13 +81,13 @@ fun CommonProfileScreen(modifier: Modifier = Modifier, userId: Int = 0, isMe: Bo
 
     val userState = userViewModel.userDetails
 
-//    LaunchedEffect(Unit) {
-//        if (isMe) {
-//            userViewModel.getMe()
-//        } else {
-//            userViewModel.getUserDetails(userId)
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        if (isMe) {
+            userViewModel.getMe()
+        } else {
+            userViewModel.getUserDetails(userId)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -307,6 +307,7 @@ fun UserInfoSection(
                     confirmButton = {
                         TextButton(onClick = {
                             uploadFileViewModel.setUpdateAvatarResponseToEmpty()
+                            navController.navigate("user-profile/${userDetails.userId}")
                         }) {
                             Text("OK")
                         }

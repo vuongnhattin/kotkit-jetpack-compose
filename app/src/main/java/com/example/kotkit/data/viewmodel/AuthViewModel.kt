@@ -12,6 +12,7 @@ import com.example.kotkit.data.dto.input.RegisterInput
 import com.example.kotkit.data.localstorage.TokenManager
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.dto.response.LoginResponse
+import com.example.kotkit.data.model.UserDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -39,6 +40,10 @@ class AuthViewModel @Inject constructor(
 
     fun getEmailOfMe(): String {
         return tokenManager.getCurrentUsername()
+    }
+
+    fun getMeId(): Int {
+        return tokenManager.getMeId()
     }
 
     fun logout() {
