@@ -1,16 +1,8 @@
 package com.example.kotkit.ui.common
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kotkit.LocalUserViewModel
 import com.example.kotkit.data.model.FriendshipStatus
@@ -85,7 +76,7 @@ fun FriendshipButton(modifier: Modifier = Modifier, friendshipStatus: Friendship
     }
 
     val replyOptions = listOf("Chấp nhận", "Từ chối")
-    CustomModalBottomSheet(
+    OptionModalBottomSheet(
         isSheetOpen = isReplyOpen,
         onDismissRequest = { isReplyOpen = false },
         options = replyOptions
@@ -100,7 +91,7 @@ fun FriendshipButton(modifier: Modifier = Modifier, friendshipStatus: Friendship
     }
 
     val unFriendOption = listOf("Huỷ kết bạn")
-    CustomModalBottomSheet(
+    OptionModalBottomSheet(
         isSheetOpen = isUnfriendOpen,
         onDismissRequest = { isUnfriendOpen = false },
         options = unFriendOption

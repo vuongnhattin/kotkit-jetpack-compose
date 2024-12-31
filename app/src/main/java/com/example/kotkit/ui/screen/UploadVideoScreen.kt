@@ -27,17 +27,17 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.kotkit.LocalNavController
+import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.VideoMode
-import com.example.kotkit.data.viewmodel.UploadVideoViewModel
+import com.example.kotkit.data.viewmodel.UploadFileViewModel
 import com.example.kotkit.ui.utils.DisplayApiResult
-import com.example.kotkit.ui.utils.ErrorSnackBar
 
 @Composable
 fun UploadVideoScreen(
     videoUri: Uri?,
     modifier: Modifier = Modifier,
 ) {
-    val uploadVideoViewModel: UploadVideoViewModel = hiltViewModel()
+    val uploadFileViewModel: UploadFileViewModel = hiltViewModel()
     var title by remember { mutableStateOf("") }
     var mode by remember { mutableStateOf(VideoMode.PUBLIC) }
     var thumbnailUri by remember { mutableStateOf<Uri?>(null) }
@@ -47,6 +47,8 @@ fun UploadVideoScreen(
     var messageError by remember { mutableStateOf("") }
     var titleError by remember { mutableStateOf("") }
     var videoError by remember { mutableStateOf("") }
+
+    val isUploading = uploadFileViewModel.uploadState is ApiState.Loading
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -61,7 +63,7 @@ fun UploadVideoScreen(
             }
         }
     }
-    val uploadState = uploadVideoViewModel.uploadState
+    val uploadState = uploadFileViewModel.uploadState
 
     Scaffold(
         bottomBar = {
@@ -98,7 +100,7 @@ fun UploadVideoScreen(
                     ) {
                         Button(
                             onClick = {
-                                uploadVideoViewModel.uploadVideo(
+                                uploadFileViewModel.uploadVideo(
                                     context = context,
                                     videoUri = videoUri,
                                     thumbnailUri = thumbnailUri,
@@ -106,9 +108,17 @@ fun UploadVideoScreen(
                                     mode = mode
                                 )
                             },
+                            enabled = !isUploading,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text("Đăng")
+                            if (isUploading) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                CircularProgressIndicator(
+                                    color = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -263,6 +273,7 @@ fun UploadVideoScreen(
             }
 
             DisplayApiResult(uploadState,
+                onLoading = {},
                 onError = { error ->
                     when (error.code) {
                         "VALIDATION_ERROR" -> error.data?.let { data ->
@@ -272,11 +283,13 @@ fun UploadVideoScreen(
                                 else -> ""
                             }
                             videoError = when (dataMap["video"]) {
-                                "VIDEO_REQUIRED" -> "Không có Video!"
+                                "VIDEO_REQUIRED" -> "Không có video nào được chọn!"
                                 "PAYLOAD_TOO_LARGE" -> "Dung lượng video quá lớn (không được quá 100MB)!"
                                 else -> ""
                             }
                         }
+                        "VIDEO_EMPTY" -> messageError = "Không có video nào được chọn!"
+                        "SAVING_ERROR" -> messageError = "Lỗi lưu trữ của Server!"
                         else -> messageError = "Lỗi không xác định!"
                     }
 
@@ -292,12 +305,13 @@ fun UploadVideoScreen(
                         confirmButton = {
                             TextButton(onClick = {
                                 messageError = ""
-                                uploadVideoViewModel.setEmptyState()
+                                uploadFileViewModel.setUploadVideoStateToEmpty()
                             }) {
                                 Text("OK")
                             }
                         }
                     )
+
                 }
             ) {
                 AlertDialog(
@@ -312,6 +326,7 @@ fun UploadVideoScreen(
                         }
                     }
                 )
+
             }
         }
     }

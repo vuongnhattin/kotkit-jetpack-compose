@@ -38,11 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Comment
 import com.example.kotkit.data.viewmodel.CommentViewModel
@@ -145,18 +148,18 @@ fun CommentItem(comment: Comment) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Profile picture placeholder
-        Box(
+        AsyncImage(
+            model = comment.avatar,
+            contentDescription = "Avatar of ${comment.fullName}",
             modifier = Modifier
                 .size(40.dp)
-                .background(Color.Gray, shape = CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = comment.fullName.firstOrNull()?.uppercase() ?: "",
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
+                .clip(CircleShape)
+                .background(Color.Gray),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
 
         Spacer(modifier = Modifier.width(8.dp))
 

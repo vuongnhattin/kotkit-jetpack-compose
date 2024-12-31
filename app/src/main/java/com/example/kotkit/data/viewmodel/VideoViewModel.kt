@@ -19,7 +19,7 @@ class VideoViewModel @Inject constructor(
     var publicVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
-    var privateVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
+    var videosOfFriends by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
     var allVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Loading())
@@ -100,9 +100,9 @@ class VideoViewModel @Inject constructor(
         }
     }
 
-    fun getAllPrivateVideos() {
-        fetchApi(stateSetter = { privateVideos = it }) {
-            val response = videoApiService.getAllPrivateVideos()
+    fun getVideosOfFriends() {
+        fetchApi(stateSetter = { videosOfFriends = it }) {
+            val response = videoApiService.getVideosOfFriends()
             response
         }
     }
@@ -156,7 +156,7 @@ class VideoViewModel @Inject constructor(
 
                 publicVideos = updateVideoInList(publicVideos, updatedVideo)
 
-                privateVideos = updateVideoInList(privateVideos, updatedVideo)
+                videosOfFriends = updateVideoInList(videosOfFriends, updatedVideo)
 
                 likedVideosList = if (likedVideosList.contains(videoId)) {
                     likedVideosList - videoId

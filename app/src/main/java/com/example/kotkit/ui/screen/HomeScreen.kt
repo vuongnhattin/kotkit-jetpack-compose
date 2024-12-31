@@ -123,7 +123,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     val videoViewModel = LocalVideoViewModel.current
 
     val publicVideosState = videoViewModel.publicVideos
-    val privateVideosState = videoViewModel.privateVideos
+    val privateVideosState = videoViewModel.videosOfFriends
 
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabs = remember { listOf("Đề xuất", "Bạn bè") }
@@ -131,7 +131,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
         videoViewModel.getAllVideos()
         videoViewModel.getAllPublicVideos()
-        videoViewModel.getAllPrivateVideos()
+        videoViewModel.getVideosOfFriends()
         videoViewModel.getLikedVideosOfMe()
         videoViewModel.getSavedVideosOfMe()
     }

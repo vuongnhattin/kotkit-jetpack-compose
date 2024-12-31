@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,10 +32,12 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,8 +58,8 @@ import com.example.kotkit.LocalVideoViewModel
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.UserDetails
 import com.example.kotkit.data.model.Video
+import com.example.kotkit.data.viewmodel.UploadFileViewModel
 import com.example.kotkit.data.viewmodel.UserViewModel
-import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.constant.secondaryButtonColor
 import com.example.kotkit.ui.constant.topAppBarTitleStyle
 import com.example.kotkit.ui.icon.Bookmark
@@ -77,13 +81,13 @@ fun CommonProfileScreen(modifier: Modifier = Modifier, userId: Int = 0, isMe: Bo
 
     val userState = userViewModel.userDetails
 
-    LaunchedEffect(Unit) {
-        if (isMe) {
-            userViewModel.getMe()
-        } else {
-            userViewModel.getUserDetails(userId)
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        if (isMe) {
+//            userViewModel.getMe()
+//        } else {
+//            userViewModel.getUserDetails(userId)
+//        }
+//    }
 
     Column(
         modifier = Modifier
@@ -179,6 +183,14 @@ fun UserInfoSection(
     userViewModel: UserViewModel,
     isMe: Boolean
 ) {
+    var showUpdateAvatarDialog by remember { mutableStateOf(false) }
+    var showNullAvatarDialog by remember { mutableStateOf(false) }
+    val uploadFileViewModel: UploadFileViewModel = hiltViewModel()
+    val context = LocalContext.current
+    val updateAvatarResponse = uploadFileViewModel.updateAvatarResponse
+
+    var messageError by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -192,7 +204,7 @@ fun UserInfoSection(
                 contentAlignment = Alignment.BottomEnd
             ) {
                 AsyncImage(
-                    model = userDetails.avatar,
+                    model = FormatUtils.formatImageUrl(userDetails.avatar),
                     contentDescription = null,
                     modifier = Modifier
                         .size(80.dp)
@@ -201,7 +213,7 @@ fun UserInfoSection(
                         .border(1.dp, Color.Gray, CircleShape)
                         .then(if (isMe) {
                             Modifier.clickable {
-                                navController.navigate("update-avatar")
+                                showUpdateAvatarDialog = true // Hiển thị dialog khi click
                             }
                         } else Modifier)
                 )
@@ -223,6 +235,85 @@ fun UserInfoSection(
                     }
                 }
             }
+
+            if (showUpdateAvatarDialog) {
+                UpdateAvatarDialog(
+                    onDismiss = {
+                        showUpdateAvatarDialog = false
+                    },
+                    onSaveClick = { uri ->
+                        if(uri == null) {
+                            showNullAvatarDialog = true
+                        }
+                        uri?.let {
+                            uploadFileViewModel.updateAvatar(context, it)
+                        }
+                        showUpdateAvatarDialog = false
+                    }
+                )
+            }
+
+            if (showNullAvatarDialog) {
+                AlertDialog(
+                    onDismissRequest = { /* Dismiss the dialog */ },
+                    title = { Text("Thay đổi ảnh đại diện thất bại") },
+                    text = { Text("Không có ảnh nào được chọn!") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showNullAvatarDialog = false
+                            uploadFileViewModel.setUpdateAvatarResponseToEmpty()
+                        }) {
+                            Text("OK")
+                        }
+                    }
+                )
+            }
+
+            DisplayApiResult(updateAvatarResponse,
+                onError = { error ->
+                    when (error.code) {
+                        "VALIDATION_ERROR" -> error.data?.let { data ->
+                            val dataMap = data as Map<String, String>
+                            messageError = when (dataMap["avatar"]) {
+                                "AVATAR_REQUIRED" -> "Không có ảnh nào được chọn!"
+                                "PAYLOAD_TOO_LARGE" -> "Dung lượng video quá lớn (không được quá 100MB)!"
+                                else -> ""
+                            }
+                        }
+                        "AVATAR_EMPTY" -> messageError = "Không có ảnh nào được chọn!"
+                        "SAVING_ERROR" -> messageError = "Lỗi lưu trữ của Server!"
+                        else -> messageError = "Lỗi không xác định!"
+                    }
+
+                    AlertDialog(
+                        onDismissRequest = { /* Dismiss the dialog */ },
+                        title = { Text("Thay đổi ảnh đại diện thất bại") },
+                        text = { Text(messageError) },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                messageError = ""
+                                uploadFileViewModel.setUpdateAvatarResponseToEmpty()
+                            }) {
+                                Text("OK")
+                            }
+                        }
+                    )
+                }
+            ) {
+                AlertDialog(
+                    onDismissRequest = { /* Dismiss the dialog */ },
+                    title = { Text("Thành công") },
+                    text = { Text("Ảnh đại diện của bạn đã được thay đổi") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            uploadFileViewModel.setUpdateAvatarResponseToEmpty()
+                        }) {
+                            Text("OK")
+                        }
+                    }
+                )
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 userDetails.email,
@@ -346,7 +437,7 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails,
 fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Video>>) {
     DisplayApiResult(videosState, onError = { error ->
         when (error.code) {
-            "IS_NOT_FRIEND" -> {
+            "NOT_FRIEND" -> {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -356,7 +447,7 @@ fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Vi
                 ) {
                     Icon(Lock, contentDescription = null, modifier = Modifier.size(48.dp))
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Bạn phải kết bạn với người này để xem được video riêng tư của họ", textAlign = TextAlign.Center, color = Color.Gray)
+                    Text("Bạn phải kết bạn với người này để xem được những video này", textAlign = TextAlign.Center, color = Color.Gray)
                 }
             }
             else -> ErrorSnackBar("Có lỗi xảy ra")

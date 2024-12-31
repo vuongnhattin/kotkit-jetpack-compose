@@ -162,7 +162,7 @@ fun VideoPlayerComponent(
             ) {
                 CommentScreen(
                     viewModel = hiltViewModel(),
-                    videoId = 1,
+                    videoId = video.videoId,
                     onClose = { showComments = false }
                 )
             }
@@ -241,6 +241,7 @@ fun VideoPlayerComponent(
                 onClick = { }
             )
 
+            // Dat if vo cho nay de xu li hien hay khong hien
             // Setting
             ActionComponent(
                 icon = Settings,
