@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.kotkit.data.api.fetchApi
+import com.example.kotkit.data.api.service.UserApiService
 import com.example.kotkit.data.api.service.VideoApiService
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.UserDetails
@@ -25,10 +26,14 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
-class UploadVideoViewModel @Inject constructor(
+class UploadFileViewModel @Inject constructor(
     private val videoApiService: VideoApiService,
+    private val userApiService: UserApiService
 ) : ViewModel() {
     var uploadState by mutableStateOf<ApiState<Video>>(ApiState.Empty())
+        private set
+
+    var updateAvatarResponse by mutableStateOf<ApiState<UserDetails>>(ApiState.Empty())
         private set
 
     fun uploadVideo(
@@ -42,7 +47,7 @@ class UploadVideoViewModel @Inject constructor(
             uploadState = ApiState.Error(
                 data = null,
                 status = 400,
-                code = "INVALID_VIDEO"
+                code = "VIDEO_EMPTY"
             )
             return
         }
@@ -141,7 +146,34 @@ class UploadVideoViewModel @Inject constructor(
             ?: ".jpg"
     }
 
-    fun setEmptyState() {
+    fun updateAvatar(context: Context, photoUri: Uri?) {
+        if (photoUri == null) {
+            uploadState = ApiState.Error(
+                data = null,
+                status = 400,
+                code = "AVATAR_EMPTY"
+            )
+            return
+        }
+
+        val avatarFile = getFileFromUri(context, photoUri, "image", ".jpeg")
+        val avatarRequestBody = avatarFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        val avatarPart = MultipartBody.Part.createFormData(
+            "avatar",
+            avatarFile.name,
+            avatarRequestBody
+        )
+        fetchApi(stateSetter = { updateAvatarResponse = it }) {
+            val response = userApiService.updateAvatar(avatar = avatarPart)
+            response
+        }
+    }
+
+    fun setUploadVideoStateToEmpty() {
         uploadState = ApiState.Empty()
+    }
+
+    fun setUpdateAvatarResponseToEmpty() {
+        updateAvatarResponse = ApiState.Empty()
     }
 }
