@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.VideoApiService
+import com.example.kotkit.data.dto.input.UpdateVideoInput
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Video
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -198,4 +199,18 @@ class VideoViewModel @Inject constructor(
         }
     }
 
+    var editState by mutableStateOf<ApiState<Void>>(ApiState.Empty())
+
+    fun updateVideoInfo(
+        videoId: Int,
+        updateVideoInput: UpdateVideoInput
+    ) {
+        fetchApi(
+            stateSetter = { editState = it},
+            apiCall = {
+                val response = videoApiService.updateVideoInfo(videoId, updateVideoInput)
+                response
+            }
+        )
+    }
 }

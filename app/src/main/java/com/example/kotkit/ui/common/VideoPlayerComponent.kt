@@ -22,21 +22,21 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.example.kotkit.LocalUserViewModel
 import com.example.kotkit.LocalVideoViewModel
-import com.example.kotkit.data.api.BASE_URL_MINIO
+import com.example.kotkit.data.dto.input.UpdateVideoInput
 import com.example.kotkit.data.model.Video
-import com.example.kotkit.data.viewmodel.UploadVideoViewModel
-import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.icon.Bookmark_filled
 import com.example.kotkit.ui.icon.Comment
 import com.example.kotkit.ui.icon.DotsHorizontal
 import com.example.kotkit.ui.icon.Heart
 import com.example.kotkit.ui.icon.PersonCircle
-import com.example.kotkit.ui.icon.Save
 import com.example.kotkit.ui.icon.Share
 import com.example.kotkit.ui.screen.CommentScreen
 import com.example.kotkit.ui.utils.FormatUtils.formatNumber
 import com.example.kotkit.ui.utils.FormatUtils.formatVideoUrl
+import com.example.kotkit.ui.common.UpdateVideoModalBottomSheet
+import com.example.kotkit.ui.icon.Settings
 
 @Composable
 private fun ActionComponent(
@@ -79,7 +79,10 @@ fun VideoPlayerComponent(
 ) {
     val context = LocalContext.current
     val videoViewModel = LocalVideoViewModel.current
+    val userViewModel = LocalUserViewModel.current
     var showComments by remember { mutableStateOf(false) }
+    var showUpdateVideo by remember { mutableStateOf(false) }
+    var currentTitle by remember { mutableStateOf(video.title) }
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context)
@@ -142,7 +145,7 @@ fun VideoPlayerComponent(
                 .padding(16.dp)
         ) {
             Text(
-                text = video.title,
+                text = currentTitle,
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White
             )
@@ -164,6 +167,24 @@ fun VideoPlayerComponent(
                 )
             }
         }
+
+        // Edit video component displayed from the bottom
+        UpdateVideoModalBottomSheet(
+            video = video,
+            isVisible = showUpdateVideo,
+            onDismiss = { showUpdateVideo = false },
+            onSave = { newTitle, newMode ->
+                currentTitle = newTitle
+                videoViewModel.updateVideoInfo(
+                    video.videoId,
+                    UpdateVideoInput(
+                        newTitle,
+                        newMode
+                    )
+                )
+            },
+            modifier = modifier
+        )
 
         // Action buttons column
         Column(
@@ -218,6 +239,14 @@ fun VideoPlayerComponent(
             ActionComponent(
                 icon = DotsHorizontal,
                 onClick = { }
+            )
+
+            // Setting
+            ActionComponent(
+                icon = Settings,
+                onClick = {
+                    showUpdateVideo = true
+                }
             )
         }
     }
