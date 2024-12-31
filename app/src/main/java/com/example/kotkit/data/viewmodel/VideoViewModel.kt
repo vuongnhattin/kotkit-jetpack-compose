@@ -1,20 +1,36 @@
 package com.example.kotkit.data.viewmodel
 
+import android.content.Context
+import android.net.Uri
+import android.os.Environment
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.kotkit.data.api.fetchApi
 import com.example.kotkit.data.api.service.VideoApiService
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Video
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import com.example.kotkit.data.api.BASE_URL_MINIO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.util.UUID
 
 @HiltViewModel
 class VideoViewModel @Inject constructor(
     private val videoApiService: VideoApiService
 ) : ViewModel() {
+    val minioHost = BASE_URL_MINIO
+
     var publicVideos by mutableStateOf<ApiState<List<Video>>>(ApiState.Empty())
         private set
 
@@ -198,4 +214,41 @@ class VideoViewModel @Inject constructor(
         }
     }
 
+    suspend fun downloadVideo(context: Context, url: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val client = OkHttpClient()
+                val request = Request.Builder().url(BASE_URL_MINIO + url).build()
+                val response = client.newCall(request).execute()
+
+                if (!response.isSuccessful) return@withContext false
+
+                val inputStream: InputStream? = response.body?.byteStream()
+                val fileName = "${UUID.randomUUID()}.mp4"
+                val file = File(context.getExternalFilesDir("Movies/KotKit"), fileName)
+
+                val outputStream = FileOutputStream(file)
+                inputStream?.copyTo(outputStream)
+                outputStream.close()
+                inputStream?.close()
+
+                true // Tải thành công
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false // Có lỗi xảy ra
+            }
+        }
+    }
+
+    var downloadResult by mutableStateOf<Boolean?>(null)
+
+    fun downloadVideoToGallery(context: Context, videoUrl: String) {
+        viewModelScope.launch {
+            downloadResult = downloadVideo(context, videoUrl)
+        }
+    }
+
+    fun setNullDownloadResult() {
+        downloadResult = null
+    }
 }

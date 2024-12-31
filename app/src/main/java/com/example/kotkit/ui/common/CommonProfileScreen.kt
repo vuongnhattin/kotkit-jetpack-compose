@@ -307,6 +307,7 @@ fun UserInfoSection(
                     confirmButton = {
                         TextButton(onClick = {
                             uploadFileViewModel.setUpdateAvatarResponseToEmpty()
+                            navController.navigate("user-profile/${userDetails.userId}")
                         }) {
                             Text("OK")
                         }
