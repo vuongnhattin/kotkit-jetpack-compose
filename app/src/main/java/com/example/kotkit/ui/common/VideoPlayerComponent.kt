@@ -1,6 +1,7 @@
 package com.example.kotkit.presentation.components
 
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -248,7 +249,19 @@ fun VideoPlayerComponent(
         options = optionsList
     ) { selectedOption ->
         if (selectedOption == "Tải xuống") {
-            videoViewModel.downloadVideo(context, video.videoUrl)
+            videoViewModel.downloadVideoToGallery(context, video.videoUrl)
         }
+    }
+
+    val downloadResult by videoViewModel::downloadResult
+
+    if (downloadResult != null) {
+        val message = if (downloadResult == true) {
+            "Tải xuống thành công!"
+        } else {
+            "Tải xuống thất bại!"
+        }
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        videoViewModel.setNullDownloadResult()
     }
 }
