@@ -1,16 +1,20 @@
 package com.example.kotkit.presentation.components
 
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -22,8 +26,15 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.example.kotkit.LocalUserViewModel
+import coil.compose.AsyncImage
+import com.example.kotkit.LocalNavController
 import com.example.kotkit.LocalVideoViewModel
+import com.example.kotkit.data.dto.input.UpdateVideoInput
+import com.example.kotkit.data.model.FriendshipStatus
 import com.example.kotkit.data.model.Video
+import com.example.kotkit.data.viewmodel.UploadFileViewModel
+import com.example.kotkit.ui.common.OptionModalBottomSheet
 import com.example.kotkit.ui.icon.Bookmark_filled
 import com.example.kotkit.ui.icon.Comment
 import com.example.kotkit.ui.icon.DotsHorizontal
@@ -31,8 +42,12 @@ import com.example.kotkit.ui.icon.Heart
 import com.example.kotkit.ui.icon.PersonCircle
 import com.example.kotkit.ui.icon.Share
 import com.example.kotkit.ui.screen.CommentScreen
+import com.example.kotkit.ui.utils.FormatUtils
 import com.example.kotkit.ui.utils.FormatUtils.formatNumber
 import com.example.kotkit.ui.utils.FormatUtils.formatVideoUrl
+import com.example.kotkit.ui.common.UpdateVideoModalBottomSheet
+import com.example.kotkit.ui.icon.Settings
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 private fun ActionComponent(
@@ -73,9 +88,14 @@ fun VideoPlayerComponent(
     video: Video,
     modifier: Modifier = Modifier,
 ) {
+    val navController = LocalNavController.current
     val context = LocalContext.current
     val videoViewModel = LocalVideoViewModel.current
+    val userViewModel = LocalUserViewModel.current
     var showComments by remember { mutableStateOf(false) }
+    var showOptions by remember { mutableStateOf(false) }
+    var showUpdateVideo by remember { mutableStateOf(false) }
+    var currentTitle by remember { mutableStateOf(video.title) }
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context)
@@ -96,17 +116,14 @@ fun VideoPlayerComponent(
     }
 
     DisposableEffect(Unit) {
-        Log.i("Tan", "Dispose")
         onDispose {
             exoPlayer.clearVideoSurface()
             exoPlayer.stop()
             exoPlayer.clearMediaItems()
-            exoPlayer.clearVideoSurface()
         }
     }
 
     LaunchedEffect(Unit) {
-        Log.i("Tan", "${formatVideoUrl(video.videoUrl)}")
         try {
             exoPlayer.setMediaItem(MediaItem.fromUri(formatVideoUrl(video.videoUrl)))
             exoPlayer.prepare()
@@ -138,7 +155,7 @@ fun VideoPlayerComponent(
                 .padding(16.dp)
         ) {
             Text(
-                text = video.title,
+                text = currentTitle,
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White
             )
@@ -161,6 +178,24 @@ fun VideoPlayerComponent(
             }
         }
 
+        // Edit video component displayed from the bottom
+        UpdateVideoModalBottomSheet(
+            video = video,
+            isVisible = showUpdateVideo,
+            onDismiss = { showUpdateVideo = false },
+            onSave = { newTitle, newMode ->
+                currentTitle = newTitle
+                videoViewModel.updateVideoInfo(
+                    video.videoId,
+                    UpdateVideoInput(
+                        newTitle,
+                        newMode
+                    )
+                )
+            },
+            modifier = modifier
+        )
+
         // Action buttons column
         Column(
             modifier = Modifier
@@ -170,11 +205,20 @@ fun VideoPlayerComponent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Avatar
-            ActionComponent(
-                icon = PersonCircle,
-                onClick = { },
-                modifier = Modifier.padding(bottom = 8.dp)
+            AsyncImage(
+                model = FormatUtils.formatImageUrl(video.creator.avatar),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black)
+                    .border(1.dp, Color.Gray, CircleShape)
+                    .then(Modifier.clickable {
+                        navController.navigate("user-profile/${video.creator.userId}")
+                    })
             )
+
+            Spacer(modifier = Modifier.height(4.dp))
 
             // React Button
             ActionComponent(
@@ -213,8 +257,43 @@ fun VideoPlayerComponent(
             // Three dots
             ActionComponent(
                 icon = DotsHorizontal,
-                onClick = { }
+                onClick = {
+                    showOptions = true
+                }
             )
+
+            // Setting
+            if (userViewModel.me.userId === video.creator.userId) {
+                ActionComponent(
+                    icon = Settings,
+                    onClick = {
+                        showUpdateVideo = true
+                    }
+                )
+            }
         }
+    }
+
+    val optionsList = listOf("Tải xuống")
+    OptionModalBottomSheet(
+        isSheetOpen = showOptions,
+        onDismissRequest = { showOptions = false },
+        options = optionsList
+    ) { selectedOption ->
+        if (selectedOption == "Tải xuống") {
+            videoViewModel.downloadVideoToGallery(context, video.videoUrl)
+        }
+    }
+
+    val downloadResult by videoViewModel::downloadResult
+
+    if (downloadResult != null) {
+        val message = if (downloadResult == true) {
+            "Tải xuống thành công!"
+        } else {
+            "Tải xuống thất bại!"
+        }
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        videoViewModel.setNullDownloadResult()
     }
 }

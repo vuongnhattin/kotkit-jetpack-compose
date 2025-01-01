@@ -1,9 +1,11 @@
 package com.example.kotkit.data.api.service
 
+import com.example.kotkit.data.dto.input.UpdateVideoInput
 import com.example.kotkit.data.dto.response.ApiResponse
 import com.example.kotkit.data.model.Video
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -62,4 +64,10 @@ interface VideoApiService {
 
     @GET("videos/liked")
     suspend fun getLikedVideosOfMe(): ApiResponse<List<Video>>
+
+    @POST("videos/{videoId}/update")
+    suspend fun updateVideoInfo(
+        @Path("videoId") videoId: Int,
+        @Body updateVideoInput: UpdateVideoInput
+    ): ApiResponse<Void>
 }

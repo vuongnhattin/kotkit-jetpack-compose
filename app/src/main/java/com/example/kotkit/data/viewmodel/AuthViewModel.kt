@@ -24,13 +24,9 @@ class AuthViewModel @Inject constructor(
     var isAuthenticated by mutableStateOf(tokenManager.isAuthenticated())
         private set
 
-
-
     var loginResponse by mutableStateOf<ApiState<LoginResponse>>(ApiState.Empty())
     var registerResponse by mutableStateOf<ApiState<Void>>(ApiState.Empty())
     var changePasswordResponse by mutableStateOf<ApiState<Void>>(ApiState.Empty())
-
-
 
     fun changePassword(oldPassword: String, newPassword: String) {
         fetchApi({ changePasswordResponse = it }) {
