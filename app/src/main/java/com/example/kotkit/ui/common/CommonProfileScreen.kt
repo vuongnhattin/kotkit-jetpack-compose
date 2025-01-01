@@ -99,7 +99,7 @@ fun CommonProfileScreen(modifier: Modifier = Modifier, userId: Int = 0, isMe: Bo
             val userDetails = state.data ?: UserDetails()
 
             Scaffold(
-
+                
                 topBar = {
                     if (!isMe)
                         CenterAlignedTopAppBar(
