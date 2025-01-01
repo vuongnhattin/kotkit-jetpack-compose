@@ -33,6 +33,7 @@ import com.example.kotkit.data.viewmodel.VideoViewModel
 import com.example.kotkit.ui.icon.Comment
 import com.example.kotkit.ui.icon.Heart
 import com.example.kotkit.ui.theme.WhiteColor
+import com.example.kotkit.ui.utils.FormatUtils
 import com.example.kotkit.ui.utils.FormatUtils.formatImageUrl
 import com.example.kotkit.ui.utils.FormatUtils.formatNumber
 
@@ -64,10 +65,11 @@ fun VideoDetailsItem(
         ) {
             // Thumbnail
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(formatImageUrl(video.thumbnail))
-                    .transformations(RoundedCornersTransformation(topLeft = 8f, topRight = 8f))
-                    .build(),
+//                model = ImageRequest.Builder(LocalContext.current)
+//                    .data(formatImageUrl(video.thumbnail))
+//                    .transformations(RoundedCornersTransformation(topLeft = 8f, topRight = 8f))
+//                    .build(),
+                model = FormatUtils.formatImageUrl(video.thumbnail),
                 contentDescription = "Video thumbnail",
                 modifier = Modifier
                     .weight(0.8f),
@@ -99,13 +101,15 @@ fun VideoDetailsItem(
                         modifier = Modifier.weight(0.75f)
                     ) {
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(video.creator.avatar)
-                                .transformations(RoundedCornersTransformation(radius = 20f))
-                                .build(),
+//                            model = ImageRequest.Builder(LocalContext.current)
+//                                .data(video.creator.avatar)
+//                                .transformations(RoundedCornersTransformation(radius = 20f))
+//                                .build(),
+                            model = FormatUtils.formatImageUrl(video.creator.avatar),
                             contentDescription = "Creator avatar",
                             modifier = Modifier
-                                .size(20.dp),
+                                .size(20.dp)
+                                .clip(CircleShape),
                             contentScale = ContentScale.Crop
                         )
 

@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.kotkit.data.model.Notification
 import com.example.kotkit.data.viewmodel.NotificationViewModel
+import com.example.kotkit.ui.utils.FormatUtils
 
 @Composable
 fun NotificationList(

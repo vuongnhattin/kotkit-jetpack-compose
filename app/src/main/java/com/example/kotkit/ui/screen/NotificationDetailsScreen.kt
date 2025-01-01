@@ -35,6 +35,7 @@ import coil.compose.AsyncImage
 import com.example.kotkit.data.mock.NotificationMock
 import com.example.kotkit.data.model.Notification
 import com.example.kotkit.data.viewmodel.NotificationViewModel
+import com.example.kotkit.ui.utils.FormatUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

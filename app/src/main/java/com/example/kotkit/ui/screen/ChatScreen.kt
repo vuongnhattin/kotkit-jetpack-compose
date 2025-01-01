@@ -20,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,36 +36,5 @@ import com.example.kotkit.ui.icon.Chat_bubble
 
 @Composable
 fun ChatScreen(modifier: Modifier = Modifier) {
-    var showComments by remember { mutableStateOf(false) }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Video content goes here
-
-        // Button to show comments
-        IconButton(
-            onClick = { showComments = true },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-        ) {
-            Icon(imageVector = Chat_bubble, contentDescription = "Show Comments")
-        }
-
-        // Comment component displayed from the bottom
-        if (showComments) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.5f) // Half of the screen
-                    .background(Color.White)
-                    .align(Alignment.BottomCenter)
-            ) {
-                CommentScreen(
-                    viewModel = hiltViewModel(),
-                    videoId = 1,
-                    onClose = { showComments = false }
-                )
-            }
-        }
-    }
+    Text("Chat Screen")
 }

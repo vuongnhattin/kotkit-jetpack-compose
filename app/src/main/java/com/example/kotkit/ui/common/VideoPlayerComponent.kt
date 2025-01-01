@@ -235,7 +235,7 @@ fun VideoPlayerComponent(
                 icon = Comment,
                 count = video.numberOfComments,
                 onClick = {
-                    showComments = true
+                    showComments = !showComments
                 }
             )
 

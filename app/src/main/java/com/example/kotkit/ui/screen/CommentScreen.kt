@@ -52,6 +52,7 @@ import com.example.kotkit.data.viewmodel.CommentViewModel
 import com.example.kotkit.ui.common.CustomTextField
 import com.example.kotkit.ui.icon.Send
 import com.example.kotkit.ui.utils.DisplayApiResult
+import com.example.kotkit.ui.utils.FormatUtils
 
 
 @Composable
@@ -149,7 +150,7 @@ fun CommentItem(comment: Comment) {
     ) {
         // Profile picture placeholder
         AsyncImage(
-            model = comment.avatar,
+            model = FormatUtils.formatImageUrl(comment.avatar),
             contentDescription = "Avatar of ${comment.fullName}",
             modifier = Modifier
                 .size(40.dp)

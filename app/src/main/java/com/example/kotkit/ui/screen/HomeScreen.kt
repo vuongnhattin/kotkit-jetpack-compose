@@ -90,7 +90,6 @@ private fun VideoContent(
     videosState: ApiState<List<Video>>,
     modifier: Modifier = Modifier,
 ) {
-    val pagerState = rememberPagerState(pageCount = { videos.size })
 
     DisplayApiResult(
         state = videosState,
@@ -98,6 +97,7 @@ private fun VideoContent(
         onSuccess = { state ->
             state.data?.let { videos ->
                 Log.d("VideoContent", "Videos ${videos.size}")
+                val pagerState = rememberPagerState(pageCount = { videos.size })
                 VerticalPager(
                     state = pagerState,
                     modifier = modifier,
