@@ -146,6 +146,13 @@ fun VideoPlayerComponent(
                 }
             },
             modifier = Modifier.fillMaxSize()
+                .clickable {
+                    if (exoPlayer.isPlaying) {
+                        exoPlayer.pause()
+                    } else {
+                        exoPlayer.play()
+                    }
+                }
         )
 
         // Video Info
@@ -235,7 +242,7 @@ fun VideoPlayerComponent(
                 icon = Comment,
                 count = video.numberOfComments,
                 onClick = {
-                    showComments = true
+                    showComments = !showComments
                 }
             )
 

@@ -99,7 +99,7 @@ fun CommonProfileScreen(modifier: Modifier = Modifier, userId: Int = 0, isMe: Bo
             val userDetails = state.data ?: UserDetails()
 
             Scaffold(
-
+                
                 topBar = {
                     if (!isMe)
                         CenterAlignedTopAppBar(
@@ -215,7 +215,8 @@ fun UserInfoSection(
                             Modifier.clickable {
                                 showUpdateAvatarDialog = true // Hiển thị dialog khi click
                             }
-                        } else Modifier)
+                        } else Modifier),
+                    contentScale = ContentScale.Crop
                 )
 
                 if (isMe) {
@@ -436,6 +437,8 @@ fun VideoPreviewSection(modifier: Modifier = Modifier, userDetails: UserDetails,
 
 @Composable
 fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Video>>) {
+    val videoViewModel = LocalVideoViewModel.current
+    val navController = LocalNavController.current
     DisplayApiResult(videosState, onError = { error ->
         when (error.code) {
             "NOT_FRIEND" -> {
@@ -469,7 +472,11 @@ fun VideoThumbnails(modifier: Modifier = Modifier, videosState: ApiState<List<Vi
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp),
+                        .height(200.dp)
+                        .clickable {
+                            videoViewModel.selectVideoToPlay(video)
+                            navController.navigate("search-result/video")
+                        },
                     contentScale = ContentScale.Crop
                 )
             }

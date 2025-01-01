@@ -93,7 +93,7 @@ fun SearchScreen(modifier: Modifier = Modifier, query: String = "") {
                             onClick = {
                                 navController.navigate("search-result/${text.text}")
                             },
-                            enabled = text.text.isNotEmpty()
+//                            enabled = text.text.isNotEmpty()
                         ) {
                             Text(
                                 text = "Tìm kiếm"
