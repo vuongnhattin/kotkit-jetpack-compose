@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.kotkit.LocalNavController
 import com.example.kotkit.data.model.ApiState
 import com.example.kotkit.data.model.Notification
 import com.example.kotkit.data.viewmodel.NotificationViewModel
@@ -32,6 +33,7 @@ import com.example.kotkit.ui.utils.DisplayApiResult
 
 @Composable
 fun NotificationScreen(modifier: Modifier = Modifier,  viewModel: NotificationViewModel = hiltViewModel()) {
+    val navController = LocalNavController.current
     val notificationState = viewModel.notificationState
     val notifications = viewModel.notifications
 
@@ -44,7 +46,7 @@ fun NotificationScreen(modifier: Modifier = Modifier,  viewModel: NotificationVi
                 .fillMaxSize()
                 .padding(horizontal = 12.dp)
         ) {
-            NotificationList(notifications=notifications, viewModel=viewModel)
+            NotificationList(notifications=notifications, viewModel=viewModel, navController = navController)
         }
     }
 }

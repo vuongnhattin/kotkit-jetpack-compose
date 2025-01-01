@@ -23,6 +23,10 @@ class NotificationViewModel @Inject constructor() : ViewModel() {
 
     var notificationState by mutableStateOf<ApiState<List<Notification>>>(ApiState.Empty())
         private set
+    fun getNotificationById(notificationId: Int): Notification? {
+        return notifications.find { it.notificationID == notificationId }
+    }
+
 
     fun fetchNotifications() {
         notificationState = ApiState.Loading()

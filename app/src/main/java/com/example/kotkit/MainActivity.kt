@@ -41,6 +41,7 @@ import com.example.kotkit.ui.screen.ListFriendScreen
 import com.example.kotkit.ui.screen.LoginScreen
 import com.example.kotkit.ui.screen.PlayVideoScreen
 import com.example.kotkit.ui.screen.MeProfileTopBar
+import com.example.kotkit.ui.screen.NotificationDetailScreen
 import com.example.kotkit.ui.screen.RegisterScreen
 import com.example.kotkit.ui.screen.SettingsScreen
 import com.example.kotkit.ui.screen.UpdateInfoScreen
@@ -103,7 +104,6 @@ fun MyApp(modifier: Modifier = Modifier) {
 
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
-
     val authViewModel = LocalAuthViewModel.current
 
     CompositionLocalProvider(LocalNavController provides navController) {
@@ -167,6 +167,13 @@ fun MyApp(modifier: Modifier = Modifier) {
                     ListFriendScreen(userId = userId)
                 }
                 composable("search-result/video") { PlayVideoScreen() }
+                composable(
+                    "notification-detail/{notificationId}",
+                    arguments = listOf(navArgument("notificationId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val notificationId = backStackEntry.arguments?.getInt("notificationId") ?: 0
+                    NotificationDetailScreen(notificationId = notificationId, navController = navController)
+                }
             }
         }
     }
